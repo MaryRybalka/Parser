@@ -80,20 +80,18 @@ public class Parser
             return MaybeBinary(ParseAtom(), 0);
     }
     
-    string MaybeBinary(left, my_prec) {
-        var tok = is_op();
+    string MaybeBinary(string left, int prec) {
+        string tok = is_op();
         if (tok) {
-            var his_prec = Precedence[tok.value];
-            if (his_prec > my_prec) {
+            byte his_prec = (Precedence)tok.value;
+            if (his_prec > prec) {
                 input.next();
-                var right = maybe_binary(parse_atom(), his_prec) // (*);
-                var binary = {
-                    type     : tok.value == "=" ? "assign" : "binary",
-                    operator : tok.value,
-                    left     : left,
-                    right    : right
-                };
-                return maybe_binary(binary, my_prec);
+                string right = MaybeBinary(ParseAtom(), his_prec); // (*);
+                string binary = "{\n type     : " + tok.value == "=" ? "assign" : "binary" + 
+                    ",\n operator :  " + tok.value + 
+                    ",\n left     : " + left +
+                    ",\n right    : " + right + "}";
+                return MaybeBinary(binary, prec);
             }
         }
         return left;
