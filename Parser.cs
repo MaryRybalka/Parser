@@ -73,7 +73,7 @@ public class Parser
         Sign
     };
 
-    private readonly string[] sigma =
+    private readonly string[] _sigma =
     {
         "[a-zA-Z]",
         "[0-9]",
@@ -91,35 +91,6 @@ public class Parser
         "?",
         ">",
         "<",
-        "."
-    };
-
-    private readonly string[] _regexes =
-    {
-        "\\n",
-        "\\s",
-        "[a-zA-Z]",
-        "[0-9]",
-        "\"",
-        "\\\\",
-        "\\.",
-        "\\/",
-        "\\*",
-        "\\+",
-        "\\-",
-        "\\%",
-        "\\!",
-        "\\=",
-        "\\(",
-        "\\)",
-        "\\{",
-        "\\}",
-        "\\,",
-        "\\;",
-        "\\&",
-        "\\|",
-        "\\>",
-        "\\<",
         "."
     };
 
@@ -148,4 +119,16 @@ public class Parser
         "false",
         "nil"
     };
+
+    struct nnRule
+    {
+        public nu leftPart;
+        public nu[] rightPart;
+    }
+
+    struct nsRule
+    {
+        public nu leftPart;
+        public string[] rightPart;
+    }
 }
