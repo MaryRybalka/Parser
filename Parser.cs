@@ -6,14 +6,14 @@ using static parser.LexerTypes;
 
 enum Precedence : byte
 {
-        EQ = 1,
-        OR = 2,
-        AND = 3,
-        LESS = 7, MORE = 7, Less_AND_EQ= 7, MORE_AND_EQ= 7, EQ_EQ = 7, NOT_EQ = 7,
-        PLUS = 10, MINUS = 10,
-        MUL = 20, DIV = 20, MOD = 20,
+    EQUAL = 1,
+    OROR = 2,
+    ANDAND = 3,
+    LESS = 7, MORE = 7, LESSOREQUAL= 7, MOREOREQUAL= 7, TWO_EQUAL = 7, NOTEQUAL = 7,
+    PLUS = 10, MINUS = 10,
+    STAR = 20, SLASH = 20, PERCENT = 20,
 }
-    
+
 public class Parser
 {
     
@@ -77,13 +77,13 @@ public class Parser
     }
     
     string ParseExpression() {
-            return MaybeBinary(parse_atom(), 0);
+            return MaybeBinary(ParseAtom(), 0);
     }
     
-    function maybe_binary(left, my_prec) {
+    string MaybeBinary(left, my_prec) {
         var tok = is_op();
         if (tok) {
-            var his_prec = PRECEDENCE[tok.value];
+            var his_prec = Precedence[tok.value];
             if (his_prec > my_prec) {
                 input.next();
                 var right = maybe_binary(parse_atom(), his_prec) // (*);
