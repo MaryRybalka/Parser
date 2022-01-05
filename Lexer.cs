@@ -60,7 +60,32 @@ namespace parser
         
         private static readonly State[][] Table =
         {
-            new [] {new State(Status.START,1),new State(Status.START,1),new State(Status.IDENT,0),new State(Status.NUMBER,0),new State(Status.STRING,0),new State(Status.ERROR,0),new State(Status.REALNUMBER_DOT,0),new State(Status.SLASH,0),new State(Status.STAR,0),new State(Status.PLUS,0),new State(Status.MINUS,0),new State(Status.PERCENT,0),new State(Status.NOT,0),new State(Status.EQUAL,0),new State(Status.OPEN_ROUND_BRACKET,0),new State(Status.CLOSE_ROUND_BRACKET,0),new State(Status.OPEN_CURLY_BRACKET,0),new State(Status.CLOSE_CURLY_BRACKET,0),new State(Status.COMMA,0),new State(Status.SEMICOLON,0),new State(Status.AND,0),new State(Status.OR,0),new State(Status.MORE,0),new State(Status.LESS,0),new State(Status.ERROR,0)},
+            new [] {
+                new State(Status.START,1),
+                new State(Status.START,1),
+                new State(Status.IDENT,0),
+                new State(Status.NUMBER,0),
+                new State(Status.STRING,0),
+                new State(Status.ERROR,0),
+                new State(Status.REALNUMBER_DOT,0),
+                new State(Status.SLASH,0),
+                new State(Status.STAR,0),
+                new State(Status.PLUS,0),
+                new State(Status.MINUS,0),
+                new State(Status.PERCENT,0),
+                new State(Status.NOT,0),
+                new State(Status.EQUAL,0),
+                new State(Status.OPEN_ROUND_BRACKET,0),
+                new State(Status.CLOSE_ROUND_BRACKET,0),
+                new State(Status.OPEN_CURLY_BRACKET,0),
+                new State(Status.CLOSE_CURLY_BRACKET,0),
+                new State(Status.COMMA,0),
+                new State(Status.SEMICOLON,0),
+                new State(Status.AND,0),
+                new State(Status.OR,0),
+                new State(Status.MORE,0),
+                new State(Status.LESS,0),
+                new State(Status.ERROR,0)},
             new [] {new State(Status.START,1),new State(Status.START,1),new State(Status.IDENT,0),new State(Status.IDENT,0),new State(Status.STRING,1),new State(Status.ERROR,0),new State(Status.REALNUMBER_DOT,1),new State(Status.START,1),new State(Status.STAR,1),new State(Status.PLUS,1),new State(Status.MINUS,1),new State(Status.PERCENT,1),new State(Status.NOT,1),new State(Status.EQUAL,1),new State(Status.OPEN_ROUND_BRACKET,1),new State(Status.CLOSE_ROUND_BRACKET,1),new State(Status.OPEN_CURLY_BRACKET,1),new State(Status.CLOSE_CURLY_BRACKET,1),new State(Status.COMMA,1),new State(Status.SEMICOLON,1),new State(Status.AND,1),new State(Status.OR,1),new State(Status.MORE,1),new State(Status.LESS,1),new State(Status.ERROR,0)},
             new [] {new State(Status.START,1),new State(Status.START,1),new State(Status.IDENT,1),new State(Status.NUMBER,0),new State(Status.STRING,1),new State(Status.ERROR,0),new State(Status.REALNUMBER_ONE,0),new State(Status.SLASH,1),new State(Status.STAR,1),new State(Status.PLUS,1),new State(Status.MINUS,1),new State(Status.PERCENT,1),new State(Status.NOT,1),new State(Status.EQUAL,1),new State(Status.OPEN_ROUND_BRACKET,1),new State(Status.CLOSE_ROUND_BRACKET,1),new State(Status.OPEN_CURLY_BRACKET,1),new State(Status.CLOSE_CURLY_BRACKET,1),new State(Status.COMMA,1),new State(Status.SEMICOLON,1),new State(Status.AND,1),new State(Status.OR,1),new State(Status.MORE,1),new State(Status.LESS,1),new State(Status.ERROR,0)},
             new [] {new State(Status.START,1),new State(Status.START,1),new State(Status.IDENT,1),new State(Status.REALNUMBER_ONE,0),new State(Status.STRING,1),new State(Status.ERROR,0),new State(Status.REALNUMBER_DOT,0),new State(Status.SLASH,1),new State(Status.STAR,1),new State(Status.PLUS,1),new State(Status.MINUS,1),new State(Status.PERCENT,1),new State(Status.NOT,1),new State(Status.EQUAL,1),new State(Status.OPEN_ROUND_BRACKET,1),new State(Status.CLOSE_ROUND_BRACKET,1),new State(Status.OPEN_CURLY_BRACKET,1),new State(Status.CLOSE_CURLY_BRACKET,1),new State(Status.COMMA,1),new State(Status.SEMICOLON,1),new State(Status.AND,1),new State(Status.OR,1),new State(Status.MORE,1),new State(Status.LESS,1),new State(Status.ERROR,0)},
@@ -144,7 +169,8 @@ namespace parser
             "for",
             "while",
             "if",
-            "in"
+            "in",
+            "else"
         };
         private readonly SortedSet<string> _reservedNames = new SortedSet<string>
         { 

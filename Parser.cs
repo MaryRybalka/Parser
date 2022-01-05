@@ -16,84 +16,107 @@ enum Precedence : byte
 
 public class Parser
 {
+    private enum nu
+    {
+        Program,
+        Sentence,
+        Expression,
+        Definition,
+        Cycle,
+        Branching,
+        ControlSentence,
+        Sentences,
+        CodeBlock,
+        BinaryOperator,
+        Operand,
+        Identifier,
+        Literal,
+        FunctionCall,
+        ArgumentsList,
+        Argument,
+        Expressions,
+        ConstantDefinition,
+        VariableDefinition,
+        Definitions,
+        InitialisationListPattern,
+        PatternInitialisator,
+        Pattern,
+        Initialisator,
+        ForInCycle,
+        WhileCycle,
+        ConditionsList,
+        Condition,
+        TransformationOptional,
+        IfBranching,
+        ElseBlock,
+        IdentificatorsStart,
+        IdentificatorsSymbols,
+        IdentificatorSymbol,
+        NumberLiteral,
+        StringLiteral,
+        BoolLiteral,
+        IntNumberLiteral,
+        FloatNumberLiteral,
+        DecimalNumber,
+        DecimalSymbols,
+        DecimalSymbol,
+        FloatPart,
+        Exp,
+        ESign,
+        Sign
+    };
     
-    string ParseToplevel(List<Token> tokens)
-    {
-        List<string> prog = new List<string>();
-        foreach (Token token in tokens)
+    private readonly string[] _regexes =
         {
-            prog.Add(ParseExpression());
-        }
+            "\\n",
+            "\\s",
+            "[a-zA-Z]",
+            "[0-9]",
+            "\"",
+            "\\\\",
+            "\\.",
+            "\\/",
+            "\\*",
+            "\\+",
+            "\\-",
+            "\\%",
+            "\\!",
+            "\\=",
+            "\\(",
+            "\\)",
+            "\\{",
+            "\\}",
+            "\\,",
+            "\\;",
+            "\\&",
+            "\\|",
+            "\\>",
+            "\\<",
+            "."
+        };
 
-        return "{\n type: \"prog\",\n prog: " + prog + "}";
-    }
-
-    string ParseFunction()
-    {
-        return "{\n type: \"function\",\n vars: " +
-               ParseVarnames() +
-               "\",\n body: \" " +
-               ParseBody() +
-               "\"}";
-    }
-
-    string ParseIf()
-    {
-        string cond = ParseExpression();
-        if (!is_punc("{")) skip_kw("then");
-        string then = ParseExpression();
-        string ret = "{\n type: \"if\",\n cond: " + cond +
-                     "\",\n then: \" " + then + "\"}";
-        if (is_kw("else"))
+        private readonly SortedSet<string> _keywords = new SortedSet<string>
         {
-            string _else = ParseExpression();
-            ret = ret + ",\n else: " + _else;
-        }
-
-        return ret;
-    }
-
-    string ParseAtom()
-    {
-        if (is_punc("("))
-        {
-            var exp = ParseExpression();
-            skip_punc(")");
-            return exp;
-        }
-
-        if (is_punc("{")) return ParseProg();
-        if (is_kw("if")) return ParseIf();
-        if (is_kw("true") || is_kw("false")) return ParseBool();
-        if (is_kw("func") || is_kw("λ"))
-        {
-            return ParseFunction();
-        }
-
-        var tok = input.next();
-        if (tok.type == "var" || tok.type == "num" || tok.type == "str")
-            return tok;
-        unexpected();
-    }
-    
-    string ParseExpression() {
-            return MaybeBinary(ParseAtom(), 0);
-    }
-    
-    string MaybeBinary(string left, int prec) {
-        string tok = is_op();
-        if (tok) {
-            byte his_prec = (Precedence)tok.value;
-            if (his_prec > prec) {
-                input.next();
-                string right = MaybeBinary(ParseAtom(), his_prec); // (*);
-                string binary = "{\n type     : " + tok.value == "=" ? "assign" : "binary" + 
-                    ",\n operator :  " + tok.value + 
-                    ",\n left     : " + left +
-                    ",\n right    : " + right + "}";
-                return MaybeBinary(binary, prec);
-            }
-        }
-        return left;
-    }
+            "var",
+            "let",
+            "for",
+            "while",
+            "if",
+            "in",
+            "else"
+        };
+        private readonly SortedSet<string> _reservedNames = new SortedSet<string>
+        { 
+            "string",
+            "substring",
+            "character",
+            "bool",
+            "array",
+            "int",
+            "double",
+            "float",
+            "true",
+            "false",
+            "nil"
+        };
 }
