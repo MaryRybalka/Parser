@@ -115,28 +115,6 @@ public class Parser
         SigmaFalse,
     };
 
-    private readonly string[] _sigma =
-    {
-        "[a-zA-Z]",
-        "[0-9]",
-        "(",
-        ")",
-        "{",
-        "}",
-        "=",
-        "/",
-        "*",
-        "+",
-        "-",
-        "%",
-        "!",
-        "?",
-        ">",
-        "<",
-        ".",
-        "lambda"
-    };
-
     private readonly SortedSet<string> _keywords = new SortedSet<string>
     {
         "var",
@@ -367,5 +345,9 @@ public class Parser
             new mixRule(nu.ElseBlock, new[] {nu.SigmaElse, nu.CodeBlock}),
             new mixRule(nu.ElseBlock, new[] {nu.SigmaElse, nu.IfBranching}),
         };
+    }
+
+    string Parse(List<Token> tokenList)
+    {
     }
 }
