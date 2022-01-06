@@ -8,7 +8,7 @@ var k = 3
 if (k == 1)
     k += 2
 else 
-    k -= 1
+    k++
 k
 
 var m = 2
