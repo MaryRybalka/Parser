@@ -96,6 +96,72 @@ string ParseToplevel(List<Token> tokens)
     
     
     
+    public struct nnRule
+    {
+        nu leftPart;
+        nu[] rightPart;
+
+        public nnRule(nu left, nu[] right)
+        {
+            this.leftPart = left;
+            this.rightPart = right;
+        }
+
+        public nu getLeftPart()
+        {
+            return leftPart;
+        }
+
+        public nu[] getRightPart()
+        {
+            return rightPart;
+        }
+    }
+
+    public struct nsRule
+    {
+        nu leftPart;
+        string[] rightPart;
+
+        public nsRule(nu left, string[] right)
+        {
+            this.leftPart = left;
+            this.rightPart = right;
+        }
+
+        public nu getLeftPart()
+        {
+            return leftPart;
+        }
+
+        public string[] getRightPart()
+        {
+            return rightPart;
+        }
+    }
+
+    public struct mixRule
+    {
+        nu leftPart;
+        nu[] rightPart;
+
+        public mixRule(nu left, nu[] right)
+        {
+            this.leftPart = left;
+            this.rightPart = right;
+        }
+
+        public nu getLeftPart()
+        {
+            return leftPart;
+        }
+
+        public nu[] getRightPart()
+        {
+            return rightPart;
+        }
+    }
+
     
         nnRules = new nnRule[]
         {

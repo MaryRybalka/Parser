@@ -155,85 +155,14 @@ public class Grammar
         }
     }
 
-    public struct nnRule
-    {
-        nu leftPart;
-        nu[] rightPart;
-
-        public nnRule(nu left, nu[] right)
-        {
-            this.leftPart = left;
-            this.rightPart = right;
-        }
-
-        public nu getLeftPart()
-        {
-            return leftPart;
-        }
-
-        public nu[] getRightPart()
-        {
-            return rightPart;
-        }
-    }
-
-    public struct nsRule
-    {
-        nu leftPart;
-        string[] rightPart;
-
-        public nsRule(nu left, string[] right)
-        {
-            this.leftPart = left;
-            this.rightPart = right;
-        }
-
-        public nu getLeftPart()
-        {
-            return leftPart;
-        }
-
-        public string[] getRightPart()
-        {
-            return rightPart;
-        }
-    }
-
-    public struct mixRule
-    {
-        nu leftPart;
-        nu[] rightPart;
-
-        public mixRule(nu left, nu[] right)
-        {
-            this.leftPart = left;
-            this.rightPart = right;
-        }
-
-        public nu getLeftPart()
-        {
-            return leftPart;
-        }
-
-        public nu[] getRightPart()
-        {
-            return rightPart;
-        }
-    }
-
     private nu axioma = nu.Program;
     private Dictionary<nu, string> sigma;
     private Rule[] Rules;
-    private nnRule[] nnRules;
-    private nsRule[] nsRules;
-    private mixRule[] mixRules;
 
     public Grammar()
     {
         sigma = new Dictionary<nu, string>
         {
-            {nu.SigmaLetters, "[a-zA-Z]"},
-            {nu.SigmaNumbers, "[0-9]"},
             {nu.SigmaFor, "for"},
             {nu.SigmaIf, "if"},
             {nu.SigmaIn, "in"},
@@ -355,23 +284,18 @@ public class Grammar
         return _reservedNames;
     }
 
-    public nnRule[] GetNnRules()
+    public Rule[] GetRules()
     {
-        return nnRules;
-    }
-
-    public SortedSet<string> GetNsRules()
-    {
-        return _reservedNames;
-    }
-
-    public SortedSet<string> GetMixRules()
-    {
-        return _reservedNames;
+        return Rules;
     }
 
     public nu GetAxioma()
     {
         return axioma;
+    }
+
+    public Dictionary<nu, string> GetSigma()
+    {
+        return sigma;
     }
 }

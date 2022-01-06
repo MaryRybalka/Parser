@@ -1,3 +1,4 @@
+using System.Dynamic;
 using System.Security.Cryptography;
 using System.Xml.Xsl;
 using Microsoft.VisualBasic;
@@ -51,25 +52,78 @@ public class Parser
 
     private struct state
     {
-        private nnRule rule;
+        private Rule rule;
         private int ind;
+        private int meta;
 
-        public state(nnRule _rule, int _ind)
+        public state(Rule _rule, int _ind)
         {
             rule = _rule;
             ind = _ind;
+            meta = 0;
+        }
+
+        public void SetInd(int _ind)
+        {
+            ind = _ind;
+        }
+
+        public void SetMeta(int _meta)
+        {
+            meta = _meta;
+        }
+
+        public int GetMeta()
+        {
+            return meta;
+        }
+
+        public int GetInd()
+        {
+            return ind;
+        }
+
+        public Rule GetRule()
+        {
+            return rule;
         }
     }
 
     string Parse(List<Token> tokenList)
     {
         List<state>[] D = new List<state>[tokenList.Capacity];
-        D[0].Add(new state(new nnRule(nu.Helper, new[] {Grammar.GetAxioma()}), 0));
+        D[0].Add(new state(new Rule(nu.Helper, new[] {Grammar.GetAxioma()}, ruleType.nn), 0));
 
         foreach (Token token in tokenList)
         {
         }
 
         return "ok";
+    }
+
+    void Scan(ref List<state>[] D, int j, Token token)
+    {
+        if (j != 0)
+        {
+            foreach (var state in D[j - 1])
+            {
+                if (state.GetRule().getType() == ruleType.mix &&
+                    state.GetMeta() < state.GetRule().getRightPart().Length &&
+                    Grammar.GetSigma().ContainsKey(state.GetRule().getRightPart()[state.GetMeta()]) &&
+                    Grammar.GetSigma()[state.GetRule().getRightPart()[state.GetMeta()]] == token.value)
+                {
+                    D[j].Add(new state(
+                        new Rule(state.GetRule().getLeftPart(), state.GetRule().getRightPart(), ruleType.mix), 0));
+                }
+            }
+        }
+    }
+
+    void Complete(ref List<state> Di, int j)
+    {
+    }
+
+    void Predict(ref List<state> Di, int j)
+    {
     }
 }
