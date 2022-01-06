@@ -12,7 +12,7 @@ namespace parser
         {
             "START",
             "IDENT",
-            "NUMBER", //string literal
+            "NUMBER", //number literal
             "REALNUMBER_ONE",
             "REALNUMBER_DOT",
             "STRING", //string literal

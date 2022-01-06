@@ -280,6 +280,10 @@ public class Grammar
             // new nnRule(nu.Identifier, new[] {nu.IdentificatorsStart, nu.IdentificatorsSymbols}),
             // new nnRule(nu.IdentificatorSymbol, new[] {nu.IdentificatorsStart}),
             // new nnRule(nu.IdentificatorsSymbols, new[] {nu.IdentificatorsStart}),
+
+            new nnRule(nu.Literal, new[] {nu.NumberLiteral}),
+            new nnRule(nu.Literal, new[] {nu.StringLiteral}),
+            new nnRule(nu.Literal, new[] {nu.BoolLiteral}),
         };
 
         nsRules = new nsRule[]
