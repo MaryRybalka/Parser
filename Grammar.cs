@@ -2,6 +2,13 @@ namespace parser;
 
 public class Grammar
 {
+    public enum ruleType
+    {
+        nn,
+        ns,
+        mix
+    }
+
     public enum nu
     {
         Helper, // вспомогательный нетерминал
@@ -119,6 +126,35 @@ public class Grammar
         "nil"
     };
 
+    public struct Rule
+    {
+        nu leftPart;
+        nu[] rightPart;
+        ruleType type;
+
+        public Rule(nu left, nu[] right, ruleType _type)
+        {
+            leftPart = left;
+            rightPart = right;
+            type = _type;
+        }
+
+        public nu getLeftPart()
+        {
+            return leftPart;
+        }
+
+        public nu[] getRightPart()
+        {
+            return rightPart;
+        }
+
+        public ruleType getType()
+        {
+            return type;
+        }
+    }
+
     public struct nnRule
     {
         nu leftPart;
@@ -187,6 +223,7 @@ public class Grammar
 
     private nu axioma = nu.Program;
     private Dictionary<nu, string> sigma;
+    private Rule[] Rules;
     private nnRule[] nnRules;
     private nsRule[] nsRules;
     private mixRule[] mixRules;
@@ -230,156 +267,81 @@ public class Grammar
             {nu.SigmaContinue, "continue"}
         };
 
-        nnRules = new nnRule[]
+        Rules = new Rule[]
         {
-            new nnRule(nu.Program, new[] {nu.Sentences}),
+            new Rule(nu.Program, new[] {nu.Sentences}, ruleType.nn),
+            new Rule(nu.Sentences, new[] {nu.Sentence}, ruleType.nn),
+            new Rule(nu.Sentences, new[] {nu.Sentence, nu.Sentences}, ruleType.nn),
+            new Rule(nu.Sentence, new[] {nu.Expressions}, ruleType.nn),
+            new Rule(nu.Sentence, new[] {nu.Definitions}, ruleType.nn),
+            new Rule(nu.Sentence, new[] {nu.Cycle}, ruleType.nn),
+            new Rule(nu.Sentence, new[] {nu.IfBranching}, ruleType.nn),
+            new Rule(nu.CodeBlock, new[] {nu.Sentences}, ruleType.nn),
+            new Rule(nu.Expression, new[] {nu.Operand, nu.BinaryOperator, nu.Operand}, ruleType.nn),
+            new Rule(nu.Expression, new[] {nu.UnaryOperator, nu.Operand}, ruleType.nn),
+            new Rule(nu.Expression, new[] {nu.Operand, nu.UnaryOperator}, ruleType.nn),
+            new Rule(nu.Operand, new[] {nu.Identifier}, ruleType.nn),
+            new Rule(nu.Operand, new[] {nu.Literal}, ruleType.nn),
+            new Rule(nu.Operand, new[] {nu.Identifier, nu.FunctionCall}, ruleType.nn),
+            new Rule(nu.Operand, new[] {nu.Literal, nu.FunctionCall}, ruleType.nn),
+            new Rule(nu.ArgumentsList, new[] {nu.Argument}, ruleType.nn),
+            new Rule(nu.Argument, new[] {nu.Expression}, ruleType.nn),
+            new Rule(nu.Expressions, new[] {nu.Expression}, ruleType.nn),
+            new Rule(nu.Expressions, new[] {nu.Expression, nu.Expressions}, ruleType.nn),
+            new Rule(nu.Definitions, new[] {nu.Definition}, ruleType.nn),
+            new Rule(nu.Definitions, new[] {nu.Definition, nu.Definitions}, ruleType.nn),
+            new Rule(nu.InitialisationListPattern, new[] {nu.PatternInitialisator}, ruleType.nn),
+            new Rule(nu.InitialisationListPattern, new[] {nu.PatternInitialisator, nu.InitialisationListPattern},
+                ruleType.nn),
+            new Rule(nu.PatternInitialisator, new[] {nu.Identifier, nu.Initialisator}, ruleType.nn),
+            new Rule(nu.PatternInitialisator, new[] {nu.Identifier, nu.TypeAnnotation, nu.Initialisator}, ruleType.nn),
+            new Rule(nu.Condition, new[] {nu.Expression}, ruleType.nn),
+            new Rule(nu.Literal, new[] {nu.NumberLiteral}, ruleType.nn),
+            new Rule(nu.Literal, new[] {nu.StringLiteral}, ruleType.nn),
+            new Rule(nu.Literal, new[] {nu.BoolLiteral}, ruleType.nn),
 
-            new nnRule(nu.Sentences, new[] {nu.Sentence}),
-            new nnRule(nu.Sentences, new[] {nu.Sentence, nu.Sentences}),
+            new Rule(nu.Program, new[] {nu.SigmaLambda}, ruleType.ns),
+            new Rule(nu.FunctionCall, new[] {nu.SigmaOpenRound, nu.SigmaCloseRound}, ruleType.ns),
+            new Rule(nu.BinaryOperator, new[] {nu.SigmaSlash}, ruleType.ns),
+            new Rule(nu.BinaryOperator, new[] {nu.SigmaEqual}, ruleType.ns),
+            new Rule(nu.BinaryOperator, new[] {nu.SigmaMinus}, ruleType.ns),
+            new Rule(nu.BinaryOperator, new[] {nu.SigmaPlus}, ruleType.ns),
+            new Rule(nu.BinaryOperator, new[] {nu.SigmaStar}, ruleType.ns),
+            new Rule(nu.BinaryOperator, new[] {nu.SigmaPercent}, ruleType.ns),
+            new Rule(nu.BinaryOperator, new[] {nu.SigmaMore}, ruleType.ns),
+            new Rule(nu.BinaryOperator, new[] {nu.SigmaLess}, ruleType.ns),
+            new Rule(nu.BinaryOperator, new[] {nu.SigmaAnd, nu.SigmaAnd}, ruleType.ns),
+            new Rule(nu.BinaryOperator, new[] {nu.SigmaOr, nu.SigmaOr}, ruleType.ns),
+            new Rule(nu.BinaryOperator, new[] {nu.SigmaMore, nu.SigmaEqual}, ruleType.ns),
+            new Rule(nu.BinaryOperator, new[] {nu.SigmaLess, nu.SigmaEqual}, ruleType.ns),
+            new Rule(nu.BinaryOperator, new[] {nu.SigmaEqual, nu.SigmaEqual}, ruleType.ns),
+            new Rule(nu.BinaryOperator, new[] {nu.SigmaNot, nu.SigmaEqual}, ruleType.ns),
+            new Rule(nu.BinaryOperator, new[] {nu.SigmaDot}, ruleType.ns),
+            new Rule(nu.UnaryOperator, new[] {nu.SigmaNot}, ruleType.ns),
+            new Rule(nu.UnaryOperator, new[] {nu.SigmaMinus, nu.SigmaMinus}, ruleType.ns),
+            new Rule(nu.UnaryOperator, new[] {nu.SigmaPlus, nu.SigmaPlus}, ruleType.ns),
+            new Rule(nu.Sentence, new[] {nu.SigmaBreak}, ruleType.ns),
+            new Rule(nu.Sentence, new[] {nu.SigmaContinue}, ruleType.ns),
+            new Rule(nu.BoolLiteral, new[] {nu.SigmaTrue}, ruleType.ns),
+            new Rule(nu.BoolLiteral, new[] {nu.SigmaFalse}, ruleType.ns),
 
-            new nnRule(nu.Sentence, new[] {nu.Expressions}),
-            new nnRule(nu.Sentence, new[] {nu.Definitions}),
-            new nnRule(nu.Sentence, new[] {nu.Cycle}),
-            new nnRule(nu.Sentence, new[] {nu.IfBranching}),
-
-            new nnRule(nu.CodeBlock, new[] {nu.Sentences}),
-
-            new nnRule(nu.Expression, new[] {nu.Operand, nu.BinaryOperator, nu.Operand}),
-            new nnRule(nu.Expression, new[] {nu.UnaryOperator, nu.Operand}),
-            new nnRule(nu.Expression, new[] {nu.Operand, nu.UnaryOperator}),
-            new nnRule(nu.Operand, new[] {nu.Identifier}),
-            new nnRule(nu.Operand, new[] {nu.Literal}),
-            new nnRule(nu.Operand, new[] {nu.Identifier, nu.FunctionCall}),
-            new nnRule(nu.Operand, new[] {nu.Literal, nu.FunctionCall}),
-
-            new nnRule(nu.ArgumentsList, new[] {nu.Argument}),
-            new nnRule(nu.Argument, new[] {nu.Expression}),
-            new nnRule(nu.Expressions, new[] {nu.Expression}),
-            new nnRule(nu.Expressions, new[] {nu.Expression, nu.Expressions}),
-
-            // new nnRule(nu.BinaryOperator, new[] {nu.BinaryOperatorStart, nu.OperatorSymbols}),
-            // new nnRule(nu.BinaryOperator, new[] {nu.DotOperatorStart, nu.DotOperatorSymbols}),
-            //
-            // new nnRule(nu.DotOperatorSymbols, new[] {nu.DotOperatorSymbol, nu.DotOperatorSymbols}),
-
-            new nnRule(nu.Definitions, new[] {nu.Definition}),
-            new nnRule(nu.Definitions, new[] {nu.Definition, nu.Definitions}),
-
-            new nnRule(nu.InitialisationListPattern, new[] {nu.PatternInitialisator}),
-            new nnRule(nu.InitialisationListPattern, new[] {nu.PatternInitialisator, nu.InitialisationListPattern}),
-
-            new nnRule(nu.PatternInitialisator, new[] {nu.Identifier, nu.Initialisator}),
-            new nnRule(nu.PatternInitialisator, new[] {nu.Identifier, nu.TypeAnnotation, nu.Initialisator}),
-
-            // new nnRule(nu.Cycle, new[] {nu.ForInCycle}),
-            // new nnRule(nu.Cycle, new[] {nu.WhileCycle}),
-
-            new nnRule(nu.Condition, new[] {nu.Expression}),
-            // new nnRule(nu.Condition, new[] {nu.TransformationOptional}),
-
-            // new nnRule(nu.Identifier, new[] {nu.IdentificatorsStart}),
-            // new nnRule(nu.Identifier, new[] {nu.IdentificatorsStart, nu.IdentificatorsSymbols}),
-            // new nnRule(nu.IdentificatorSymbol, new[] {nu.IdentificatorsStart}),
-            // new nnRule(nu.IdentificatorsSymbols, new[] {nu.IdentificatorsStart}),
-
-            new nnRule(nu.Literal, new[] {nu.NumberLiteral}),
-            new nnRule(nu.Literal, new[] {nu.StringLiteral}),
-            new nnRule(nu.Literal, new[] {nu.BoolLiteral}),
-        };
-
-        nsRules = new nsRule[]
-        {
-            new nsRule(nu.Program, new[] {sigma[nu.SigmaLambda]}),
-
-            new nsRule(nu.FunctionCall, new[] {sigma[nu.SigmaOpenRound] + sigma[nu.SigmaCloseRound]}),
-
-            new nsRule(nu.BinaryOperator, new[] {sigma[nu.SigmaSlash]}),
-            new nsRule(nu.BinaryOperator, new[] {sigma[nu.SigmaEqual]}),
-            new nsRule(nu.BinaryOperator, new[] {sigma[nu.SigmaMinus]}),
-            new nsRule(nu.BinaryOperator, new[] {sigma[nu.SigmaPlus]}),
-            new nsRule(nu.BinaryOperator, new[] {sigma[nu.SigmaStar]}),
-            new nsRule(nu.BinaryOperator, new[] {sigma[nu.SigmaPercent]}),
-            new nsRule(nu.BinaryOperator, new[] {sigma[nu.SigmaMore]}),
-            new nsRule(nu.BinaryOperator, new[] {sigma[nu.SigmaLess]}),
-            new nsRule(nu.BinaryOperator, new[] {sigma[nu.SigmaAnd] + sigma[nu.SigmaAnd]}),
-            new nsRule(nu.BinaryOperator, new[] {sigma[nu.SigmaOr] + sigma[nu.SigmaOr]}),
-            new nsRule(nu.BinaryOperator, new[] {sigma[nu.SigmaMore] + sigma[nu.SigmaEqual]}),
-            new nsRule(nu.BinaryOperator, new[] {sigma[nu.SigmaLess] + sigma[nu.SigmaEqual]}),
-            new nsRule(nu.BinaryOperator, new[] {sigma[nu.SigmaEqual] + sigma[nu.SigmaEqual]}),
-            new nsRule(nu.BinaryOperator, new[] {sigma[nu.SigmaNot] + sigma[nu.SigmaEqual]}),
-            new nsRule(nu.BinaryOperator, new[] {sigma[nu.SigmaDot]}),
-
-            new nsRule(nu.UnaryOperator, new[] {sigma[nu.SigmaNot]}),
-            new nsRule(nu.UnaryOperator, new[] {sigma[nu.SigmaMinus] + sigma[nu.SigmaMinus]}),
-            new nsRule(nu.UnaryOperator, new[] {sigma[nu.SigmaPlus] + sigma[nu.SigmaPlus]}),
-
-            // new nsRule(nu.BinaryOperator, new[] {sigma[nu.SigmaLambda]}),
-
-            // new nsRule(nu.OperatorSymbol, new[] {sigma[nu.SigmaSlash]}),
-            // new nsRule(nu.OperatorSymbol, new[] {sigma[nu.SigmaEqual]}),
-            // new nsRule(nu.OperatorSymbol, new[] {sigma[nu.SigmaMinus]}),
-            // new nsRule(nu.OperatorSymbol, new[] {sigma[nu.SigmaPlus]}),
-            // new nsRule(nu.OperatorSymbol, new[] {sigma[nu.SigmaNot]}),
-            // new nsRule(nu.OperatorSymbol, new[] {sigma[nu.SigmaStar]}),
-            // new nsRule(nu.OperatorSymbol, new[] {sigma[nu.SigmaPercent]}),
-            // new nsRule(nu.OperatorSymbol, new[] {sigma[nu.SigmaMore]}),
-            // new nsRule(nu.OperatorSymbol, new[] {sigma[nu.SigmaLess]}),
-            // new nsRule(nu.OperatorSymbol, new[] {sigma[nu.SigmaAnd] + sigma[nu.SigmaAnd]}),
-            // new nsRule(nu.OperatorSymbol, new[] {sigma[nu.SigmaOr] + sigma[nu.SigmaOr]}),
-            // new nsRule(nu.OperatorSymbol, new[] {sigma[nu.SigmaMore] + sigma[nu.SigmaEqual]}),
-            // new nsRule(nu.OperatorSymbol, new[] {sigma[nu.SigmaLess] + sigma[nu.SigmaEqual]}),
-            // new nsRule(nu.OperatorSymbol, new[] {sigma[nu.SigmaEqual] + sigma[nu.SigmaEqual]}),
-            // new nsRule(nu.OperatorSymbol, new[] {sigma[nu.SigmaNot] + sigma[nu.SigmaEqual]}),
-            // new nsRule(nu.OperatorSymbol, new[] {sigma[nu.SigmaDot]}),
-
-            // new nsRule(nu.BinaryOperatorStart, new[] {sigma[nu.SigmaSlash]}),
-            // new nsRule(nu.BinaryOperatorStart, new[] {sigma[nu.SigmaEqual]}),
-            // new nsRule(nu.BinaryOperatorStart, new[] {sigma[nu.SigmaMinus]}),
-            // new nsRule(nu.BinaryOperatorStart, new[] {sigma[nu.SigmaPlus]}),
-            // new nsRule(nu.BinaryOperatorStart, new[] {sigma[nu.SigmaNot]}),
-            // new nsRule(nu.BinaryOperatorStart, new[] {sigma[nu.SigmaStar]}),
-            // new nsRule(nu.BinaryOperatorStart, new[] {sigma[nu.SigmaPercent]}),
-            // new nsRule(nu.BinaryOperatorStart, new[] {sigma[nu.SigmaMore]}),
-            // new nsRule(nu.BinaryOperatorStart, new[] {sigma[nu.SigmaLess]}),
-            // new nsRule(nu.BinaryOperatorStart, new[] {sigma[nu.SigmaAnd]}),
-            // new nsRule(nu.BinaryOperatorStart, new[] {sigma[nu.SigmaOr]}),
-            //
-            // new nsRule(nu.DotOperatorStart, new[] {sigma[nu.SigmaDot]}),
-            // new nsRule(nu.DotOperatorSymbol, new[] {sigma[nu.SigmaDot]}),
-            // new nsRule(nu.DotOperatorSymbols, new[] {sigma[nu.SigmaLambda]}),
-
-            new nsRule(nu.Sentence, new[] {sigma[nu.SigmaBreak]}),
-            new nsRule(nu.Sentence, new[] {sigma[nu.SigmaContinue]}),
-
-            new nsRule(nu.BoolLiteral, new[] {sigma[nu.SigmaTrue]}),
-            new nsRule(nu.BoolLiteral, new[] {sigma[nu.SigmaFalse]}),
-        };
-
-        mixRules = new mixRule[]
-        {
-            new mixRule(nu.FunctionCall, new[] {nu.SigmaOpenRound, nu.ArgumentsList, nu.SigmaCloseRound}),
-            new mixRule(nu.ArgumentsList, new[] {nu.Argument, nu.SigmaComma, nu.ArgumentsList}),
-            new mixRule(nu.Argument, new[] {nu.Identifier, nu.SigmaDoubleDot, nu.Expression}),
-
-            new mixRule(nu.Definition, new[] {nu.SigmaLet, nu.InitialisationListPattern}),
-            new mixRule(nu.Definition, new[] {nu.SigmaVar, nu.InitialisationListPattern}),
-
-            new mixRule(nu.TypeAnnotation, new[] {nu.SigmaDoubleDot, nu.Identifier}),
-            new mixRule(nu.TypeAnnotation, new[] {nu.SigmaDoubleDot, nu.Identifier, nu.SigmaQuest}),
-
-            new mixRule(nu.Initialisator, new[] {nu.SigmaEqual, nu.Expression}),
-            new mixRule(nu.Initialisator, new[] {nu.SigmaEqual, nu.Operand}),
-
-            new mixRule(nu.Cycle, new[] {nu.SigmaFor, nu.Pattern, nu.SigmaIn, nu.Expression, nu.CodeBlock}),
-            new mixRule(nu.Cycle, new[] {nu.SigmaWhile, nu.Condition, nu.CodeBlock}),
-
-            new mixRule(nu.Condition, new[] {nu.SigmaLet, nu.Pattern, nu.Initialisator}),
-            new mixRule(nu.Condition, new[] {nu.SigmaVar, nu.Pattern, nu.Initialisator}),
-
-            new mixRule(nu.IfBranching, new[] {nu.SigmaIf, nu.Condition, nu.CodeBlock, nu.ElseBlock}),
-            new mixRule(nu.IfBranching, new[] {nu.SigmaIf, nu.Condition, nu.CodeBlock}),
-            new mixRule(nu.ElseBlock, new[] {nu.SigmaElse, nu.CodeBlock}),
-            new mixRule(nu.ElseBlock, new[] {nu.SigmaElse, nu.IfBranching}),
+            new Rule(nu.FunctionCall, new[] {nu.SigmaOpenRound, nu.ArgumentsList, nu.SigmaCloseRound}, ruleType.mix),
+            new Rule(nu.ArgumentsList, new[] {nu.Argument, nu.SigmaComma, nu.ArgumentsList}, ruleType.mix),
+            new Rule(nu.Argument, new[] {nu.Identifier, nu.SigmaDoubleDot, nu.Expression}, ruleType.mix),
+            new Rule(nu.Definition, new[] {nu.SigmaLet, nu.InitialisationListPattern}, ruleType.mix),
+            new Rule(nu.Definition, new[] {nu.SigmaVar, nu.InitialisationListPattern}, ruleType.mix),
+            new Rule(nu.TypeAnnotation, new[] {nu.SigmaDoubleDot, nu.Identifier}, ruleType.mix),
+            new Rule(nu.TypeAnnotation, new[] {nu.SigmaDoubleDot, nu.Identifier, nu.SigmaQuest}, ruleType.mix),
+            new Rule(nu.Initialisator, new[] {nu.SigmaEqual, nu.Expression}, ruleType.mix),
+            new Rule(nu.Initialisator, new[] {nu.SigmaEqual, nu.Operand}, ruleType.mix),
+            new Rule(nu.Cycle, new[] {nu.SigmaFor, nu.Pattern, nu.SigmaIn, nu.Expression, nu.CodeBlock}, ruleType.mix),
+            new Rule(nu.Cycle, new[] {nu.SigmaWhile, nu.Condition, nu.CodeBlock}, ruleType.mix),
+            new Rule(nu.Condition, new[] {nu.SigmaLet, nu.Pattern, nu.Initialisator}, ruleType.mix),
+            new Rule(nu.Condition, new[] {nu.SigmaVar, nu.Pattern, nu.Initialisator}, ruleType.mix),
+            new Rule(nu.IfBranching, new[] {nu.SigmaIf, nu.Condition, nu.CodeBlock, nu.ElseBlock}, ruleType.mix),
+            new Rule(nu.IfBranching, new[] {nu.SigmaIf, nu.Condition, nu.CodeBlock}, ruleType.mix),
+            new Rule(nu.ElseBlock, new[] {nu.SigmaElse, nu.CodeBlock}, ruleType.mix),
+            new Rule(nu.ElseBlock, new[] {nu.SigmaElse, nu.IfBranching}, ruleType.mix),
         };
     }
 
