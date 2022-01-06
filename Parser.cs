@@ -27,7 +27,7 @@ enum Precedence : byte
 
 public class Parser
 {
-    private readonly Grammar Grammar;
+    private Grammar Grammar;
 
     Parser()
     {

@@ -2,7 +2,7 @@ namespace parser;
 
 public class Grammar
 {
-    private enum nu
+    public enum nu
     {
         Program, // программа
         Sentence, //предложение
@@ -118,45 +118,77 @@ public class Grammar
         "nil"
     };
 
-    struct nnRule
+    public struct nnRule
     {
-        public nu leftPart;
-        public nu[] rightPart;
+        nu leftPart;
+        nu[] rightPart;
 
         public nnRule(nu left, nu[] right)
         {
             this.leftPart = left;
             this.rightPart = right;
         }
+
+        public nu getLeftPart()
+        {
+            return leftPart;
+        }
+
+        public nu[] getRightPart()
+        {
+            return rightPart;
+        }
     }
 
-    struct nsRule
+    public struct nsRule
     {
-        public nu leftPart;
-        public string[] rightPart;
+        nu leftPart;
+        string[] rightPart;
 
         public nsRule(nu left, string[] right)
         {
             this.leftPart = left;
             this.rightPart = right;
         }
+
+        public nu getLeftPart()
+        {
+            return leftPart;
+        }
+
+        public string[] getRightPart()
+        {
+            return rightPart;
+        }
     }
 
-    struct mixRule
+    public struct mixRule
     {
-        public nu leftPart;
-        public nu[] rightPart;
+        nu leftPart;
+        nu[] rightPart;
 
         public mixRule(nu left, nu[] right)
         {
             this.leftPart = left;
             this.rightPart = right;
         }
+
+        public nu getLeftPart()
+        {
+            return leftPart;
+        }
+
+        public nu[] getRightPart()
+        {
+            return rightPart;
+        }
     }
 
     private nu axiom = nu.Program;
-
     private Dictionary<nu, string> sigma;
+    private nnRule[] nnRules;
+    private nsRule[] nsRules;
+    private mixRule[] mixRules;
 
     public Grammar()
     {
@@ -197,7 +229,7 @@ public class Grammar
             {nu.SigmaContinue, "continue"}
         };
 
-        nnRule[] nnRules =
+        nnRules = new nnRule[]
         {
             new nnRule(nu.Program, new[] {nu.Sentences}),
 
@@ -249,7 +281,8 @@ public class Grammar
             // new nnRule(nu.IdentificatorSymbol, new[] {nu.IdentificatorsStart}),
             // new nnRule(nu.IdentificatorsSymbols, new[] {nu.IdentificatorsStart}),
         };
-        nsRule[] nsRules =
+
+        nsRules = new nsRule[]
         {
             new nsRule(nu.Program, new[] {sigma[nu.SigmaLambda]}),
 
@@ -316,7 +349,8 @@ public class Grammar
             new nsRule(nu.BoolLiteral, new[] {sigma[nu.SigmaTrue]}),
             new nsRule(nu.BoolLiteral, new[] {sigma[nu.SigmaFalse]}),
         };
-        mixRule[] mixRules =
+
+        mixRules = new mixRule[]
         {
             new mixRule(nu.FunctionCall, new[] {nu.SigmaOpenRound, nu.ArgumentsList, nu.SigmaCloseRound}),
             new mixRule(nu.ArgumentsList, new[] {nu.Argument, nu.SigmaComma, nu.ArgumentsList}),
@@ -350,6 +384,21 @@ public class Grammar
     }
 
     public SortedSet<string> GetReservedNames()
+    {
+        return _reservedNames;
+    }
+
+    public nnRule[] GetNnRules()
+    {
+        return nnRules;
+    }
+
+    public SortedSet<string> GetNsRules()
+    {
+        return _reservedNames;
+    }
+
+    public SortedSet<string> GetMixRules()
     {
         return _reservedNames;
     }
