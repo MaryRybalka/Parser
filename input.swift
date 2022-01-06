@@ -16,3 +16,6 @@ do {
     m = m * 2
 } while m < 100
 m
+
+let n = true
+n

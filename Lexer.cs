@@ -12,10 +12,10 @@ namespace parser
         {
             "START",
             "IDENT",
-            "NUMBER",
+            "NUMBER", //string literal
             "REALNUMBER_ONE",
             "REALNUMBER_DOT",
-            "STRING",
+            "STRING", //string literal
             "STRING_END",
             "STRING_SLASH",
             "SLASH",
@@ -57,80 +57,577 @@ namespace parser
             "LESS",
             "LESSOREQUAL"
         };
-        
+
         private static readonly State[][] Table =
         {
-            new [] {
-                new State(Status.START,1),
-                new State(Status.START,1),
-                new State(Status.IDENT,0),
-                new State(Status.NUMBER,0),
-                new State(Status.STRING,0),
-                new State(Status.ERROR,0),
-                new State(Status.REALNUMBER_DOT,0),
-                new State(Status.SLASH,0),
-                new State(Status.STAR,0),
-                new State(Status.PLUS,0),
-                new State(Status.MINUS,0),
-                new State(Status.PERCENT,0),
-                new State(Status.NOT,0),
-                new State(Status.EQUAL,0),
-                new State(Status.OPEN_ROUND_BRACKET,0),
-                new State(Status.CLOSE_ROUND_BRACKET,0),
-                new State(Status.OPEN_CURLY_BRACKET,0),
-                new State(Status.CLOSE_CURLY_BRACKET,0),
-                new State(Status.COMMA,0),
-                new State(Status.SEMICOLON,0),
-                new State(Status.AND,0),
-                new State(Status.OR,0),
-                new State(Status.MORE,0),
-                new State(Status.LESS,0),
-                new State(Status.ERROR,0)},
-            new [] {new State(Status.START,1),new State(Status.START,1),new State(Status.IDENT,0),new State(Status.IDENT,0),new State(Status.STRING,1),new State(Status.ERROR,0),new State(Status.REALNUMBER_DOT,1),new State(Status.START,1),new State(Status.STAR,1),new State(Status.PLUS,1),new State(Status.MINUS,1),new State(Status.PERCENT,1),new State(Status.NOT,1),new State(Status.EQUAL,1),new State(Status.OPEN_ROUND_BRACKET,1),new State(Status.CLOSE_ROUND_BRACKET,1),new State(Status.OPEN_CURLY_BRACKET,1),new State(Status.CLOSE_CURLY_BRACKET,1),new State(Status.COMMA,1),new State(Status.SEMICOLON,1),new State(Status.AND,1),new State(Status.OR,1),new State(Status.MORE,1),new State(Status.LESS,1),new State(Status.ERROR,0)},
-            new [] {new State(Status.START,1),new State(Status.START,1),new State(Status.IDENT,1),new State(Status.NUMBER,0),new State(Status.STRING,1),new State(Status.ERROR,0),new State(Status.REALNUMBER_ONE,0),new State(Status.SLASH,1),new State(Status.STAR,1),new State(Status.PLUS,1),new State(Status.MINUS,1),new State(Status.PERCENT,1),new State(Status.NOT,1),new State(Status.EQUAL,1),new State(Status.OPEN_ROUND_BRACKET,1),new State(Status.CLOSE_ROUND_BRACKET,1),new State(Status.OPEN_CURLY_BRACKET,1),new State(Status.CLOSE_CURLY_BRACKET,1),new State(Status.COMMA,1),new State(Status.SEMICOLON,1),new State(Status.AND,1),new State(Status.OR,1),new State(Status.MORE,1),new State(Status.LESS,1),new State(Status.ERROR,0)},
-            new [] {new State(Status.START,1),new State(Status.START,1),new State(Status.IDENT,1),new State(Status.REALNUMBER_ONE,0),new State(Status.STRING,1),new State(Status.ERROR,0),new State(Status.REALNUMBER_DOT,0),new State(Status.SLASH,1),new State(Status.STAR,1),new State(Status.PLUS,1),new State(Status.MINUS,1),new State(Status.PERCENT,1),new State(Status.NOT,1),new State(Status.EQUAL,1),new State(Status.OPEN_ROUND_BRACKET,1),new State(Status.CLOSE_ROUND_BRACKET,1),new State(Status.OPEN_CURLY_BRACKET,1),new State(Status.CLOSE_CURLY_BRACKET,1),new State(Status.COMMA,1),new State(Status.SEMICOLON,1),new State(Status.AND,1),new State(Status.OR,1),new State(Status.MORE,1),new State(Status.LESS,1),new State(Status.ERROR,0)},
-            new [] {new State(Status.ERROR,0),new State(Status.ERROR,0),new State(Status.ERROR,0),new State(Status.REALNUMBER_ONE,0),new State(Status.ERROR,0),new State(Status.ERROR,0),new State(Status.ERROR,0),new State(Status.ERROR,0),new State(Status.ERROR,0),new State(Status.ERROR,0),new State(Status.ERROR,0),new State(Status.ERROR,0),new State(Status.ERROR,0),new State(Status.ERROR,0),new State(Status.ERROR,0),new State(Status.ERROR,0),new State(Status.ERROR,0),new State(Status.ERROR,0),new State(Status.ERROR,0),new State(Status.ERROR,0),new State(Status.ERROR,0),new State(Status.ERROR,0),new State(Status.ERROR,0),new State(Status.ERROR,0),new State(Status.ERROR,0)},
-            new [] {new State(Status.ERROR,0),new State(Status.STRING,0),new State(Status.STRING,0),new State(Status.STRING,0),new State(Status.STRING_END,0),new State(Status.STRING_SLASH,0),new State(Status.STRING,0),new State(Status.STRING,0),new State(Status.STRING,0),new State(Status.STRING,0),new State(Status.STRING,0),new State(Status.STRING,0),new State(Status.STRING,0),new State(Status.STRING,0),new State(Status.STRING,0),new State(Status.STRING,0),new State(Status.STRING,0),new State(Status.STRING,0),new State(Status.STRING,0),new State(Status.STRING,0),new State(Status.STRING,0),new State(Status.STRING,0),new State(Status.STRING,0),new State(Status.STRING,0),new State(Status.STRING,0)},
-            new [] {new State(Status.START,1),new State(Status.START,1),new State(Status.IDENT,1),new State(Status.NUMBER,1),new State(Status.STRING,1),new State(Status.ERROR,0),new State(Status.REALNUMBER_DOT,1),new State(Status.SLASH,1),new State(Status.STAR,1),new State(Status.PLUS,1),new State(Status.MINUS,1),new State(Status.PERCENT,1),new State(Status.NOT,1),new State(Status.EQUAL,1),new State(Status.OPEN_ROUND_BRACKET,1),new State(Status.CLOSE_ROUND_BRACKET,1),new State(Status.OPEN_CURLY_BRACKET,1),new State(Status.CLOSE_CURLY_BRACKET,1),new State(Status.COMMA,1),new State(Status.SEMICOLON,1),new State(Status.AND,1),new State(Status.OR,1),new State(Status.MORE,1),new State(Status.LESS,1),new State(Status.ERROR,0)},
-            new [] {new State(Status.STRING,0),new State(Status.STRING,0),new State(Status.STRING,0),new State(Status.STRING,0),new State(Status.STRING,0),new State(Status.STRING_SLASH,0),new State(Status.STRING,0),new State(Status.STRING,0),new State(Status.STRING,0),new State(Status.STRING,0),new State(Status.STRING,0),new State(Status.STRING,0),new State(Status.STRING,0),new State(Status.STRING,0),new State(Status.STRING,0),new State(Status.STRING,0),new State(Status.STRING,0),new State(Status.STRING,0),new State(Status.STRING,0),new State(Status.STRING,0),new State(Status.STRING,0),new State(Status.STRING,0),new State(Status.STRING,0),new State(Status.STRING,0),new State(Status.STRING,0)},
-            new [] {new State(Status.START,1),new State(Status.START,1),new State(Status.IDENT,1),new State(Status.NUMBER,1),new State(Status.STRING,1),new State(Status.ERROR,0),new State(Status.REALNUMBER_DOT,1),new State(Status.ONE_LC,0),new State(Status.MULTI_LC,0),new State(Status.PLUS,1),new State(Status.MINUS,1),new State(Status.PERCENT,1),new State(Status.NOT,1),new State(Status.SLASHEQUAL,0),new State(Status.OPEN_ROUND_BRACKET,1),new State(Status.CLOSE_ROUND_BRACKET,1),new State(Status.OPEN_CURLY_BRACKET,1),new State(Status.CLOSE_CURLY_BRACKET,1),new State(Status.COMMA,1),new State(Status.SEMICOLON,1),new State(Status.AND,1),new State(Status.OR,1),new State(Status.MORE,1),new State(Status.LESS,1),new State(Status.ERROR,0)},
-            new [] {new State(Status.START,1),new State(Status.ONE_LC,0),new State(Status.ONE_LC,0),new State(Status.ONE_LC,0),new State(Status.ONE_LC,0),new State(Status.ONE_LC,0),new State(Status.ONE_LC,0),new State(Status.ONE_LC,0),new State(Status.ONE_LC,0),new State(Status.ONE_LC,0),new State(Status.ONE_LC,0),new State(Status.ONE_LC,0),new State(Status.ONE_LC,0),new State(Status.ONE_LC,0),new State(Status.ONE_LC,0),new State(Status.ONE_LC,0),new State(Status.ONE_LC,0),new State(Status.ONE_LC,0),new State(Status.ONE_LC,0),new State(Status.ONE_LC,0),new State(Status.ONE_LC,0),new State(Status.ONE_LC,0),new State(Status.ONE_LC,0),new State(Status.ONE_LC,0),new State(Status.ONE_LC,0)},
-            new [] {new State(Status.MULTI_LC,0),new State(Status.MULTI_LC,0),new State(Status.MULTI_LC,0),new State(Status.MULTI_LC,0),new State(Status.MULTI_LC,0),new State(Status.MULTI_LC,0),new State(Status.MULTI_LC,0),new State(Status.MULTI_LC,0),new State(Status.MULTI_LC_PRE_END,0),new State(Status.MULTI_LC,0),new State(Status.MULTI_LC,0),new State(Status.MULTI_LC,0),new State(Status.MULTI_LC,0),new State(Status.MULTI_LC,0),new State(Status.MULTI_LC,0),new State(Status.MULTI_LC,0),new State(Status.MULTI_LC,0),new State(Status.MULTI_LC,0),new State(Status.MULTI_LC,0),new State(Status.MULTI_LC,0),new State(Status.MULTI_LC,0),new State(Status.MULTI_LC,0),new State(Status.MULTI_LC,0),new State(Status.MULTI_LC,0),new State(Status.MULTI_LC,0)},
-            new [] {new State(Status.MULTI_LC,0),new State(Status.MULTI_LC,0),new State(Status.MULTI_LC,0),new State(Status.MULTI_LC,0),new State(Status.MULTI_LC,0),new State(Status.MULTI_LC,0),new State(Status.MULTI_LC,0),new State(Status.MULTI_LC_END,0),new State(Status.MULTI_LC,0),new State(Status.MULTI_LC,0),new State(Status.MULTI_LC,0),new State(Status.MULTI_LC,0),new State(Status.MULTI_LC,0),new State(Status.MULTI_LC,0),new State(Status.MULTI_LC,0),new State(Status.MULTI_LC,0),new State(Status.MULTI_LC,0),new State(Status.MULTI_LC,0),new State(Status.MULTI_LC,0),new State(Status.MULTI_LC,0),new State(Status.MULTI_LC,0),new State(Status.MULTI_LC,0),new State(Status.MULTI_LC,0),new State(Status.MULTI_LC,0),new State(Status.MULTI_LC,0)},
-            new [] {new State(Status.START,1),new State(Status.START,1),new State(Status.IDENT,1),new State(Status.NUMBER,1),new State(Status.STRING,1),new State(Status.ERROR,0),new State(Status.REALNUMBER_DOT,1),new State(Status.SLASH,1),new State(Status.STAR,1),new State(Status.PLUS,1),new State(Status.MINUS,1),new State(Status.PERCENT,1),new State(Status.NOT,1),new State(Status.EQUAL,1),new State(Status.OPEN_ROUND_BRACKET,1),new State(Status.CLOSE_ROUND_BRACKET,1),new State(Status.OPEN_CURLY_BRACKET,1),new State(Status.CLOSE_CURLY_BRACKET,1),new State(Status.COMMA,1),new State(Status.SEMICOLON,1),new State(Status.AND,1),new State(Status.OR,1),new State(Status.MORE,1),new State(Status.LESS,1),new State(Status.ERROR,0)},
-            new [] {new State(Status.START,1),new State(Status.START,1),new State(Status.IDENT,1),new State(Status.NUMBER,1),new State(Status.STRING,1),new State(Status.ERROR,0),new State(Status.REALNUMBER_DOT,1),new State(Status.SLASH,1),new State(Status.STAR,1),new State(Status.PLUS,1),new State(Status.MINUS,1),new State(Status.PERCENT,1),new State(Status.NOT,1),new State(Status.STAREQUAL,0),new State(Status.OPEN_ROUND_BRACKET,1),new State(Status.CLOSE_ROUND_BRACKET,1),new State(Status.OPEN_CURLY_BRACKET,1),new State(Status.CLOSE_CURLY_BRACKET,1),new State(Status.COMMA,1),new State(Status.SEMICOLON,1),new State(Status.AND,1),new State(Status.OR,1),new State(Status.MORE,1),new State(Status.LESS,1),new State(Status.ERROR,0)},
-            new [] {new State(Status.START,1),new State(Status.START,1),new State(Status.IDENT,1),new State(Status.NUMBER,1),new State(Status.STRING,1),new State(Status.ERROR,0),new State(Status.REALNUMBER_DOT,1),new State(Status.SLASH,1),new State(Status.STAR,1),new State(Status.PLUSPLUS,0),new State(Status.MINUS,1),new State(Status.PERCENT,1),new State(Status.NOT,1),new State(Status.PLUSEQUAL,0),new State(Status.OPEN_ROUND_BRACKET,1),new State(Status.CLOSE_ROUND_BRACKET,1),new State(Status.OPEN_CURLY_BRACKET,1),new State(Status.CLOSE_CURLY_BRACKET,1),new State(Status.COMMA,1),new State(Status.SEMICOLON,1),new State(Status.AND,1),new State(Status.OR,1),new State(Status.MORE,1),new State(Status.LESS,1),new State(Status.ERROR,0)},
-            new [] {new State(Status.START,1),new State(Status.START,1),new State(Status.IDENT,1),new State(Status.NUMBER,1),new State(Status.STRING,1),new State(Status.ERROR,0),new State(Status.REALNUMBER_DOT,1),new State(Status.SLASH,1),new State(Status.STAR,1),new State(Status.PLUS,1),new State(Status.MINUS,1),new State(Status.PERCENT,1),new State(Status.NOT,1),new State(Status.EQUAL,1),new State(Status.OPEN_ROUND_BRACKET,1),new State(Status.CLOSE_ROUND_BRACKET,1),new State(Status.OPEN_CURLY_BRACKET,1),new State(Status.CLOSE_CURLY_BRACKET,1),new State(Status.COMMA,1),new State(Status.SEMICOLON,1),new State(Status.AND,1),new State(Status.OR,1),new State(Status.MORE,1),new State(Status.LESS,1),new State(Status.ERROR,0)},
-            new [] {new State(Status.START,1),new State(Status.START,1),new State(Status.IDENT,1),new State(Status.NUMBER,1),new State(Status.STRING,1),new State(Status.ERROR,0),new State(Status.REALNUMBER_DOT,1),new State(Status.SLASH,1),new State(Status.STAR,1),new State(Status.PLUS,1),new State(Status.MINUSMINUS,0),new State(Status.PERCENT,1),new State(Status.NOT,1),new State(Status.MINUSEQUAL,0),new State(Status.OPEN_ROUND_BRACKET,1),new State(Status.CLOSE_ROUND_BRACKET,1),new State(Status.OPEN_CURLY_BRACKET,1),new State(Status.CLOSE_CURLY_BRACKET,1),new State(Status.COMMA,1),new State(Status.SEMICOLON,1),new State(Status.AND,1),new State(Status.OR,1),new State(Status.MORE,1),new State(Status.LESS,1),new State(Status.ERROR,0)},
-            new [] {new State(Status.START,1),new State(Status.START,1),new State(Status.IDENT,1),new State(Status.NUMBER,1),new State(Status.STRING,1),new State(Status.ERROR,0),new State(Status.REALNUMBER_DOT,1),new State(Status.SLASH,1),new State(Status.STAR,1),new State(Status.PLUS,1),new State(Status.MINUS,1),new State(Status.PERCENT,1),new State(Status.NOT,1),new State(Status.EQUAL,1),new State(Status.OPEN_ROUND_BRACKET,1),new State(Status.CLOSE_ROUND_BRACKET,1),new State(Status.OPEN_CURLY_BRACKET,1),new State(Status.CLOSE_CURLY_BRACKET,1),new State(Status.COMMA,1),new State(Status.SEMICOLON,1),new State(Status.AND,1),new State(Status.OR,1),new State(Status.MORE,1),new State(Status.LESS,1),new State(Status.ERROR,0)},
-            new [] {new State(Status.START,1),new State(Status.START,1),new State(Status.IDENT,1),new State(Status.NUMBER,1),new State(Status.STRING,1),new State(Status.ERROR,0),new State(Status.REALNUMBER_DOT,1),new State(Status.SLASH,1),new State(Status.STAR,1),new State(Status.PLUS,1),new State(Status.MINUS,1),new State(Status.PERCENT,1),new State(Status.NOT,1),new State(Status.PERCENTEQUAL,0),new State(Status.OPEN_ROUND_BRACKET,1),new State(Status.CLOSE_ROUND_BRACKET,1),new State(Status.OPEN_CURLY_BRACKET,1),new State(Status.CLOSE_CURLY_BRACKET,1),new State(Status.COMMA,1),new State(Status.SEMICOLON,1),new State(Status.AND,1),new State(Status.OR,1),new State(Status.MORE,1),new State(Status.LESS,1),new State(Status.ERROR,0)},
-            new [] {new State(Status.START,1),new State(Status.START,1),new State(Status.IDENT,1),new State(Status.NUMBER,1),new State(Status.STRING,1),new State(Status.ERROR,0),new State(Status.REALNUMBER_DOT,1),new State(Status.SLASH,1),new State(Status.STAR,1),new State(Status.PLUS,1),new State(Status.MINUS,1),new State(Status.PERCENT,1),new State(Status.NOT,1),new State(Status.NOTEQUAL,0),new State(Status.OPEN_ROUND_BRACKET,1),new State(Status.CLOSE_ROUND_BRACKET,1),new State(Status.OPEN_CURLY_BRACKET,1),new State(Status.CLOSE_CURLY_BRACKET,1),new State(Status.COMMA,1),new State(Status.SEMICOLON,1),new State(Status.AND,1),new State(Status.OR,1),new State(Status.MORE,1),new State(Status.LESS,1),new State(Status.ERROR,0)},
-            new [] {new State(Status.START,1),new State(Status.START,1),new State(Status.IDENT,1),new State(Status.NUMBER,1),new State(Status.STRING,1),new State(Status.ERROR,0),new State(Status.REALNUMBER_DOT,1),new State(Status.SLASH,1),new State(Status.STAR,1),new State(Status.PLUS,1),new State(Status.MINUS,1),new State(Status.PERCENT,1),new State(Status.NOT,1),new State(Status.TWO_EQUAL,0),new State(Status.OPEN_ROUND_BRACKET,1),new State(Status.CLOSE_ROUND_BRACKET,1),new State(Status.OPEN_CURLY_BRACKET,1),new State(Status.CLOSE_CURLY_BRACKET,1),new State(Status.COMMA,1),new State(Status.SEMICOLON,1),new State(Status.AND,1),new State(Status.OR,1),new State(Status.MORE,1),new State(Status.LESS,1),new State(Status.ERROR,0)},
-            new [] {new State(Status.START,1),new State(Status.START,1),new State(Status.IDENT,1),new State(Status.NUMBER,1),new State(Status.STRING,1),new State(Status.ERROR,0),new State(Status.REALNUMBER_DOT,1),new State(Status.SLASH,1),new State(Status.STAR,1),new State(Status.PLUS,1),new State(Status.MINUS,1),new State(Status.PERCENT,1),new State(Status.NOT,1),new State(Status.THREE_EQUAL,0),new State(Status.OPEN_ROUND_BRACKET,1),new State(Status.CLOSE_ROUND_BRACKET,1),new State(Status.OPEN_CURLY_BRACKET,1),new State(Status.CLOSE_CURLY_BRACKET,1),new State(Status.COMMA,1),new State(Status.SEMICOLON,1),new State(Status.AND,1),new State(Status.OR,1),new State(Status.MORE,1),new State(Status.LESS,1),new State(Status.ERROR,0)},
-            new [] {new State(Status.START,1),new State(Status.START,1),new State(Status.IDENT,1),new State(Status.NUMBER,1),new State(Status.STRING,1),new State(Status.ERROR,0),new State(Status.REALNUMBER_DOT,1),new State(Status.SLASH,1),new State(Status.STAR,1),new State(Status.PLUS,1),new State(Status.MINUS,1),new State(Status.PERCENT,1),new State(Status.NOT,1),new State(Status.EQUAL,1),new State(Status.OPEN_ROUND_BRACKET,1),new State(Status.CLOSE_ROUND_BRACKET,1),new State(Status.OPEN_CURLY_BRACKET,1),new State(Status.CLOSE_CURLY_BRACKET,1),new State(Status.COMMA,1),new State(Status.SEMICOLON,1),new State(Status.AND,1),new State(Status.OR,1),new State(Status.MORE,1),new State(Status.LESS,1),new State(Status.ERROR,0)},
-            new [] {new State(Status.START,1),new State(Status.START,1),new State(Status.IDENT,1),new State(Status.NUMBER,1),new State(Status.STRING,1),new State(Status.ERROR,0),new State(Status.REALNUMBER_DOT,1),new State(Status.SLASH,1),new State(Status.STAR,1),new State(Status.PLUS,1),new State(Status.MINUS,1),new State(Status.PERCENT,1),new State(Status.NOT,1),new State(Status.EQUAL,1),new State(Status.OPEN_ROUND_BRACKET,1),new State(Status.CLOSE_ROUND_BRACKET,1),new State(Status.OPEN_CURLY_BRACKET,1),new State(Status.CLOSE_CURLY_BRACKET,1),new State(Status.COMMA,1),new State(Status.SEMICOLON,1),new State(Status.AND,1),new State(Status.OR,1),new State(Status.MORE,1),new State(Status.LESS,1),new State(Status.ERROR,0)},
-            new [] {new State(Status.START,1),new State(Status.START,1),new State(Status.IDENT,1),new State(Status.NUMBER,1),new State(Status.STRING,1),new State(Status.ERROR,0),new State(Status.REALNUMBER_DOT,1),new State(Status.SLASH,1),new State(Status.STAR,1),new State(Status.PLUS,1),new State(Status.MINUS,1),new State(Status.PERCENT,1),new State(Status.NOT,1),new State(Status.EQUAL,1),new State(Status.OPEN_ROUND_BRACKET,1),new State(Status.CLOSE_ROUND_BRACKET,1),new State(Status.OPEN_CURLY_BRACKET,1),new State(Status.CLOSE_CURLY_BRACKET,1),new State(Status.COMMA,1),new State(Status.SEMICOLON,1),new State(Status.AND,1),new State(Status.OR,1),new State(Status.MORE,1),new State(Status.LESS,1),new State(Status.ERROR,0)},
-            new [] {new State(Status.START,1),new State(Status.START,1),new State(Status.IDENT,1),new State(Status.NUMBER,1),new State(Status.STRING,1),new State(Status.ERROR,0),new State(Status.REALNUMBER_DOT,1),new State(Status.SLASH,1),new State(Status.STAR,1),new State(Status.PLUS,1),new State(Status.MINUS,1),new State(Status.PERCENT,1),new State(Status.NOT,1),new State(Status.EQUAL,1),new State(Status.OPEN_ROUND_BRACKET,1),new State(Status.CLOSE_ROUND_BRACKET,1),new State(Status.OPEN_CURLY_BRACKET,1),new State(Status.CLOSE_CURLY_BRACKET,1),new State(Status.COMMA,1),new State(Status.SEMICOLON,1),new State(Status.AND,1),new State(Status.OR,1),new State(Status.MORE,1),new State(Status.LESS,1),new State(Status.ERROR,0)},
-            new [] {new State(Status.START,1),new State(Status.START,1),new State(Status.IDENT,1),new State(Status.NUMBER,1),new State(Status.STRING,1),new State(Status.ERROR,0),new State(Status.REALNUMBER_DOT,1),new State(Status.SLASH,1),new State(Status.STAR,1),new State(Status.PLUS,1),new State(Status.MINUS,1),new State(Status.PERCENT,1),new State(Status.NOT,1),new State(Status.EQUAL,1),new State(Status.OPEN_ROUND_BRACKET,1),new State(Status.CLOSE_ROUND_BRACKET,1),new State(Status.OPEN_CURLY_BRACKET,1),new State(Status.CLOSE_CURLY_BRACKET,1),new State(Status.COMMA,1),new State(Status.SEMICOLON,1),new State(Status.AND,1),new State(Status.OR,1),new State(Status.MORE,1),new State(Status.LESS,1),new State(Status.ERROR,0)},
-            new [] {new State(Status.START,1),new State(Status.START,1),new State(Status.IDENT,1),new State(Status.NUMBER,1),new State(Status.STRING,1),new State(Status.ERROR,0),new State(Status.REALNUMBER_DOT,1),new State(Status.SLASH,1),new State(Status.STAR,1),new State(Status.PLUS,1),new State(Status.MINUS,1),new State(Status.PERCENT,1),new State(Status.NOT,1),new State(Status.EQUAL,1),new State(Status.OPEN_ROUND_BRACKET,1),new State(Status.CLOSE_ROUND_BRACKET,1),new State(Status.OPEN_CURLY_BRACKET,1),new State(Status.CLOSE_CURLY_BRACKET,1),new State(Status.COMMA,1),new State(Status.SEMICOLON,1),new State(Status.AND,1),new State(Status.OR,1),new State(Status.MORE,1),new State(Status.LESS,1),new State(Status.ERROR,0)},
-            new [] {new State(Status.START,1),new State(Status.START,1),new State(Status.IDENT,1),new State(Status.NUMBER,1),new State(Status.STRING,1),new State(Status.ERROR,0),new State(Status.REALNUMBER_DOT,1),new State(Status.SLASH,1),new State(Status.STAR,1),new State(Status.PLUS,1),new State(Status.MINUS,1),new State(Status.PERCENT,1),new State(Status.NOT,1),new State(Status.NOT_TWO_EQUAL,0),new State(Status.OPEN_ROUND_BRACKET,1),new State(Status.CLOSE_ROUND_BRACKET,1),new State(Status.OPEN_CURLY_BRACKET,1),new State(Status.CLOSE_CURLY_BRACKET,1),new State(Status.COMMA,1),new State(Status.SEMICOLON,1),new State(Status.AND,1),new State(Status.OR,1),new State(Status.MORE,1),new State(Status.LESS,1),new State(Status.ERROR,0)},
-            new [] {new State(Status.START,1),new State(Status.START,1),new State(Status.IDENT,1),new State(Status.NUMBER,1),new State(Status.STRING,1),new State(Status.ERROR,0),new State(Status.REALNUMBER_DOT,1),new State(Status.SLASH,1),new State(Status.STAR,1),new State(Status.PLUS,1),new State(Status.MINUS,1),new State(Status.PERCENT,1),new State(Status.NOT,1),new State(Status.EQUAL,1),new State(Status.OPEN_ROUND_BRACKET,1),new State(Status.CLOSE_ROUND_BRACKET,1),new State(Status.OPEN_CURLY_BRACKET,1),new State(Status.CLOSE_CURLY_BRACKET,1),new State(Status.COMMA,1),new State(Status.SEMICOLON,1),new State(Status.AND,1),new State(Status.OR,1),new State(Status.MORE,1),new State(Status.LESS,1),new State(Status.ERROR,0)},
-            new [] {new State(Status.START,1),new State(Status.START,1),new State(Status.IDENT,1),new State(Status.NUMBER,1),new State(Status.STRING,1),new State(Status.ERROR,0),new State(Status.REALNUMBER_DOT,1),new State(Status.SLASH,1),new State(Status.STAR,1),new State(Status.PLUS,1),new State(Status.MINUS,1),new State(Status.PERCENT,1),new State(Status.NOT,1),new State(Status.EQUAL,1),new State(Status.OPEN_ROUND_BRACKET,1),new State(Status.CLOSE_ROUND_BRACKET,1),new State(Status.OPEN_CURLY_BRACKET,1),new State(Status.CLOSE_CURLY_BRACKET,1),new State(Status.COMMA,1),new State(Status.SEMICOLON,1),new State(Status.AND,1),new State(Status.OR,1),new State(Status.MORE,1),new State(Status.LESS,1),new State(Status.ERROR,0)},
-            new [] {new State(Status.START,1),new State(Status.START,1),new State(Status.IDENT,1),new State(Status.NUMBER,1),new State(Status.STRING,1),new State(Status.ERROR,0),new State(Status.REALNUMBER_DOT,1),new State(Status.SLASH,1),new State(Status.STAR,1),new State(Status.PLUS,1),new State(Status.MINUS,1),new State(Status.PERCENT,1),new State(Status.NOT,1),new State(Status.EQUAL,1),new State(Status.OPEN_ROUND_BRACKET,1),new State(Status.CLOSE_ROUND_BRACKET,1),new State(Status.OPEN_CURLY_BRACKET,1),new State(Status.CLOSE_CURLY_BRACKET,1),new State(Status.COMMA,1),new State(Status.SEMICOLON,1),new State(Status.AND,1),new State(Status.OR,1),new State(Status.MORE,1),new State(Status.LESS,1),new State(Status.ERROR,0)},
-            new [] {new State(Status.START,1),new State(Status.START,1),new State(Status.IDENT,1),new State(Status.NUMBER,1),new State(Status.STRING,1),new State(Status.ERROR,0),new State(Status.REALNUMBER_DOT,1),new State(Status.SLASH,1),new State(Status.STAR,1),new State(Status.PLUS,1),new State(Status.MINUS,1),new State(Status.PERCENT,1),new State(Status.NOT,1),new State(Status.EQUAL,1),new State(Status.OPEN_ROUND_BRACKET,1),new State(Status.CLOSE_ROUND_BRACKET,1),new State(Status.OPEN_CURLY_BRACKET,1),new State(Status.CLOSE_CURLY_BRACKET,1),new State(Status.COMMA,1),new State(Status.SEMICOLON,1),new State(Status.AND,1),new State(Status.OR,1),new State(Status.MORE,1),new State(Status.LESS,1),new State(Status.ERROR,0)},
-            new [] {new State(Status.START,1),new State(Status.START,1),new State(Status.IDENT,1),new State(Status.NUMBER,1),new State(Status.STRING,1),new State(Status.ERROR,0),new State(Status.REALNUMBER_DOT,1),new State(Status.SLASH,1),new State(Status.STAR,1),new State(Status.PLUS,1),new State(Status.MINUS,1),new State(Status.PERCENT,1),new State(Status.NOT,1),new State(Status.EQUAL,1),new State(Status.OPEN_ROUND_BRACKET,1),new State(Status.CLOSE_ROUND_BRACKET,1),new State(Status.OPEN_CURLY_BRACKET,1),new State(Status.CLOSE_CURLY_BRACKET,1),new State(Status.COMMA,1),new State(Status.SEMICOLON,1),new State(Status.AND,1),new State(Status.OR,1),new State(Status.MORE,1),new State(Status.LESS,1),new State(Status.ERROR,0)},
-            new [] {new State(Status.START,1),new State(Status.START,1),new State(Status.IDENT,1),new State(Status.NUMBER,1),new State(Status.STRING,1),new State(Status.ERROR,0),new State(Status.REALNUMBER_DOT,1),new State(Status.SLASH,1),new State(Status.STAR,1),new State(Status.PLUS,1),new State(Status.MINUS,1),new State(Status.PERCENT,1),new State(Status.NOT,1),new State(Status.EQUAL,1),new State(Status.OPEN_ROUND_BRACKET,1),new State(Status.CLOSE_ROUND_BRACKET,1),new State(Status.OPEN_CURLY_BRACKET,1),new State(Status.CLOSE_CURLY_BRACKET,1),new State(Status.COMMA,1),new State(Status.SEMICOLON,1),new State(Status.AND,1),new State(Status.OR,1),new State(Status.MORE,1),new State(Status.LESS,1),new State(Status.ERROR,0)},
-            new [] {new State(Status.START,1),new State(Status.START,1),new State(Status.IDENT,1),new State(Status.NUMBER,1),new State(Status.STRING,1),new State(Status.ERROR,0),new State(Status.REALNUMBER_DOT,1),new State(Status.SLASH,1),new State(Status.STAR,1),new State(Status.PLUS,1),new State(Status.MINUS,1),new State(Status.PERCENT,1),new State(Status.NOT,1),new State(Status.EQUAL,1),new State(Status.OPEN_ROUND_BRACKET,1),new State(Status.CLOSE_ROUND_BRACKET,1),new State(Status.OPEN_CURLY_BRACKET,1),new State(Status.CLOSE_CURLY_BRACKET,1),new State(Status.COMMA,1),new State(Status.SEMICOLON,1),new State(Status.AND,1),new State(Status.OR,1),new State(Status.MORE,1),new State(Status.LESS,1),new State(Status.ERROR,0)},
-            new [] {new State(Status.START,1),new State(Status.START,1),new State(Status.IDENT,1),new State(Status.NUMBER,1),new State(Status.STRING,1),new State(Status.ERROR,0),new State(Status.REALNUMBER_DOT,1),new State(Status.SLASH,1),new State(Status.STAR,1),new State(Status.PLUS,1),new State(Status.MINUS,1),new State(Status.PERCENT,1),new State(Status.NOT,1),new State(Status.ANDEQUAL,0),new State(Status.OPEN_ROUND_BRACKET,1),new State(Status.CLOSE_ROUND_BRACKET,1),new State(Status.OPEN_CURLY_BRACKET,1),new State(Status.CLOSE_CURLY_BRACKET,1),new State(Status.COMMA,1),new State(Status.SEMICOLON,1),new State(Status.ANDAND,0),new State(Status.OR,1),new State(Status.MORE,1),new State(Status.LESS,1),new State(Status.ERROR,0)},
-            new [] {new State(Status.START,1),new State(Status.START,1),new State(Status.IDENT,1),new State(Status.NUMBER,1),new State(Status.STRING,1),new State(Status.ERROR,0),new State(Status.REALNUMBER_DOT,1),new State(Status.SLASH,1),new State(Status.STAR,1),new State(Status.PLUS,1),new State(Status.MINUS,1),new State(Status.PERCENT,1),new State(Status.NOT,1),new State(Status.EQUAL,1),new State(Status.OPEN_ROUND_BRACKET,1),new State(Status.CLOSE_ROUND_BRACKET,1),new State(Status.OPEN_CURLY_BRACKET,1),new State(Status.CLOSE_CURLY_BRACKET,1),new State(Status.COMMA,1),new State(Status.SEMICOLON,1),new State(Status.AND,1),new State(Status.OR,1),new State(Status.MORE,1),new State(Status.LESS,1),new State(Status.ERROR,0)},
-            new [] {new State(Status.START,1),new State(Status.START,1),new State(Status.IDENT,1),new State(Status.NUMBER,1),new State(Status.STRING,1),new State(Status.ERROR,0),new State(Status.REALNUMBER_DOT,1),new State(Status.SLASH,1),new State(Status.STAR,1),new State(Status.PLUS,1),new State(Status.MINUS,1),new State(Status.PERCENT,1),new State(Status.NOT,1),new State(Status.EQUAL,1),new State(Status.OPEN_ROUND_BRACKET,1),new State(Status.CLOSE_ROUND_BRACKET,1),new State(Status.OPEN_CURLY_BRACKET,1),new State(Status.CLOSE_CURLY_BRACKET,1),new State(Status.COMMA,1),new State(Status.SEMICOLON,1),new State(Status.AND,1),new State(Status.OR,1),new State(Status.MORE,1),new State(Status.LESS,1),new State(Status.ERROR,0)},
-            new [] {new State(Status.START,1),new State(Status.START,1),new State(Status.IDENT,1),new State(Status.NUMBER,1),new State(Status.STRING,1),new State(Status.ERROR,0),new State(Status.REALNUMBER_DOT,1),new State(Status.SLASH,1),new State(Status.STAR,1),new State(Status.PLUS,1),new State(Status.MINUS,1),new State(Status.PERCENT,1),new State(Status.NOT,1),new State(Status.OREQUAL,0),new State(Status.OPEN_ROUND_BRACKET,1),new State(Status.CLOSE_ROUND_BRACKET,1),new State(Status.OPEN_CURLY_BRACKET,1),new State(Status.CLOSE_CURLY_BRACKET,1),new State(Status.COMMA,1),new State(Status.SEMICOLON,1),new State(Status.AND,1),new State(Status.OROR,0),new State(Status.MORE,1),new State(Status.LESS,1),new State(Status.ERROR,0)},
-            new [] {new State(Status.START,1),new State(Status.START,1),new State(Status.IDENT,1),new State(Status.NUMBER,1),new State(Status.STRING,1),new State(Status.ERROR,0),new State(Status.REALNUMBER_DOT,1),new State(Status.SLASH,1),new State(Status.STAR,1),new State(Status.PLUS,1),new State(Status.MINUS,1),new State(Status.PERCENT,1),new State(Status.NOT,1),new State(Status.EQUAL,1),new State(Status.OPEN_ROUND_BRACKET,1),new State(Status.CLOSE_ROUND_BRACKET,1),new State(Status.OPEN_CURLY_BRACKET,1),new State(Status.CLOSE_CURLY_BRACKET,1),new State(Status.COMMA,1),new State(Status.SEMICOLON,1),new State(Status.AND,1),new State(Status.OR,1),new State(Status.MORE,1),new State(Status.LESS,1),new State(Status.ERROR,0)},
-            new [] {new State(Status.START,1),new State(Status.START,1),new State(Status.IDENT,1),new State(Status.NUMBER,1),new State(Status.STRING,1),new State(Status.ERROR,0),new State(Status.REALNUMBER_DOT,1),new State(Status.SLASH,1),new State(Status.STAR,1),new State(Status.PLUS,1),new State(Status.MINUS,1),new State(Status.PERCENT,1),new State(Status.NOT,1),new State(Status.EQUAL,1),new State(Status.OPEN_ROUND_BRACKET,1),new State(Status.CLOSE_ROUND_BRACKET,1),new State(Status.OPEN_CURLY_BRACKET,1),new State(Status.CLOSE_CURLY_BRACKET,1),new State(Status.COMMA,1),new State(Status.SEMICOLON,1),new State(Status.AND,1),new State(Status.OR,1),new State(Status.MORE,1),new State(Status.LESS,1),new State(Status.ERROR,0)},
-            new [] {new State(Status.START,1),new State(Status.START,1),new State(Status.IDENT,1),new State(Status.NUMBER,1),new State(Status.STRING,1),new State(Status.ERROR,0),new State(Status.REALNUMBER_DOT,1),new State(Status.SLASH,1),new State(Status.STAR,1),new State(Status.PLUS,1),new State(Status.MINUS,1),new State(Status.PERCENT,1),new State(Status.NOT,1),new State(Status.MOREOREQUAL,0),new State(Status.OPEN_ROUND_BRACKET,1),new State(Status.CLOSE_ROUND_BRACKET,1),new State(Status.OPEN_CURLY_BRACKET,1),new State(Status.CLOSE_CURLY_BRACKET,1),new State(Status.COMMA,1),new State(Status.SEMICOLON,1),new State(Status.AND,1),new State(Status.OR,1),new State(Status.MORE,1),new State(Status.LESS,1),new State(Status.ERROR,0)},
-            new [] {new State(Status.START,1),new State(Status.START,1),new State(Status.IDENT,1),new State(Status.NUMBER,1),new State(Status.STRING,1),new State(Status.ERROR,0),new State(Status.REALNUMBER_DOT,1),new State(Status.SLASH,1),new State(Status.STAR,1),new State(Status.PLUS,1),new State(Status.MINUS,1),new State(Status.PERCENT,1),new State(Status.NOT,1),new State(Status.EQUAL,1),new State(Status.OPEN_ROUND_BRACKET,1),new State(Status.CLOSE_ROUND_BRACKET,1),new State(Status.OPEN_CURLY_BRACKET,1),new State(Status.CLOSE_CURLY_BRACKET,1),new State(Status.COMMA,1),new State(Status.SEMICOLON,1),new State(Status.AND,1),new State(Status.OR,1),new State(Status.MORE,1),new State(Status.LESS,1),new State(Status.ERROR,0)},
-            new [] {new State(Status.START,1),new State(Status.START,1),new State(Status.IDENT,1),new State(Status.NUMBER,1),new State(Status.STRING,1),new State(Status.ERROR,0),new State(Status.REALNUMBER_DOT,1),new State(Status.SLASH,1),new State(Status.STAR,1),new State(Status.PLUS,1),new State(Status.MINUS,1),new State(Status.PERCENT,1),new State(Status.NOT,1),new State(Status.LESSOREQUAL,0),new State(Status.OPEN_ROUND_BRACKET,1),new State(Status.CLOSE_ROUND_BRACKET,1),new State(Status.OPEN_CURLY_BRACKET,1),new State(Status.CLOSE_CURLY_BRACKET,1),new State(Status.COMMA,1),new State(Status.SEMICOLON,1),new State(Status.AND,1),new State(Status.OR,1),new State(Status.MORE,1),new State(Status.LESS,1),new State(Status.ERROR,0)},
-            new [] {new State(Status.START,1),new State(Status.START,1),new State(Status.IDENT,1),new State(Status.NUMBER,1),new State(Status.STRING,1),new State(Status.ERROR,0),new State(Status.REALNUMBER_DOT,1),new State(Status.SLASH,1),new State(Status.STAR,1),new State(Status.PLUS,1),new State(Status.MINUS,1),new State(Status.PERCENT,1),new State(Status.NOT,1),new State(Status.EQUAL,1),new State(Status.OPEN_ROUND_BRACKET,1),new State(Status.CLOSE_ROUND_BRACKET,1),new State(Status.OPEN_CURLY_BRACKET,1),new State(Status.CLOSE_CURLY_BRACKET,1),new State(Status.COMMA,1),new State(Status.SEMICOLON,1),new State(Status.AND,1),new State(Status.OR,1),new State(Status.MORE,1),new State(Status.LESS,1),new State(Status.ERROR,0)}
+            new[]
+            {
+                new State(Status.START, 1),
+                new State(Status.START, 1),
+                new State(Status.IDENT, 0),
+                new State(Status.NUMBER, 0),
+                new State(Status.STRING, 0),
+                new State(Status.ERROR, 0),
+                new State(Status.REALNUMBER_DOT, 0),
+                new State(Status.SLASH, 0),
+                new State(Status.STAR, 0),
+                new State(Status.PLUS, 0),
+                new State(Status.MINUS, 0),
+                new State(Status.PERCENT, 0),
+                new State(Status.NOT, 0),
+                new State(Status.EQUAL, 0),
+                new State(Status.OPEN_ROUND_BRACKET, 0),
+                new State(Status.CLOSE_ROUND_BRACKET, 0),
+                new State(Status.OPEN_CURLY_BRACKET, 0),
+                new State(Status.CLOSE_CURLY_BRACKET, 0),
+                new State(Status.COMMA, 0),
+                new State(Status.SEMICOLON, 0),
+                new State(Status.AND, 0),
+                new State(Status.OR, 0),
+                new State(Status.MORE, 0),
+                new State(Status.LESS, 0),
+                new State(Status.ERROR, 0)
+            },
+            new[]
+            {
+                new State(Status.START, 1), new State(Status.START, 1), new State(Status.IDENT, 0),
+                new State(Status.IDENT, 0), new State(Status.STRING, 1), new State(Status.ERROR, 0),
+                new State(Status.REALNUMBER_DOT, 1), new State(Status.START, 1), new State(Status.STAR, 1),
+                new State(Status.PLUS, 1), new State(Status.MINUS, 1), new State(Status.PERCENT, 1),
+                new State(Status.NOT, 1), new State(Status.EQUAL, 1), new State(Status.OPEN_ROUND_BRACKET, 1),
+                new State(Status.CLOSE_ROUND_BRACKET, 1), new State(Status.OPEN_CURLY_BRACKET, 1),
+                new State(Status.CLOSE_CURLY_BRACKET, 1), new State(Status.COMMA, 1), new State(Status.SEMICOLON, 1),
+                new State(Status.AND, 1), new State(Status.OR, 1), new State(Status.MORE, 1), new State(Status.LESS, 1),
+                new State(Status.ERROR, 0)
+            },
+            new[]
+            {
+                new State(Status.START, 1), new State(Status.START, 1), new State(Status.IDENT, 1),
+                new State(Status.NUMBER, 0), new State(Status.STRING, 1), new State(Status.ERROR, 0),
+                new State(Status.REALNUMBER_ONE, 0), new State(Status.SLASH, 1), new State(Status.STAR, 1),
+                new State(Status.PLUS, 1), new State(Status.MINUS, 1), new State(Status.PERCENT, 1),
+                new State(Status.NOT, 1), new State(Status.EQUAL, 1), new State(Status.OPEN_ROUND_BRACKET, 1),
+                new State(Status.CLOSE_ROUND_BRACKET, 1), new State(Status.OPEN_CURLY_BRACKET, 1),
+                new State(Status.CLOSE_CURLY_BRACKET, 1), new State(Status.COMMA, 1), new State(Status.SEMICOLON, 1),
+                new State(Status.AND, 1), new State(Status.OR, 1), new State(Status.MORE, 1), new State(Status.LESS, 1),
+                new State(Status.ERROR, 0)
+            },
+            new[]
+            {
+                new State(Status.START, 1), new State(Status.START, 1), new State(Status.IDENT, 1),
+                new State(Status.REALNUMBER_ONE, 0), new State(Status.STRING, 1), new State(Status.ERROR, 0),
+                new State(Status.REALNUMBER_DOT, 0), new State(Status.SLASH, 1), new State(Status.STAR, 1),
+                new State(Status.PLUS, 1), new State(Status.MINUS, 1), new State(Status.PERCENT, 1),
+                new State(Status.NOT, 1), new State(Status.EQUAL, 1), new State(Status.OPEN_ROUND_BRACKET, 1),
+                new State(Status.CLOSE_ROUND_BRACKET, 1), new State(Status.OPEN_CURLY_BRACKET, 1),
+                new State(Status.CLOSE_CURLY_BRACKET, 1), new State(Status.COMMA, 1), new State(Status.SEMICOLON, 1),
+                new State(Status.AND, 1), new State(Status.OR, 1), new State(Status.MORE, 1), new State(Status.LESS, 1),
+                new State(Status.ERROR, 0)
+            },
+            new[]
+            {
+                new State(Status.ERROR, 0), new State(Status.ERROR, 0), new State(Status.ERROR, 0),
+                new State(Status.REALNUMBER_ONE, 0), new State(Status.ERROR, 0), new State(Status.ERROR, 0),
+                new State(Status.ERROR, 0), new State(Status.ERROR, 0), new State(Status.ERROR, 0),
+                new State(Status.ERROR, 0), new State(Status.ERROR, 0), new State(Status.ERROR, 0),
+                new State(Status.ERROR, 0), new State(Status.ERROR, 0), new State(Status.ERROR, 0),
+                new State(Status.ERROR, 0), new State(Status.ERROR, 0), new State(Status.ERROR, 0),
+                new State(Status.ERROR, 0), new State(Status.ERROR, 0), new State(Status.ERROR, 0),
+                new State(Status.ERROR, 0), new State(Status.ERROR, 0), new State(Status.ERROR, 0),
+                new State(Status.ERROR, 0)
+            },
+            new[]
+            {
+                new State(Status.ERROR, 0), new State(Status.STRING, 0), new State(Status.STRING, 0),
+                new State(Status.STRING, 0), new State(Status.STRING_END, 0), new State(Status.STRING_SLASH, 0),
+                new State(Status.STRING, 0), new State(Status.STRING, 0), new State(Status.STRING, 0),
+                new State(Status.STRING, 0), new State(Status.STRING, 0), new State(Status.STRING, 0),
+                new State(Status.STRING, 0), new State(Status.STRING, 0), new State(Status.STRING, 0),
+                new State(Status.STRING, 0), new State(Status.STRING, 0), new State(Status.STRING, 0),
+                new State(Status.STRING, 0), new State(Status.STRING, 0), new State(Status.STRING, 0),
+                new State(Status.STRING, 0), new State(Status.STRING, 0), new State(Status.STRING, 0),
+                new State(Status.STRING, 0)
+            },
+            new[]
+            {
+                new State(Status.START, 1), new State(Status.START, 1), new State(Status.IDENT, 1),
+                new State(Status.NUMBER, 1), new State(Status.STRING, 1), new State(Status.ERROR, 0),
+                new State(Status.REALNUMBER_DOT, 1), new State(Status.SLASH, 1), new State(Status.STAR, 1),
+                new State(Status.PLUS, 1), new State(Status.MINUS, 1), new State(Status.PERCENT, 1),
+                new State(Status.NOT, 1), new State(Status.EQUAL, 1), new State(Status.OPEN_ROUND_BRACKET, 1),
+                new State(Status.CLOSE_ROUND_BRACKET, 1), new State(Status.OPEN_CURLY_BRACKET, 1),
+                new State(Status.CLOSE_CURLY_BRACKET, 1), new State(Status.COMMA, 1), new State(Status.SEMICOLON, 1),
+                new State(Status.AND, 1), new State(Status.OR, 1), new State(Status.MORE, 1), new State(Status.LESS, 1),
+                new State(Status.ERROR, 0)
+            },
+            new[]
+            {
+                new State(Status.STRING, 0), new State(Status.STRING, 0), new State(Status.STRING, 0),
+                new State(Status.STRING, 0), new State(Status.STRING, 0), new State(Status.STRING_SLASH, 0),
+                new State(Status.STRING, 0), new State(Status.STRING, 0), new State(Status.STRING, 0),
+                new State(Status.STRING, 0), new State(Status.STRING, 0), new State(Status.STRING, 0),
+                new State(Status.STRING, 0), new State(Status.STRING, 0), new State(Status.STRING, 0),
+                new State(Status.STRING, 0), new State(Status.STRING, 0), new State(Status.STRING, 0),
+                new State(Status.STRING, 0), new State(Status.STRING, 0), new State(Status.STRING, 0),
+                new State(Status.STRING, 0), new State(Status.STRING, 0), new State(Status.STRING, 0),
+                new State(Status.STRING, 0)
+            },
+            new[]
+            {
+                new State(Status.START, 1), new State(Status.START, 1), new State(Status.IDENT, 1),
+                new State(Status.NUMBER, 1), new State(Status.STRING, 1), new State(Status.ERROR, 0),
+                new State(Status.REALNUMBER_DOT, 1), new State(Status.ONE_LC, 0), new State(Status.MULTI_LC, 0),
+                new State(Status.PLUS, 1), new State(Status.MINUS, 1), new State(Status.PERCENT, 1),
+                new State(Status.NOT, 1), new State(Status.SLASHEQUAL, 0), new State(Status.OPEN_ROUND_BRACKET, 1),
+                new State(Status.CLOSE_ROUND_BRACKET, 1), new State(Status.OPEN_CURLY_BRACKET, 1),
+                new State(Status.CLOSE_CURLY_BRACKET, 1), new State(Status.COMMA, 1), new State(Status.SEMICOLON, 1),
+                new State(Status.AND, 1), new State(Status.OR, 1), new State(Status.MORE, 1), new State(Status.LESS, 1),
+                new State(Status.ERROR, 0)
+            },
+            new[]
+            {
+                new State(Status.START, 1), new State(Status.ONE_LC, 0), new State(Status.ONE_LC, 0),
+                new State(Status.ONE_LC, 0), new State(Status.ONE_LC, 0), new State(Status.ONE_LC, 0),
+                new State(Status.ONE_LC, 0), new State(Status.ONE_LC, 0), new State(Status.ONE_LC, 0),
+                new State(Status.ONE_LC, 0), new State(Status.ONE_LC, 0), new State(Status.ONE_LC, 0),
+                new State(Status.ONE_LC, 0), new State(Status.ONE_LC, 0), new State(Status.ONE_LC, 0),
+                new State(Status.ONE_LC, 0), new State(Status.ONE_LC, 0), new State(Status.ONE_LC, 0),
+                new State(Status.ONE_LC, 0), new State(Status.ONE_LC, 0), new State(Status.ONE_LC, 0),
+                new State(Status.ONE_LC, 0), new State(Status.ONE_LC, 0), new State(Status.ONE_LC, 0),
+                new State(Status.ONE_LC, 0)
+            },
+            new[]
+            {
+                new State(Status.MULTI_LC, 0), new State(Status.MULTI_LC, 0), new State(Status.MULTI_LC, 0),
+                new State(Status.MULTI_LC, 0), new State(Status.MULTI_LC, 0), new State(Status.MULTI_LC, 0),
+                new State(Status.MULTI_LC, 0), new State(Status.MULTI_LC, 0), new State(Status.MULTI_LC_PRE_END, 0),
+                new State(Status.MULTI_LC, 0), new State(Status.MULTI_LC, 0), new State(Status.MULTI_LC, 0),
+                new State(Status.MULTI_LC, 0), new State(Status.MULTI_LC, 0), new State(Status.MULTI_LC, 0),
+                new State(Status.MULTI_LC, 0), new State(Status.MULTI_LC, 0), new State(Status.MULTI_LC, 0),
+                new State(Status.MULTI_LC, 0), new State(Status.MULTI_LC, 0), new State(Status.MULTI_LC, 0),
+                new State(Status.MULTI_LC, 0), new State(Status.MULTI_LC, 0), new State(Status.MULTI_LC, 0),
+                new State(Status.MULTI_LC, 0)
+            },
+            new[]
+            {
+                new State(Status.MULTI_LC, 0), new State(Status.MULTI_LC, 0), new State(Status.MULTI_LC, 0),
+                new State(Status.MULTI_LC, 0), new State(Status.MULTI_LC, 0), new State(Status.MULTI_LC, 0),
+                new State(Status.MULTI_LC, 0), new State(Status.MULTI_LC_END, 0), new State(Status.MULTI_LC, 0),
+                new State(Status.MULTI_LC, 0), new State(Status.MULTI_LC, 0), new State(Status.MULTI_LC, 0),
+                new State(Status.MULTI_LC, 0), new State(Status.MULTI_LC, 0), new State(Status.MULTI_LC, 0),
+                new State(Status.MULTI_LC, 0), new State(Status.MULTI_LC, 0), new State(Status.MULTI_LC, 0),
+                new State(Status.MULTI_LC, 0), new State(Status.MULTI_LC, 0), new State(Status.MULTI_LC, 0),
+                new State(Status.MULTI_LC, 0), new State(Status.MULTI_LC, 0), new State(Status.MULTI_LC, 0),
+                new State(Status.MULTI_LC, 0)
+            },
+            new[]
+            {
+                new State(Status.START, 1), new State(Status.START, 1), new State(Status.IDENT, 1),
+                new State(Status.NUMBER, 1), new State(Status.STRING, 1), new State(Status.ERROR, 0),
+                new State(Status.REALNUMBER_DOT, 1), new State(Status.SLASH, 1), new State(Status.STAR, 1),
+                new State(Status.PLUS, 1), new State(Status.MINUS, 1), new State(Status.PERCENT, 1),
+                new State(Status.NOT, 1), new State(Status.EQUAL, 1), new State(Status.OPEN_ROUND_BRACKET, 1),
+                new State(Status.CLOSE_ROUND_BRACKET, 1), new State(Status.OPEN_CURLY_BRACKET, 1),
+                new State(Status.CLOSE_CURLY_BRACKET, 1), new State(Status.COMMA, 1), new State(Status.SEMICOLON, 1),
+                new State(Status.AND, 1), new State(Status.OR, 1), new State(Status.MORE, 1), new State(Status.LESS, 1),
+                new State(Status.ERROR, 0)
+            },
+            new[]
+            {
+                new State(Status.START, 1), new State(Status.START, 1), new State(Status.IDENT, 1),
+                new State(Status.NUMBER, 1), new State(Status.STRING, 1), new State(Status.ERROR, 0),
+                new State(Status.REALNUMBER_DOT, 1), new State(Status.SLASH, 1), new State(Status.STAR, 1),
+                new State(Status.PLUS, 1), new State(Status.MINUS, 1), new State(Status.PERCENT, 1),
+                new State(Status.NOT, 1), new State(Status.STAREQUAL, 0), new State(Status.OPEN_ROUND_BRACKET, 1),
+                new State(Status.CLOSE_ROUND_BRACKET, 1), new State(Status.OPEN_CURLY_BRACKET, 1),
+                new State(Status.CLOSE_CURLY_BRACKET, 1), new State(Status.COMMA, 1), new State(Status.SEMICOLON, 1),
+                new State(Status.AND, 1), new State(Status.OR, 1), new State(Status.MORE, 1), new State(Status.LESS, 1),
+                new State(Status.ERROR, 0)
+            },
+            new[]
+            {
+                new State(Status.START, 1), new State(Status.START, 1), new State(Status.IDENT, 1),
+                new State(Status.NUMBER, 1), new State(Status.STRING, 1), new State(Status.ERROR, 0),
+                new State(Status.REALNUMBER_DOT, 1), new State(Status.SLASH, 1), new State(Status.STAR, 1),
+                new State(Status.PLUSPLUS, 0), new State(Status.MINUS, 1), new State(Status.PERCENT, 1),
+                new State(Status.NOT, 1), new State(Status.PLUSEQUAL, 0), new State(Status.OPEN_ROUND_BRACKET, 1),
+                new State(Status.CLOSE_ROUND_BRACKET, 1), new State(Status.OPEN_CURLY_BRACKET, 1),
+                new State(Status.CLOSE_CURLY_BRACKET, 1), new State(Status.COMMA, 1), new State(Status.SEMICOLON, 1),
+                new State(Status.AND, 1), new State(Status.OR, 1), new State(Status.MORE, 1), new State(Status.LESS, 1),
+                new State(Status.ERROR, 0)
+            },
+            new[]
+            {
+                new State(Status.START, 1), new State(Status.START, 1), new State(Status.IDENT, 1),
+                new State(Status.NUMBER, 1), new State(Status.STRING, 1), new State(Status.ERROR, 0),
+                new State(Status.REALNUMBER_DOT, 1), new State(Status.SLASH, 1), new State(Status.STAR, 1),
+                new State(Status.PLUS, 1), new State(Status.MINUS, 1), new State(Status.PERCENT, 1),
+                new State(Status.NOT, 1), new State(Status.EQUAL, 1), new State(Status.OPEN_ROUND_BRACKET, 1),
+                new State(Status.CLOSE_ROUND_BRACKET, 1), new State(Status.OPEN_CURLY_BRACKET, 1),
+                new State(Status.CLOSE_CURLY_BRACKET, 1), new State(Status.COMMA, 1), new State(Status.SEMICOLON, 1),
+                new State(Status.AND, 1), new State(Status.OR, 1), new State(Status.MORE, 1), new State(Status.LESS, 1),
+                new State(Status.ERROR, 0)
+            },
+            new[]
+            {
+                new State(Status.START, 1), new State(Status.START, 1), new State(Status.IDENT, 1),
+                new State(Status.NUMBER, 1), new State(Status.STRING, 1), new State(Status.ERROR, 0),
+                new State(Status.REALNUMBER_DOT, 1), new State(Status.SLASH, 1), new State(Status.STAR, 1),
+                new State(Status.PLUS, 1), new State(Status.MINUSMINUS, 0), new State(Status.PERCENT, 1),
+                new State(Status.NOT, 1), new State(Status.MINUSEQUAL, 0), new State(Status.OPEN_ROUND_BRACKET, 1),
+                new State(Status.CLOSE_ROUND_BRACKET, 1), new State(Status.OPEN_CURLY_BRACKET, 1),
+                new State(Status.CLOSE_CURLY_BRACKET, 1), new State(Status.COMMA, 1), new State(Status.SEMICOLON, 1),
+                new State(Status.AND, 1), new State(Status.OR, 1), new State(Status.MORE, 1), new State(Status.LESS, 1),
+                new State(Status.ERROR, 0)
+            },
+            new[]
+            {
+                new State(Status.START, 1), new State(Status.START, 1), new State(Status.IDENT, 1),
+                new State(Status.NUMBER, 1), new State(Status.STRING, 1), new State(Status.ERROR, 0),
+                new State(Status.REALNUMBER_DOT, 1), new State(Status.SLASH, 1), new State(Status.STAR, 1),
+                new State(Status.PLUS, 1), new State(Status.MINUS, 1), new State(Status.PERCENT, 1),
+                new State(Status.NOT, 1), new State(Status.EQUAL, 1), new State(Status.OPEN_ROUND_BRACKET, 1),
+                new State(Status.CLOSE_ROUND_BRACKET, 1), new State(Status.OPEN_CURLY_BRACKET, 1),
+                new State(Status.CLOSE_CURLY_BRACKET, 1), new State(Status.COMMA, 1), new State(Status.SEMICOLON, 1),
+                new State(Status.AND, 1), new State(Status.OR, 1), new State(Status.MORE, 1), new State(Status.LESS, 1),
+                new State(Status.ERROR, 0)
+            },
+            new[]
+            {
+                new State(Status.START, 1), new State(Status.START, 1), new State(Status.IDENT, 1),
+                new State(Status.NUMBER, 1), new State(Status.STRING, 1), new State(Status.ERROR, 0),
+                new State(Status.REALNUMBER_DOT, 1), new State(Status.SLASH, 1), new State(Status.STAR, 1),
+                new State(Status.PLUS, 1), new State(Status.MINUS, 1), new State(Status.PERCENT, 1),
+                new State(Status.NOT, 1), new State(Status.PERCENTEQUAL, 0), new State(Status.OPEN_ROUND_BRACKET, 1),
+                new State(Status.CLOSE_ROUND_BRACKET, 1), new State(Status.OPEN_CURLY_BRACKET, 1),
+                new State(Status.CLOSE_CURLY_BRACKET, 1), new State(Status.COMMA, 1), new State(Status.SEMICOLON, 1),
+                new State(Status.AND, 1), new State(Status.OR, 1), new State(Status.MORE, 1), new State(Status.LESS, 1),
+                new State(Status.ERROR, 0)
+            },
+            new[]
+            {
+                new State(Status.START, 1), new State(Status.START, 1), new State(Status.IDENT, 1),
+                new State(Status.NUMBER, 1), new State(Status.STRING, 1), new State(Status.ERROR, 0),
+                new State(Status.REALNUMBER_DOT, 1), new State(Status.SLASH, 1), new State(Status.STAR, 1),
+                new State(Status.PLUS, 1), new State(Status.MINUS, 1), new State(Status.PERCENT, 1),
+                new State(Status.NOT, 1), new State(Status.NOTEQUAL, 0), new State(Status.OPEN_ROUND_BRACKET, 1),
+                new State(Status.CLOSE_ROUND_BRACKET, 1), new State(Status.OPEN_CURLY_BRACKET, 1),
+                new State(Status.CLOSE_CURLY_BRACKET, 1), new State(Status.COMMA, 1), new State(Status.SEMICOLON, 1),
+                new State(Status.AND, 1), new State(Status.OR, 1), new State(Status.MORE, 1), new State(Status.LESS, 1),
+                new State(Status.ERROR, 0)
+            },
+            new[]
+            {
+                new State(Status.START, 1), new State(Status.START, 1), new State(Status.IDENT, 1),
+                new State(Status.NUMBER, 1), new State(Status.STRING, 1), new State(Status.ERROR, 0),
+                new State(Status.REALNUMBER_DOT, 1), new State(Status.SLASH, 1), new State(Status.STAR, 1),
+                new State(Status.PLUS, 1), new State(Status.MINUS, 1), new State(Status.PERCENT, 1),
+                new State(Status.NOT, 1), new State(Status.TWO_EQUAL, 0), new State(Status.OPEN_ROUND_BRACKET, 1),
+                new State(Status.CLOSE_ROUND_BRACKET, 1), new State(Status.OPEN_CURLY_BRACKET, 1),
+                new State(Status.CLOSE_CURLY_BRACKET, 1), new State(Status.COMMA, 1), new State(Status.SEMICOLON, 1),
+                new State(Status.AND, 1), new State(Status.OR, 1), new State(Status.MORE, 1), new State(Status.LESS, 1),
+                new State(Status.ERROR, 0)
+            },
+            new[]
+            {
+                new State(Status.START, 1), new State(Status.START, 1), new State(Status.IDENT, 1),
+                new State(Status.NUMBER, 1), new State(Status.STRING, 1), new State(Status.ERROR, 0),
+                new State(Status.REALNUMBER_DOT, 1), new State(Status.SLASH, 1), new State(Status.STAR, 1),
+                new State(Status.PLUS, 1), new State(Status.MINUS, 1), new State(Status.PERCENT, 1),
+                new State(Status.NOT, 1), new State(Status.THREE_EQUAL, 0), new State(Status.OPEN_ROUND_BRACKET, 1),
+                new State(Status.CLOSE_ROUND_BRACKET, 1), new State(Status.OPEN_CURLY_BRACKET, 1),
+                new State(Status.CLOSE_CURLY_BRACKET, 1), new State(Status.COMMA, 1), new State(Status.SEMICOLON, 1),
+                new State(Status.AND, 1), new State(Status.OR, 1), new State(Status.MORE, 1), new State(Status.LESS, 1),
+                new State(Status.ERROR, 0)
+            },
+            new[]
+            {
+                new State(Status.START, 1), new State(Status.START, 1), new State(Status.IDENT, 1),
+                new State(Status.NUMBER, 1), new State(Status.STRING, 1), new State(Status.ERROR, 0),
+                new State(Status.REALNUMBER_DOT, 1), new State(Status.SLASH, 1), new State(Status.STAR, 1),
+                new State(Status.PLUS, 1), new State(Status.MINUS, 1), new State(Status.PERCENT, 1),
+                new State(Status.NOT, 1), new State(Status.EQUAL, 1), new State(Status.OPEN_ROUND_BRACKET, 1),
+                new State(Status.CLOSE_ROUND_BRACKET, 1), new State(Status.OPEN_CURLY_BRACKET, 1),
+                new State(Status.CLOSE_CURLY_BRACKET, 1), new State(Status.COMMA, 1), new State(Status.SEMICOLON, 1),
+                new State(Status.AND, 1), new State(Status.OR, 1), new State(Status.MORE, 1), new State(Status.LESS, 1),
+                new State(Status.ERROR, 0)
+            },
+            new[]
+            {
+                new State(Status.START, 1), new State(Status.START, 1), new State(Status.IDENT, 1),
+                new State(Status.NUMBER, 1), new State(Status.STRING, 1), new State(Status.ERROR, 0),
+                new State(Status.REALNUMBER_DOT, 1), new State(Status.SLASH, 1), new State(Status.STAR, 1),
+                new State(Status.PLUS, 1), new State(Status.MINUS, 1), new State(Status.PERCENT, 1),
+                new State(Status.NOT, 1), new State(Status.EQUAL, 1), new State(Status.OPEN_ROUND_BRACKET, 1),
+                new State(Status.CLOSE_ROUND_BRACKET, 1), new State(Status.OPEN_CURLY_BRACKET, 1),
+                new State(Status.CLOSE_CURLY_BRACKET, 1), new State(Status.COMMA, 1), new State(Status.SEMICOLON, 1),
+                new State(Status.AND, 1), new State(Status.OR, 1), new State(Status.MORE, 1), new State(Status.LESS, 1),
+                new State(Status.ERROR, 0)
+            },
+            new[]
+            {
+                new State(Status.START, 1), new State(Status.START, 1), new State(Status.IDENT, 1),
+                new State(Status.NUMBER, 1), new State(Status.STRING, 1), new State(Status.ERROR, 0),
+                new State(Status.REALNUMBER_DOT, 1), new State(Status.SLASH, 1), new State(Status.STAR, 1),
+                new State(Status.PLUS, 1), new State(Status.MINUS, 1), new State(Status.PERCENT, 1),
+                new State(Status.NOT, 1), new State(Status.EQUAL, 1), new State(Status.OPEN_ROUND_BRACKET, 1),
+                new State(Status.CLOSE_ROUND_BRACKET, 1), new State(Status.OPEN_CURLY_BRACKET, 1),
+                new State(Status.CLOSE_CURLY_BRACKET, 1), new State(Status.COMMA, 1), new State(Status.SEMICOLON, 1),
+                new State(Status.AND, 1), new State(Status.OR, 1), new State(Status.MORE, 1), new State(Status.LESS, 1),
+                new State(Status.ERROR, 0)
+            },
+            new[]
+            {
+                new State(Status.START, 1), new State(Status.START, 1), new State(Status.IDENT, 1),
+                new State(Status.NUMBER, 1), new State(Status.STRING, 1), new State(Status.ERROR, 0),
+                new State(Status.REALNUMBER_DOT, 1), new State(Status.SLASH, 1), new State(Status.STAR, 1),
+                new State(Status.PLUS, 1), new State(Status.MINUS, 1), new State(Status.PERCENT, 1),
+                new State(Status.NOT, 1), new State(Status.EQUAL, 1), new State(Status.OPEN_ROUND_BRACKET, 1),
+                new State(Status.CLOSE_ROUND_BRACKET, 1), new State(Status.OPEN_CURLY_BRACKET, 1),
+                new State(Status.CLOSE_CURLY_BRACKET, 1), new State(Status.COMMA, 1), new State(Status.SEMICOLON, 1),
+                new State(Status.AND, 1), new State(Status.OR, 1), new State(Status.MORE, 1), new State(Status.LESS, 1),
+                new State(Status.ERROR, 0)
+            },
+            new[]
+            {
+                new State(Status.START, 1), new State(Status.START, 1), new State(Status.IDENT, 1),
+                new State(Status.NUMBER, 1), new State(Status.STRING, 1), new State(Status.ERROR, 0),
+                new State(Status.REALNUMBER_DOT, 1), new State(Status.SLASH, 1), new State(Status.STAR, 1),
+                new State(Status.PLUS, 1), new State(Status.MINUS, 1), new State(Status.PERCENT, 1),
+                new State(Status.NOT, 1), new State(Status.EQUAL, 1), new State(Status.OPEN_ROUND_BRACKET, 1),
+                new State(Status.CLOSE_ROUND_BRACKET, 1), new State(Status.OPEN_CURLY_BRACKET, 1),
+                new State(Status.CLOSE_CURLY_BRACKET, 1), new State(Status.COMMA, 1), new State(Status.SEMICOLON, 1),
+                new State(Status.AND, 1), new State(Status.OR, 1), new State(Status.MORE, 1), new State(Status.LESS, 1),
+                new State(Status.ERROR, 0)
+            },
+            new[]
+            {
+                new State(Status.START, 1), new State(Status.START, 1), new State(Status.IDENT, 1),
+                new State(Status.NUMBER, 1), new State(Status.STRING, 1), new State(Status.ERROR, 0),
+                new State(Status.REALNUMBER_DOT, 1), new State(Status.SLASH, 1), new State(Status.STAR, 1),
+                new State(Status.PLUS, 1), new State(Status.MINUS, 1), new State(Status.PERCENT, 1),
+                new State(Status.NOT, 1), new State(Status.EQUAL, 1), new State(Status.OPEN_ROUND_BRACKET, 1),
+                new State(Status.CLOSE_ROUND_BRACKET, 1), new State(Status.OPEN_CURLY_BRACKET, 1),
+                new State(Status.CLOSE_CURLY_BRACKET, 1), new State(Status.COMMA, 1), new State(Status.SEMICOLON, 1),
+                new State(Status.AND, 1), new State(Status.OR, 1), new State(Status.MORE, 1), new State(Status.LESS, 1),
+                new State(Status.ERROR, 0)
+            },
+            new[]
+            {
+                new State(Status.START, 1), new State(Status.START, 1), new State(Status.IDENT, 1),
+                new State(Status.NUMBER, 1), new State(Status.STRING, 1), new State(Status.ERROR, 0),
+                new State(Status.REALNUMBER_DOT, 1), new State(Status.SLASH, 1), new State(Status.STAR, 1),
+                new State(Status.PLUS, 1), new State(Status.MINUS, 1), new State(Status.PERCENT, 1),
+                new State(Status.NOT, 1), new State(Status.NOT_TWO_EQUAL, 0), new State(Status.OPEN_ROUND_BRACKET, 1),
+                new State(Status.CLOSE_ROUND_BRACKET, 1), new State(Status.OPEN_CURLY_BRACKET, 1),
+                new State(Status.CLOSE_CURLY_BRACKET, 1), new State(Status.COMMA, 1), new State(Status.SEMICOLON, 1),
+                new State(Status.AND, 1), new State(Status.OR, 1), new State(Status.MORE, 1), new State(Status.LESS, 1),
+                new State(Status.ERROR, 0)
+            },
+            new[]
+            {
+                new State(Status.START, 1), new State(Status.START, 1), new State(Status.IDENT, 1),
+                new State(Status.NUMBER, 1), new State(Status.STRING, 1), new State(Status.ERROR, 0),
+                new State(Status.REALNUMBER_DOT, 1), new State(Status.SLASH, 1), new State(Status.STAR, 1),
+                new State(Status.PLUS, 1), new State(Status.MINUS, 1), new State(Status.PERCENT, 1),
+                new State(Status.NOT, 1), new State(Status.EQUAL, 1), new State(Status.OPEN_ROUND_BRACKET, 1),
+                new State(Status.CLOSE_ROUND_BRACKET, 1), new State(Status.OPEN_CURLY_BRACKET, 1),
+                new State(Status.CLOSE_CURLY_BRACKET, 1), new State(Status.COMMA, 1), new State(Status.SEMICOLON, 1),
+                new State(Status.AND, 1), new State(Status.OR, 1), new State(Status.MORE, 1), new State(Status.LESS, 1),
+                new State(Status.ERROR, 0)
+            },
+            new[]
+            {
+                new State(Status.START, 1), new State(Status.START, 1), new State(Status.IDENT, 1),
+                new State(Status.NUMBER, 1), new State(Status.STRING, 1), new State(Status.ERROR, 0),
+                new State(Status.REALNUMBER_DOT, 1), new State(Status.SLASH, 1), new State(Status.STAR, 1),
+                new State(Status.PLUS, 1), new State(Status.MINUS, 1), new State(Status.PERCENT, 1),
+                new State(Status.NOT, 1), new State(Status.EQUAL, 1), new State(Status.OPEN_ROUND_BRACKET, 1),
+                new State(Status.CLOSE_ROUND_BRACKET, 1), new State(Status.OPEN_CURLY_BRACKET, 1),
+                new State(Status.CLOSE_CURLY_BRACKET, 1), new State(Status.COMMA, 1), new State(Status.SEMICOLON, 1),
+                new State(Status.AND, 1), new State(Status.OR, 1), new State(Status.MORE, 1), new State(Status.LESS, 1),
+                new State(Status.ERROR, 0)
+            },
+            new[]
+            {
+                new State(Status.START, 1), new State(Status.START, 1), new State(Status.IDENT, 1),
+                new State(Status.NUMBER, 1), new State(Status.STRING, 1), new State(Status.ERROR, 0),
+                new State(Status.REALNUMBER_DOT, 1), new State(Status.SLASH, 1), new State(Status.STAR, 1),
+                new State(Status.PLUS, 1), new State(Status.MINUS, 1), new State(Status.PERCENT, 1),
+                new State(Status.NOT, 1), new State(Status.EQUAL, 1), new State(Status.OPEN_ROUND_BRACKET, 1),
+                new State(Status.CLOSE_ROUND_BRACKET, 1), new State(Status.OPEN_CURLY_BRACKET, 1),
+                new State(Status.CLOSE_CURLY_BRACKET, 1), new State(Status.COMMA, 1), new State(Status.SEMICOLON, 1),
+                new State(Status.AND, 1), new State(Status.OR, 1), new State(Status.MORE, 1), new State(Status.LESS, 1),
+                new State(Status.ERROR, 0)
+            },
+            new[]
+            {
+                new State(Status.START, 1), new State(Status.START, 1), new State(Status.IDENT, 1),
+                new State(Status.NUMBER, 1), new State(Status.STRING, 1), new State(Status.ERROR, 0),
+                new State(Status.REALNUMBER_DOT, 1), new State(Status.SLASH, 1), new State(Status.STAR, 1),
+                new State(Status.PLUS, 1), new State(Status.MINUS, 1), new State(Status.PERCENT, 1),
+                new State(Status.NOT, 1), new State(Status.EQUAL, 1), new State(Status.OPEN_ROUND_BRACKET, 1),
+                new State(Status.CLOSE_ROUND_BRACKET, 1), new State(Status.OPEN_CURLY_BRACKET, 1),
+                new State(Status.CLOSE_CURLY_BRACKET, 1), new State(Status.COMMA, 1), new State(Status.SEMICOLON, 1),
+                new State(Status.AND, 1), new State(Status.OR, 1), new State(Status.MORE, 1), new State(Status.LESS, 1),
+                new State(Status.ERROR, 0)
+            },
+            new[]
+            {
+                new State(Status.START, 1), new State(Status.START, 1), new State(Status.IDENT, 1),
+                new State(Status.NUMBER, 1), new State(Status.STRING, 1), new State(Status.ERROR, 0),
+                new State(Status.REALNUMBER_DOT, 1), new State(Status.SLASH, 1), new State(Status.STAR, 1),
+                new State(Status.PLUS, 1), new State(Status.MINUS, 1), new State(Status.PERCENT, 1),
+                new State(Status.NOT, 1), new State(Status.EQUAL, 1), new State(Status.OPEN_ROUND_BRACKET, 1),
+                new State(Status.CLOSE_ROUND_BRACKET, 1), new State(Status.OPEN_CURLY_BRACKET, 1),
+                new State(Status.CLOSE_CURLY_BRACKET, 1), new State(Status.COMMA, 1), new State(Status.SEMICOLON, 1),
+                new State(Status.AND, 1), new State(Status.OR, 1), new State(Status.MORE, 1), new State(Status.LESS, 1),
+                new State(Status.ERROR, 0)
+            },
+            new[]
+            {
+                new State(Status.START, 1), new State(Status.START, 1), new State(Status.IDENT, 1),
+                new State(Status.NUMBER, 1), new State(Status.STRING, 1), new State(Status.ERROR, 0),
+                new State(Status.REALNUMBER_DOT, 1), new State(Status.SLASH, 1), new State(Status.STAR, 1),
+                new State(Status.PLUS, 1), new State(Status.MINUS, 1), new State(Status.PERCENT, 1),
+                new State(Status.NOT, 1), new State(Status.EQUAL, 1), new State(Status.OPEN_ROUND_BRACKET, 1),
+                new State(Status.CLOSE_ROUND_BRACKET, 1), new State(Status.OPEN_CURLY_BRACKET, 1),
+                new State(Status.CLOSE_CURLY_BRACKET, 1), new State(Status.COMMA, 1), new State(Status.SEMICOLON, 1),
+                new State(Status.AND, 1), new State(Status.OR, 1), new State(Status.MORE, 1), new State(Status.LESS, 1),
+                new State(Status.ERROR, 0)
+            },
+            new[]
+            {
+                new State(Status.START, 1), new State(Status.START, 1), new State(Status.IDENT, 1),
+                new State(Status.NUMBER, 1), new State(Status.STRING, 1), new State(Status.ERROR, 0),
+                new State(Status.REALNUMBER_DOT, 1), new State(Status.SLASH, 1), new State(Status.STAR, 1),
+                new State(Status.PLUS, 1), new State(Status.MINUS, 1), new State(Status.PERCENT, 1),
+                new State(Status.NOT, 1), new State(Status.EQUAL, 1), new State(Status.OPEN_ROUND_BRACKET, 1),
+                new State(Status.CLOSE_ROUND_BRACKET, 1), new State(Status.OPEN_CURLY_BRACKET, 1),
+                new State(Status.CLOSE_CURLY_BRACKET, 1), new State(Status.COMMA, 1), new State(Status.SEMICOLON, 1),
+                new State(Status.AND, 1), new State(Status.OR, 1), new State(Status.MORE, 1), new State(Status.LESS, 1),
+                new State(Status.ERROR, 0)
+            },
+            new[]
+            {
+                new State(Status.START, 1), new State(Status.START, 1), new State(Status.IDENT, 1),
+                new State(Status.NUMBER, 1), new State(Status.STRING, 1), new State(Status.ERROR, 0),
+                new State(Status.REALNUMBER_DOT, 1), new State(Status.SLASH, 1), new State(Status.STAR, 1),
+                new State(Status.PLUS, 1), new State(Status.MINUS, 1), new State(Status.PERCENT, 1),
+                new State(Status.NOT, 1), new State(Status.ANDEQUAL, 0), new State(Status.OPEN_ROUND_BRACKET, 1),
+                new State(Status.CLOSE_ROUND_BRACKET, 1), new State(Status.OPEN_CURLY_BRACKET, 1),
+                new State(Status.CLOSE_CURLY_BRACKET, 1), new State(Status.COMMA, 1), new State(Status.SEMICOLON, 1),
+                new State(Status.ANDAND, 0), new State(Status.OR, 1), new State(Status.MORE, 1),
+                new State(Status.LESS, 1), new State(Status.ERROR, 0)
+            },
+            new[]
+            {
+                new State(Status.START, 1), new State(Status.START, 1), new State(Status.IDENT, 1),
+                new State(Status.NUMBER, 1), new State(Status.STRING, 1), new State(Status.ERROR, 0),
+                new State(Status.REALNUMBER_DOT, 1), new State(Status.SLASH, 1), new State(Status.STAR, 1),
+                new State(Status.PLUS, 1), new State(Status.MINUS, 1), new State(Status.PERCENT, 1),
+                new State(Status.NOT, 1), new State(Status.EQUAL, 1), new State(Status.OPEN_ROUND_BRACKET, 1),
+                new State(Status.CLOSE_ROUND_BRACKET, 1), new State(Status.OPEN_CURLY_BRACKET, 1),
+                new State(Status.CLOSE_CURLY_BRACKET, 1), new State(Status.COMMA, 1), new State(Status.SEMICOLON, 1),
+                new State(Status.AND, 1), new State(Status.OR, 1), new State(Status.MORE, 1), new State(Status.LESS, 1),
+                new State(Status.ERROR, 0)
+            },
+            new[]
+            {
+                new State(Status.START, 1), new State(Status.START, 1), new State(Status.IDENT, 1),
+                new State(Status.NUMBER, 1), new State(Status.STRING, 1), new State(Status.ERROR, 0),
+                new State(Status.REALNUMBER_DOT, 1), new State(Status.SLASH, 1), new State(Status.STAR, 1),
+                new State(Status.PLUS, 1), new State(Status.MINUS, 1), new State(Status.PERCENT, 1),
+                new State(Status.NOT, 1), new State(Status.EQUAL, 1), new State(Status.OPEN_ROUND_BRACKET, 1),
+                new State(Status.CLOSE_ROUND_BRACKET, 1), new State(Status.OPEN_CURLY_BRACKET, 1),
+                new State(Status.CLOSE_CURLY_BRACKET, 1), new State(Status.COMMA, 1), new State(Status.SEMICOLON, 1),
+                new State(Status.AND, 1), new State(Status.OR, 1), new State(Status.MORE, 1), new State(Status.LESS, 1),
+                new State(Status.ERROR, 0)
+            },
+            new[]
+            {
+                new State(Status.START, 1), new State(Status.START, 1), new State(Status.IDENT, 1),
+                new State(Status.NUMBER, 1), new State(Status.STRING, 1), new State(Status.ERROR, 0),
+                new State(Status.REALNUMBER_DOT, 1), new State(Status.SLASH, 1), new State(Status.STAR, 1),
+                new State(Status.PLUS, 1), new State(Status.MINUS, 1), new State(Status.PERCENT, 1),
+                new State(Status.NOT, 1), new State(Status.OREQUAL, 0), new State(Status.OPEN_ROUND_BRACKET, 1),
+                new State(Status.CLOSE_ROUND_BRACKET, 1), new State(Status.OPEN_CURLY_BRACKET, 1),
+                new State(Status.CLOSE_CURLY_BRACKET, 1), new State(Status.COMMA, 1), new State(Status.SEMICOLON, 1),
+                new State(Status.AND, 1), new State(Status.OROR, 0), new State(Status.MORE, 1),
+                new State(Status.LESS, 1), new State(Status.ERROR, 0)
+            },
+            new[]
+            {
+                new State(Status.START, 1), new State(Status.START, 1), new State(Status.IDENT, 1),
+                new State(Status.NUMBER, 1), new State(Status.STRING, 1), new State(Status.ERROR, 0),
+                new State(Status.REALNUMBER_DOT, 1), new State(Status.SLASH, 1), new State(Status.STAR, 1),
+                new State(Status.PLUS, 1), new State(Status.MINUS, 1), new State(Status.PERCENT, 1),
+                new State(Status.NOT, 1), new State(Status.EQUAL, 1), new State(Status.OPEN_ROUND_BRACKET, 1),
+                new State(Status.CLOSE_ROUND_BRACKET, 1), new State(Status.OPEN_CURLY_BRACKET, 1),
+                new State(Status.CLOSE_CURLY_BRACKET, 1), new State(Status.COMMA, 1), new State(Status.SEMICOLON, 1),
+                new State(Status.AND, 1), new State(Status.OR, 1), new State(Status.MORE, 1), new State(Status.LESS, 1),
+                new State(Status.ERROR, 0)
+            },
+            new[]
+            {
+                new State(Status.START, 1), new State(Status.START, 1), new State(Status.IDENT, 1),
+                new State(Status.NUMBER, 1), new State(Status.STRING, 1), new State(Status.ERROR, 0),
+                new State(Status.REALNUMBER_DOT, 1), new State(Status.SLASH, 1), new State(Status.STAR, 1),
+                new State(Status.PLUS, 1), new State(Status.MINUS, 1), new State(Status.PERCENT, 1),
+                new State(Status.NOT, 1), new State(Status.EQUAL, 1), new State(Status.OPEN_ROUND_BRACKET, 1),
+                new State(Status.CLOSE_ROUND_BRACKET, 1), new State(Status.OPEN_CURLY_BRACKET, 1),
+                new State(Status.CLOSE_CURLY_BRACKET, 1), new State(Status.COMMA, 1), new State(Status.SEMICOLON, 1),
+                new State(Status.AND, 1), new State(Status.OR, 1), new State(Status.MORE, 1), new State(Status.LESS, 1),
+                new State(Status.ERROR, 0)
+            },
+            new[]
+            {
+                new State(Status.START, 1), new State(Status.START, 1), new State(Status.IDENT, 1),
+                new State(Status.NUMBER, 1), new State(Status.STRING, 1), new State(Status.ERROR, 0),
+                new State(Status.REALNUMBER_DOT, 1), new State(Status.SLASH, 1), new State(Status.STAR, 1),
+                new State(Status.PLUS, 1), new State(Status.MINUS, 1), new State(Status.PERCENT, 1),
+                new State(Status.NOT, 1), new State(Status.MOREOREQUAL, 0), new State(Status.OPEN_ROUND_BRACKET, 1),
+                new State(Status.CLOSE_ROUND_BRACKET, 1), new State(Status.OPEN_CURLY_BRACKET, 1),
+                new State(Status.CLOSE_CURLY_BRACKET, 1), new State(Status.COMMA, 1), new State(Status.SEMICOLON, 1),
+                new State(Status.AND, 1), new State(Status.OR, 1), new State(Status.MORE, 1), new State(Status.LESS, 1),
+                new State(Status.ERROR, 0)
+            },
+            new[]
+            {
+                new State(Status.START, 1), new State(Status.START, 1), new State(Status.IDENT, 1),
+                new State(Status.NUMBER, 1), new State(Status.STRING, 1), new State(Status.ERROR, 0),
+                new State(Status.REALNUMBER_DOT, 1), new State(Status.SLASH, 1), new State(Status.STAR, 1),
+                new State(Status.PLUS, 1), new State(Status.MINUS, 1), new State(Status.PERCENT, 1),
+                new State(Status.NOT, 1), new State(Status.EQUAL, 1), new State(Status.OPEN_ROUND_BRACKET, 1),
+                new State(Status.CLOSE_ROUND_BRACKET, 1), new State(Status.OPEN_CURLY_BRACKET, 1),
+                new State(Status.CLOSE_CURLY_BRACKET, 1), new State(Status.COMMA, 1), new State(Status.SEMICOLON, 1),
+                new State(Status.AND, 1), new State(Status.OR, 1), new State(Status.MORE, 1), new State(Status.LESS, 1),
+                new State(Status.ERROR, 0)
+            },
+            new[]
+            {
+                new State(Status.START, 1), new State(Status.START, 1), new State(Status.IDENT, 1),
+                new State(Status.NUMBER, 1), new State(Status.STRING, 1), new State(Status.ERROR, 0),
+                new State(Status.REALNUMBER_DOT, 1), new State(Status.SLASH, 1), new State(Status.STAR, 1),
+                new State(Status.PLUS, 1), new State(Status.MINUS, 1), new State(Status.PERCENT, 1),
+                new State(Status.NOT, 1), new State(Status.LESSOREQUAL, 0), new State(Status.OPEN_ROUND_BRACKET, 1),
+                new State(Status.CLOSE_ROUND_BRACKET, 1), new State(Status.OPEN_CURLY_BRACKET, 1),
+                new State(Status.CLOSE_CURLY_BRACKET, 1), new State(Status.COMMA, 1), new State(Status.SEMICOLON, 1),
+                new State(Status.AND, 1), new State(Status.OR, 1), new State(Status.MORE, 1), new State(Status.LESS, 1),
+                new State(Status.ERROR, 0)
+            },
+            new[]
+            {
+                new State(Status.START, 1), new State(Status.START, 1), new State(Status.IDENT, 1),
+                new State(Status.NUMBER, 1), new State(Status.STRING, 1), new State(Status.ERROR, 0),
+                new State(Status.REALNUMBER_DOT, 1), new State(Status.SLASH, 1), new State(Status.STAR, 1),
+                new State(Status.PLUS, 1), new State(Status.MINUS, 1), new State(Status.PERCENT, 1),
+                new State(Status.NOT, 1), new State(Status.EQUAL, 1), new State(Status.OPEN_ROUND_BRACKET, 1),
+                new State(Status.CLOSE_ROUND_BRACKET, 1), new State(Status.OPEN_CURLY_BRACKET, 1),
+                new State(Status.CLOSE_CURLY_BRACKET, 1), new State(Status.COMMA, 1), new State(Status.SEMICOLON, 1),
+                new State(Status.AND, 1), new State(Status.OR, 1), new State(Status.MORE, 1), new State(Status.LESS, 1),
+                new State(Status.ERROR, 0)
+            }
         };
 
         private readonly string[] _regexes =
@@ -172,8 +669,9 @@ namespace parser
             "in",
             "else"
         };
+
         private readonly SortedSet<string> _reservedNames = new SortedSet<string>
-        { 
+        {
             "string",
             "substring",
             "character",
@@ -186,14 +684,15 @@ namespace parser
             "false",
             "nil"
         };
+
         private readonly SortedSet<int> _skip = new SortedSet<int>
         {
-            (int)Status.MULTI_LC_END,
-            (int)Status.ONE_LC
+            (int) Status.MULTI_LC_END,
+            (int) Status.ONE_LC
         };
-        
-        int _status = (int)Status.START;
-        int _oldStatus = (int)Status.START;
+
+        int _status = (int) Status.START;
+        int _oldStatus = (int) Status.START;
         int _action;
         string _str = "";
 
@@ -205,14 +704,14 @@ namespace parser
             string parentDirName = parentDir.FullName;
             parentDirName = parentDirName.Remove(parentDirName.Length - 9, 9);
             parentDirName = parentDirName + filename;
-            
+
             StreamReader sr = new StreamReader(parentDirName);
 
             List<Token> tokens = new List<Token>();
 
-            
+
             int line = 0;
-	
+
             while (!sr.EndOfStream)
             {
                 line++;
@@ -222,7 +721,7 @@ namespace parser
 
                 for (int i = 0, length = tmp.Length; i < length; i++)
                 {
-                    string str = tmp[i]+"";
+                    string str = tmp[i] + "";
                     CheckSymbol(ref tokens, str, line, i);
                 }
             }
@@ -251,7 +750,7 @@ namespace parser
         void CheckSymbol(ref List<Token> tokens, string s, int line, int position)
         {
             int index = GetIndex(s);
-            
+
             if (index == -1)
             {
                 int size = position - _str.Length + 1;
@@ -261,9 +760,9 @@ namespace parser
 
             _oldStatus = _status;
             _action = Table[_status][index].GetAction();
-            _status = (int)Table[_status][index].GetStatus();
+            _status = (int) Table[_status][index].GetStatus();
 
-            if (_status == (int)Status.ERROR)
+            if (_status == (int) Status.ERROR)
             {
                 int size = position - _str.Length + 1;
                 Console.WriteLine($"[status: ERROR] [{line}:{size}] >> {s}\n");
@@ -276,9 +775,9 @@ namespace parser
             }
             else
             {
-                if (_status == (int)Status.START)
+                if (_status == (int) Status.START)
                 {
-                    if (_oldStatus != (int)Status.START)
+                    if (_oldStatus != (int) Status.START)
                     {
                         CheckWord(ref tokens, _str, line, position);
                     }
@@ -326,7 +825,7 @@ namespace parser
                     line = line,
                     position = position
                 };
-                
+
                 tokens.Add(tok);
                 return;
             }

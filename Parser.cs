@@ -53,6 +53,7 @@ public class Parser
         Expressions, //вырфжения
         ConstantDefinition, //определение константы
         VariableDefinition, //определение переменной
+        TypeAnnotation,
         Definitions, //определения
         InitialisationListPattern, //список инициализации паттерн
         PatternInitialisator, // паттерн инициализатор
@@ -60,7 +61,6 @@ public class Parser
         Initialisator, //инициализатор
         ForInCycle,
         WhileCycle,
-        ConditionsList, //список условий
         Condition, //условие
         TransformationOptional, //преобразование optional
         IfBranching,
@@ -109,6 +109,10 @@ public class Parser
         SigmaVar,
         SigmaWhile,
         SigmaElse,
+        SigmaBreak,
+        SigmaContinue,
+        SigmaTrue,
+        SigmaFalse,
     };
 
     private readonly string[] _sigma =
@@ -231,7 +235,11 @@ public class Parser
             {nu.SigmaDot, "."},
             {nu.SigmaDoubleDot, ":"},
             {nu.SigmaComma, ","},
-            {nu.SigmaLambda, "lambda"}
+            {nu.SigmaTrue, "true"},
+            {nu.SigmaFalse, "false"},
+            {nu.SigmaLambda, "lambda"},
+            {nu.SigmaBreak, "break"},
+            {nu.SigmaContinue, "continue"}
         };
 
         nnRule[] nnRules =
@@ -244,12 +252,12 @@ public class Parser
             new nnRule(nu.Sentence, new[] {nu.Expressions}),
             new nnRule(nu.Sentence, new[] {nu.Definitions}),
             new nnRule(nu.Sentence, new[] {nu.Cycle}),
-            new nnRule(nu.Sentence, new[] {nu.Branching}),
+            new nnRule(nu.Sentence, new[] {nu.IfBranching}),
             new nnRule(nu.Sentence, new[] {nu.ControlSentence}),
 
             new nnRule(nu.CodeBlock, new[] {nu.Sentences}),
 
-            new nnRule(nu.Expression, new[] {nu.BinaryOperator, nu.Operand}),
+            new nnRule(nu.Expression, new[] {nu.Operand, nu.BinaryOperator, nu.Operand}),
             new nnRule(nu.Operand, new[] {nu.Identifier}),
             new nnRule(nu.Operand, new[] {nu.Literal}),
             new nnRule(nu.Operand, new[] {nu.Identifier, nu.FunctionCall}),
@@ -269,6 +277,23 @@ public class Parser
             new nnRule(nu.Definition, new[] {nu.VariableDefinition}),
             new nnRule(nu.Definitions, new[] {nu.Definition}),
             new nnRule(nu.Definitions, new[] {nu.Definition, nu.Definitions}),
+
+            new nnRule(nu.InitialisationListPattern, new[] {nu.PatternInitialisator}),
+            new nnRule(nu.InitialisationListPattern, new[] {nu.PatternInitialisator, nu.InitialisationListPattern}),
+
+            new nnRule(nu.PatternInitialisator, new[] {nu.Identifier, nu.Initialisator}),
+            new nnRule(nu.PatternInitialisator, new[] {nu.Identifier, nu.TypeAnnotation, nu.Initialisator}),
+
+            new nnRule(nu.Cycle, new[] {nu.ForInCycle}),
+            new nnRule(nu.Cycle, new[] {nu.WhileCycle}),
+
+            new nnRule(nu.Condition, new[] {nu.Expression}),
+            new nnRule(nu.Condition, new[] {nu.TransformationOptional}),
+
+            // new nnRule(nu.Identifier, new[] {nu.IdentificatorsStart}),
+            // new nnRule(nu.Identifier, new[] {nu.IdentificatorsStart, nu.IdentificatorsSymbols}),
+            // new nnRule(nu.IdentificatorSymbol, new[] {nu.IdentificatorsStart}),
+            // new nnRule(nu.IdentificatorsSymbols, new[] {nu.IdentificatorsStart}),
         };
         nsRule[] nsRules =
         {
@@ -309,6 +334,12 @@ public class Parser
             new nsRule(nu.DotOperatorStart, new[] {sigma[nu.SigmaDot]}),
             new nsRule(nu.DotOperatorSymbol, new[] {sigma[nu.SigmaDot]}),
             new nsRule(nu.DotOperatorSymbols, new[] {sigma[nu.SigmaLambda]}),
+
+            new nsRule(nu.ControlSentence, new[] {sigma[nu.SigmaBreak]}),
+            new nsRule(nu.ControlSentence, new[] {sigma[nu.SigmaContinue]}),
+
+            new nsRule(nu.BoolLiteral, new[] {sigma[nu.SigmaTrue]}),
+            new nsRule(nu.BoolLiteral, new[] {sigma[nu.SigmaFalse]}),
         };
         mixRule[] mixRules =
         {
@@ -316,8 +347,25 @@ public class Parser
             new mixRule(nu.ArgumentsList, new[] {nu.Argument, nu.SigmaComma, nu.ArgumentsList}),
             new mixRule(nu.Argument, new[] {nu.Identifier, nu.SigmaDoubleDot, nu.Expression}),
 
-            new mixRule(nu.ConstantDefinition, new[] {nu.Definition, nu.Definitions}),
-            new mixRule(nu.VariableDefinition, new[] {nu.Definition, nu.Definitions}),
+            new mixRule(nu.ConstantDefinition, new[] {nu.SigmaLet, nu.InitialisationListPattern}),
+            new mixRule(nu.VariableDefinition, new[] {nu.SigmaVar, nu.InitialisationListPattern}),
+
+            new mixRule(nu.TypeAnnotation, new[] {nu.SigmaDoubleDot, nu.Identifier}),
+            new mixRule(nu.TypeAnnotation, new[] {nu.SigmaDoubleDot, nu.Identifier, nu.SigmaQuest}),
+
+            new mixRule(nu.Initialisator, new[] {nu.SigmaEqual, nu.Expression}),
+
+            new mixRule(nu.ForInCycle, new[] {nu.SigmaFor, nu.Pattern, nu.SigmaIn, nu.Expression, nu.CodeBlock}),
+            new mixRule(nu.WhileCycle, new[] {nu.SigmaWhile, nu.Condition, nu.CodeBlock}),
+
+
+            new mixRule(nu.TransformationOptional, new[] {nu.SigmaLet, nu.Pattern, nu.Initialisator}),
+            new mixRule(nu.TransformationOptional, new[] {nu.SigmaVar, nu.Pattern, nu.Initialisator}),
+
+            new mixRule(nu.IfBranching, new[] {nu.SigmaIf, nu.Condition, nu.CodeBlock, nu.ElseBlock}),
+            new mixRule(nu.IfBranching, new[] {nu.SigmaIf, nu.Condition, nu.CodeBlock}),
+            new mixRule(nu.ElseBlock, new[] {nu.SigmaElse, nu.CodeBlock}),
+            new mixRule(nu.ElseBlock, new[] {nu.SigmaElse, nu.IfBranching}),
         };
     }
 }
