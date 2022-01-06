@@ -314,3 +314,91 @@ string ParseToplevel(List<Token> tokens)
             new mixRule(nu.ElseBlock, new[] {nu.SigmaElse, nu.CodeBlock}),
             new mixRule(nu.ElseBlock, new[] {nu.SigmaElse, nu.IfBranching}),
         };
+        
+        Helper, // вспомогательный нетерминал
+        Program, // программа
+        Sentence, //предложение
+        Expression, //выражение
+        Definition, //определение
+        Cycle, //цикл
+        Branching, //ветвление
+        ControlSentence, //контрольное предложение
+        Sentences, //предложения
+        CodeBlock, //код-блок
+        BinaryOperator, //бинарный оператор
+        BinaryOperatorStart, //бинарный оператор начало
+        UnaryOperator,
+        DotOperatorStart,
+        DotOperatorSymbols,
+        DotOperatorSymbol,
+        OperatorSymbols, // оператор символы
+        OperatorSymbol, // оператор символ
+        Operand, //опреанд
+        Identifier, //идентификатор
+        Literal, //литерал
+        FunctionCall, //вызов функции
+        ArgumentsList, //список аргументов
+        Argument, //аргумент
+        Expressions, //вырфжения
+        ConstantDefinition, //определение константы
+        VariableDefinition, //определение переменной
+        TypeAnnotation,
+        Definitions, //определения
+        InitialisationListPattern, //список инициализации паттерн
+        PatternInitialisator, // паттерн инициализатор
+        Pattern, //паттерн
+        Initialisator, //инициализатор
+        ForInCycle,
+        WhileCycle,
+        Condition, //условие
+        TransformationOptional, //преобразование optional
+        IfBranching,
+        ElseBlock,
+        IdentificatorsStart,
+        IdentificatorsSymbols, //символы идентификатора
+        IdentificatorSymbol, //идентификатор символ
+        NumberLiteral, //численный литерал
+        StringLiteral,
+        BoolLiteral,
+        IntNumberLiteral,
+        FloatNumberLiteral,
+        DecimalNumber,
+        DecimalSymbols,
+        DecimalSymbol,
+        FloatPart,
+        Exp, //експонента
+        Sign, //знак
+
+        SigmaLetters,
+        SigmaNumbers,
+        SigmaOpenRound,
+        SigmaCloseRound,
+        SigmaOpenCurl,
+        SigmaCloseCurl,
+        SigmaEqual,
+        SigmaSlash,
+        SigmaStar,
+        SigmaPlus,
+        SigmaMinus,
+        SigmaPercent,
+        SigmaNot,
+        SigmaQuest,
+        SigmaMore,
+        SigmaLess,
+        SigmaDot,
+        SigmaDoubleDot,
+        SigmaComma,
+        SigmaLambda,
+        SigmaAnd,
+        SigmaOr,
+        SigmaFor,
+        SigmaIf,
+        SigmaIn,
+        SigmaLet,
+        SigmaVar,
+        SigmaWhile,
+        SigmaElse,
+        SigmaBreak,
+        SigmaContinue,
+        SigmaTrue,
+        SigmaFalse,

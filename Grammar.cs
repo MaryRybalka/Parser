@@ -17,18 +17,10 @@ public class Grammar
         Expression, //выражение
         Definition, //определение
         Cycle, //цикл
-        Branching, //ветвление
-        ControlSentence, //контрольное предложение
         Sentences, //предложения
         CodeBlock, //код-блок
         BinaryOperator, //бинарный оператор
-        BinaryOperatorStart, //бинарный оператор начало
         UnaryOperator,
-        DotOperatorStart,
-        DotOperatorSymbols,
-        DotOperatorSymbol,
-        OperatorSymbols, // оператор символы
-        OperatorSymbol, // оператор символ
         Operand, //опреанд
         Identifier, //идентификатор
         Literal, //литерал
@@ -36,37 +28,20 @@ public class Grammar
         ArgumentsList, //список аргументов
         Argument, //аргумент
         Expressions, //вырфжения
-        ConstantDefinition, //определение константы
-        VariableDefinition, //определение переменной
         TypeAnnotation,
         Definitions, //определения
         InitialisationListPattern, //список инициализации паттерн
         PatternInitialisator, // паттерн инициализатор
         Pattern, //паттерн
         Initialisator, //инициализатор
-        ForInCycle,
-        WhileCycle,
         Condition, //условие
-        TransformationOptional, //преобразование optional
         IfBranching,
         ElseBlock,
-        IdentificatorsStart,
-        IdentificatorsSymbols, //символы идентификатора
-        IdentificatorSymbol, //идентификатор символ
+
         NumberLiteral, //численный литерал
         StringLiteral,
         BoolLiteral,
-        IntNumberLiteral,
-        FloatNumberLiteral,
-        DecimalNumber,
-        DecimalSymbols,
-        DecimalSymbol,
-        FloatPart,
-        Exp, //експонента
-        Sign, //знак
 
-        SigmaLetters,
-        SigmaNumbers,
         SigmaOpenRound,
         SigmaCloseRound,
         SigmaOpenCurl,
