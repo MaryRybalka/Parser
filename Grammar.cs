@@ -4,6 +4,7 @@ public class Grammar
 {
     public enum nu
     {
+        Helper, // вспомогательный нетерминал
         Program, // программа
         Sentence, //предложение
         Expression, //выражение
@@ -184,7 +185,7 @@ public class Grammar
         }
     }
 
-    private nu axiom = nu.Program;
+    private nu axioma = nu.Program;
     private Dictionary<nu, string> sigma;
     private nnRule[] nnRules;
     private nsRule[] nsRules;
@@ -405,5 +406,10 @@ public class Grammar
     public SortedSet<string> GetMixRules()
     {
         return _reservedNames;
+    }
+
+    public nu GetAxioma()
+    {
+        return axioma;
     }
 }

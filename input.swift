@@ -14,7 +14,7 @@ k
 var m = 2
 do {
     m = m * 2
-} while m < 100
+ while m < 100
 m
 
 let n = true
