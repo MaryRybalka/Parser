@@ -36,37 +36,37 @@ public class Parser
     {
         ntDic = new Dictionary<nu, string>
         {
-            Helper, // вспомогательный нетерминал
-            Program, // программа
-            Sentence, //предложение
-            Expression, //выражение
-            Definition, //определение
-            Cycle, //цикл
-            Sentences, //предложения
-            CodeBlock, //код-блок
-            BinaryOperator, //бинарный оператор
-            UnaryOperator,
-            Operand, //опреанд
-            Identifier, //идентификатор
-            Literal, //литерал
-            FunctionCall, //вызов функции
-            ArgumentsList, //список аргументов
-            Argument, //аргумент
-            Expressions, //вырфжения
-            TypeAnnotation,
-            Definitions, //определения
-            InitialisationListPattern, //список инициализации паттерн
-            PatternInitialisator, // паттерн инициализатор
-            Pattern, //паттерн
-            Initialisator, //инициализатор
-            Condition, //условие
-            IfBranching,
-            ElseBlock,
-
-            NumberLiteral, //численный литерал
-            StringLiteral,
-            BoolLiteral,
+            {nu.Helper, "Helper"},
+            {nu.Program, "Program"},
+            {nu.Sentence, "Sentence"},
+            {nu.Expression, "Expression"},
+            {nu.Definition, "Definition"},
+            {nu.Cycle, "Cycle"},
+            {nu.Sentences, "Sentences"},
+            {nu.CodeBlock, "CodeBlock"},
+            {nu.BinaryOperator, "BinaryOperator"},
+            {nu.UnaryOperator, "UnaryOperator"},
+            {nu.Operand, "Operand"},
+            {nu.Identifier, "Identifier"},
+            {nu.Literal, "Literal"},
+            {nu.FunctionCall, "FunctionCall"},
+            {nu.ArgumentsList, "ArgumentsList"},
+            {nu.Argument, "Argument"},
+            {nu.Expressions, "Expressions"},
+            {nu.TypeAnnotation, "TypeAnnotation"},
+            {nu.Definitions, "Definitions"},
+            {nu.InitialisationListPattern, "InitialisationListPattern"},
+            {nu.PatternInitialisator, "PatternInitialisator"},
+            {nu.Pattern, "Pattern"},
+            {nu.Initialisator, "Initialisator"},
+            {nu.Condition, "Condition"},
+            {nu.IfBranching, "IfBranching"},
+            {nu.ElseBlock, "ElseBlock"},
+            {nu.NumberLiteral, "NumberLiteral"},
+            {nu.StringLiteral, "StringLiteral"},
+            {nu.BoolLiteral, "BoolLiteral"},
         };
+
         Grammar = new Grammar();
         TokensDictionary = new Dictionary<string, nu>()
         {
@@ -145,22 +145,35 @@ public class Parser
             }
         }
 
+        string res = "";
         if (D[tokenList.Capacity].Contains(startState))
         {
-            string res = "";
             foreach (var d in D)
             {
                 foreach (var state in d)
                 {
-                    res = res + state.GetRule().getLeftPart().ToString()
+                    res = res + "<" + ntDic[state.GetRule().getLeftPart()] + "> -> ";
+                    foreach (var rightPart in state.GetRule().getRightPart())
+                    {
+                        if (state.GetRule().getType() == ruleType.nn) res = res + "<" + ntDic[rightPart] + "> ";
+                        else if (state.GetRule().getType() == ruleType.ns) res = res + Grammar.GetSigma()[rightPart];
+                        else
+                        {
+                            if (Grammar.GetSigma().ContainsKey(rightPart)) res = res + Grammar.GetSigma()[rightPart];
+                            else res = res + "<" + ntDic[rightPart] + "> ";
+                        }
+                    }
+
+                    res += "\n";
                 }
             }
         }
         else
         {
+            res = "Program contains mistakes\n";
         }
 
-        return "ok";
+        return res;
     }
 
     int Scan(ref List<state>[] D, int j, Token token, ref bool changed)
