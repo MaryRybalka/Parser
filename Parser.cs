@@ -32,7 +32,7 @@ public class Parser
     private Grammar Grammar;
     private Dictionary<string, nu> TokensDictionary;
 
-    Parser()
+    public Parser()
     {
         ntDic = new Dictionary<nu, string>
         {
@@ -123,25 +123,30 @@ public class Parser
         }
     }
 
-    string Parse(List<Token> tokenList)
+    public string Parse(List<Token> tokenList)
     {
         List<state>[] D = new List<state>[tokenList.Capacity + 1];
+        for (int i = 0; i < D.Length; i++)
+        {
+            D[i] = new List<state>();
+        }
+
         state startState = new state(new Rule(nu.Helper, new[] {Grammar.GetAxioma()}, ruleType.nn), 0);
-        D[0].Add(startState);
+        D[0].Add(new state(new Rule(nu.Helper, new[] {Grammar.GetAxioma()}, ruleType.nn), 0));
 
         foreach (Token token in tokenList)
         {
-            bool changed = false;
+            bool changed = false || tokenList.IndexOf(token) == 0;
 
             if (Scan(ref D, tokenList.IndexOf(token), token, ref changed) < 0)
             {
-                Console.WriteLine($"ERROR in {token.line} line]: no such name {token.value}\n");
+                Console.WriteLine($"ERROR in {token.line} line: no such name {token.value}\n");
             }
 
-            if (changed)
+            while (changed)
             {
-                Complete(ref D, tokenList.IndexOf(token));
-                Predict(ref D, tokenList.IndexOf(token));
+                Complete(ref D, tokenList.IndexOf(token), ref changed);
+                Predict(ref D, tokenList.IndexOf(token), ref changed);
             }
         }
 
@@ -171,6 +176,25 @@ public class Parser
         else
         {
             res = "Program contains mistakes\n";
+            foreach (var d in D)
+            {
+                foreach (var state in d)
+                {
+                    res = res + "<" + ntDic[state.GetRule().getLeftPart()] + "> -> ";
+                    foreach (var rightPart in state.GetRule().getRightPart())
+                    {
+                        if (state.GetRule().getType() == ruleType.nn) res = res + "<" + ntDic[rightPart] + "> ";
+                        else if (state.GetRule().getType() == ruleType.ns) res = res + Grammar.GetSigma()[rightPart];
+                        else
+                        {
+                            if (Grammar.GetSigma().ContainsKey(rightPart)) res = res + Grammar.GetSigma()[rightPart];
+                            else res = res + "<" + ntDic[rightPart] + "> ";
+                        }
+                    }
+
+                    res += "\n";
+                }
+            }
         }
 
         return res;
@@ -197,7 +221,9 @@ public class Parser
                     changed = true;
                 }
 
-                flag = flag || !(Grammar.GetSigma().ContainsKey(state.GetRule().getRightPart()[state.GetMeta()]));
+                flag = flag ||
+                       ((state.GetRule().getType() == ruleType.mix || state.GetRule().getType() == ruleType.ns) &&
+                        !(Grammar.GetSigma().ContainsKey(state.GetRule().getRightPart()[state.GetMeta()])));
             }
 
             return (flag) ? -1 : 0;
@@ -206,9 +232,11 @@ public class Parser
         return 0;
     }
 
-    void Complete(ref List<state>[] D, int j)
+    void Complete(ref List<state>[] D, int j, ref bool changed)
     {
-        foreach (var stateJ in D[j])
+        bool localCh = false;
+        List<state> DJCopy = new List<state>(D[j]);
+        foreach (var stateJ in DJCopy)
         {
             if (stateJ.GetMeta() == stateJ.GetRule().getRightPart().Length)
             {
@@ -226,15 +254,20 @@ public class Parser
                             stateI.GetInd(),
                             stateI.GetMeta() + 1
                         ));
+                        localCh = true;
                     }
                 }
             }
         }
+
+        changed = localCh;
     }
 
-    void Predict(ref List<state>[] D, int j)
+    void Predict(ref List<state>[] D, int j, ref bool changed)
     {
-        foreach (var state in D[j])
+        bool localCh = false;
+        List<state> DJCopy = new List<state>(D[j]);
+        foreach (var state in DJCopy)
         {
             if ((state.GetRule().getType() == ruleType.mix || state.GetRule().getType() == ruleType.nn) &&
                 state.GetMeta() < state.GetRule().getRightPart().Length &&
@@ -245,9 +278,12 @@ public class Parser
                     if (rule.getLeftPart() == state.GetRule().getRightPart()[state.GetMeta()])
                     {
                         D[j].Add(new state(rule, j));
+                        localCh = true;
                     }
                 }
             }
         }
+
+        changed = localCh;
     }
 }
