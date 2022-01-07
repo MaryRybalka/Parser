@@ -73,6 +73,9 @@ public class Grammar
         SigmaContinue,
         SigmaTrue,
         SigmaFalse,
+        SigmaString,
+        SigmaNumber,
+        SigmaIdent,
     };
 
     private readonly SortedSet<string> _keywords = new SortedSet<string>
@@ -191,7 +194,10 @@ public class Grammar
             {nu.SigmaFalse, "false"},
             {nu.SigmaLambda, "lambda"},
             {nu.SigmaBreak, "break"},
-            {nu.SigmaContinue, "continue"}
+            {nu.SigmaContinue, "continue"},
+            {nu.SigmaString, "STRING_END"},
+            {nu.SigmaNumber, "NUMBER"},
+            {nu.SigmaIdent, "IDENT"},
         };
 
         Rules = new Rule[]
@@ -249,6 +255,9 @@ public class Grammar
             new Rule(nu.Sentence, new[] {nu.SigmaContinue}, ruleType.ns),
             new Rule(nu.BoolLiteral, new[] {nu.SigmaTrue}, ruleType.ns),
             new Rule(nu.BoolLiteral, new[] {nu.SigmaFalse}, ruleType.ns),
+            new Rule(nu.Identifier, new[] {nu.SigmaIdent}, ruleType.ns),
+            new Rule(nu.NumberLiteral, new[] {nu.SigmaNumber}, ruleType.ns),
+            new Rule(nu.StringLiteral, new[] {nu.SigmaString}, ruleType.ns),
 
             new Rule(nu.FunctionCall, new[] {nu.SigmaOpenRound, nu.ArgumentsList, nu.SigmaCloseRound}, ruleType.mix),
             new Rule(nu.ArgumentsList, new[] {nu.Argument, nu.SigmaComma, nu.ArgumentsList}, ruleType.mix),

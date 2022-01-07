@@ -134,22 +134,25 @@ public class Parser
         state startState = new state(new Rule(nu.Helper, new[] {Grammar.GetAxioma()}, ruleType.nn), 0);
         D[0].Add(new state(new Rule(nu.Helper, new[] {Grammar.GetAxioma()}, ruleType.nn), 0));
 
-        foreach (Token token in tokenList)
+        for (int ind = 0; ind <= tokenList.Count; ind++)
         {
-            Console.WriteLine($"token {tokenList.IndexOf(token)} {token.status} {token.value}\n");
-            bool changed = false || tokenList.IndexOf(token) == 0;
+            if (ind < tokenList.Count) Console.WriteLine($"token {ind} {tokenList[ind].status} {tokenList[ind].value}");
+            bool changed = false || ind == 0;
 
-            Scan(ref D, tokenList.IndexOf(token), tokenList, ref changed);
+            Scan(ref D, ind, tokenList, ref changed);
 
-            Console.WriteLine($"changed {changed}\n");
             while (changed)
             {
-                Complete(ref D, tokenList.IndexOf(token), ref changed);
-                Predict(ref D, tokenList.IndexOf(token), ref changed);
+                bool comCh = false;
+                bool predCh = false;
+                Complete(ref D, ind, ref comCh);
+                Predict(ref D, ind, ref predCh);
+                changed = comCh || predCh;
+                Console.WriteLine($"changed {changed}\n");
             }
 
-            Console.WriteLine($"D[{tokenList.IndexOf(token)}]\n");
-            foreach (var state in D[tokenList.IndexOf(token)])
+            Console.WriteLine($"D[{ind}]");
+            foreach (var state in D[ind])
             {
                 Console.Write($"{state.GetRule().getLeftPart()} -> ");
                 for (int i = 0; i < state.GetRule().getRightPart().Length; i++)
@@ -168,13 +171,18 @@ public class Parser
 
                 if (state.GetMeta() == state.GetRule().getRightPart().Length)
                     Console.Write("*");
-                Console.WriteLine($", meta: {state.GetMeta()}, ind: {state.GetInd()}\n");
+                Console.WriteLine($", meta: {state.GetMeta()}, ind: {state.GetInd()}");
             }
         }
 
         string res = "";
-        if (D[tokenList.Capacity].Contains(startState))
+        Console.WriteLine(new state(new Rule(nu.Helper, new[] {Grammar.GetAxioma()}, ruleType.nn), 0, 1));
+
+        if (D[tokenList.Capacity]
+            .Contains(new state(new Rule(nu.Helper, new[] {Grammar.GetAxioma()}, ruleType.nn), 0, 1)))
         {
+            res = "\nProgram is ok\n";
+
             foreach (var d in D)
             {
                 foreach (var state in d)
@@ -197,7 +205,7 @@ public class Parser
         }
         else
         {
-            res = "Program contains mistakes\n";
+            res = "\nProgram contains mistakes\n";
             foreach (var d in D)
             {
                 foreach (var state in d)
@@ -230,18 +238,38 @@ public class Parser
             {
                 bool includes = false;
 
-                if ((state.GetRule().getType() == ruleType.mix || state.GetRule().getType() == ruleType.ns) &&
-                    state.GetMeta() < state.GetRule().getRightPart().Length &&
-                    Grammar.GetSigma().ContainsKey(state.GetRule().getRightPart()[state.GetMeta()]) &&
-                    (Grammar.GetSigma()[state.GetRule().getRightPart()[state.GetMeta()]] == tokens[j - 1].value))
+                if (tokens[j - 1].status == "IDENT" || tokens[j - 1].status == "NUMBER" ||
+                    tokens[j - 1].status == "STRING_END")
                 {
-                    D[j].Add(new state(
-                        new Rule(state.GetRule().getLeftPart(), state.GetRule().getRightPart(),
-                            state.GetRule().getType()),
-                        state.GetInd(),
-                        state.GetMeta() + 1
-                    ));
-                    changed = true;
+                    if ((state.GetRule().getType() == ruleType.mix || state.GetRule().getType() == ruleType.ns) &&
+                        state.GetMeta() < state.GetRule().getRightPart().Length &&
+                        Grammar.GetSigma().ContainsKey(state.GetRule().getRightPart()[state.GetMeta()]) &&
+                        (Grammar.GetSigma()[state.GetRule().getRightPart()[state.GetMeta()]] == tokens[j - 1].status))
+                    {
+                        D[j].Add(new state(
+                            new Rule(state.GetRule().getLeftPart(), state.GetRule().getRightPart(),
+                                state.GetRule().getType()),
+                            state.GetInd(),
+                            state.GetMeta() + 1
+                        ));
+                        changed = true;
+                    }
+                }
+                else
+                {
+                    if ((state.GetRule().getType() == ruleType.mix || state.GetRule().getType() == ruleType.ns) &&
+                        state.GetMeta() < state.GetRule().getRightPart().Length &&
+                        Grammar.GetSigma().ContainsKey(state.GetRule().getRightPart()[state.GetMeta()]) &&
+                        (Grammar.GetSigma()[state.GetRule().getRightPart()[state.GetMeta()]] == tokens[j - 1].value))
+                    {
+                        D[j].Add(new state(
+                            new Rule(state.GetRule().getLeftPart(), state.GetRule().getRightPart(),
+                                state.GetRule().getType()),
+                            state.GetInd(),
+                            state.GetMeta() + 1
+                        ));
+                        changed = true;
+                    }
                 }
             }
         }
@@ -262,7 +290,13 @@ public class Parser
                 {
                     if ((stateK.GetRule().getType() == ruleType.mix || stateK.GetRule().getType() == ruleType.nn) &&
                         stateK.GetMeta() < stateK.GetRule().getRightPart().Length &&
-                        stateK.GetRule().getRightPart()[stateK.GetMeta()] == stateJ.GetRule().getLeftPart())
+                        stateK.GetRule().getRightPart()[stateK.GetMeta()] == stateJ.GetRule().getLeftPart() &&
+                        !D[j].Contains(new state(
+                            new Rule(stateK.GetRule().getLeftPart(), stateK.GetRule().getRightPart(),
+                                stateK.GetRule().getType()),
+                            stateK.GetInd(),
+                            stateK.GetMeta() + 1
+                        )))
                     {
                         D[j].Add(new state(
                             new Rule(stateK.GetRule().getLeftPart(), stateK.GetRule().getRightPart(),
@@ -276,6 +310,7 @@ public class Parser
             }
         }
 
+        Console.WriteLine("localCh = " + localCh);
         changed = localCh;
     }
 

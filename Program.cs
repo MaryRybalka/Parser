@@ -20,7 +20,7 @@ namespace parser
             var res = parser.Parse(tokens);
             Console.WriteLine(res);
 
-            Console.ReadKey();
+            // Console.ReadKey();
         }
     }
 }
