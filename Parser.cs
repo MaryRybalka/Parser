@@ -136,7 +136,7 @@ public class Parser
 
         for (int ind = 0; ind <= tokenList.Count; ind++)
         {
-            if (ind < tokenList.Count) Console.WriteLine($"token {ind} {tokenList[ind].status} {tokenList[ind].value}");
+            if (ind > 0) Console.WriteLine($"token[{ind}] [{tokenList[ind - 1].status}] - {tokenList[ind - 1].value}");
             bool changed = false || ind == 0;
 
             Scan(ref D, ind, tokenList, ref changed);
@@ -150,28 +150,28 @@ public class Parser
                 changed = comCh || predCh;
             }
 
-            // Console.WriteLine($"D[{ind}]");
-            // foreach (var state in D[ind])
-            // {
-            //     Console.Write($"{state.GetRule().getLeftPart()} -> ");
-            //     for (int i = 0; i < state.GetRule().getRightPart().Length; i++)
-            //     {
-            //         if (i == state.GetMeta())
-            //             Console.Write("*");
-            //         if (state.GetRule().getType() == ruleType.ns)
-            //             Console.Write($"{Grammar.GetSigma()[state.GetRule().getRightPart()[i]]} ");
-            //         else
-            //         {
-            //             if (Grammar.GetSigma().ContainsKey(state.GetRule().getRightPart()[i]))
-            //                 Console.Write($"{Grammar.GetSigma()[state.GetRule().getRightPart()[i]]}");
-            //             else Console.Write($"{state.GetRule().getRightPart()[i]} ");
-            //         }
-            //     }
-            //
-            //     if (state.GetMeta() == state.GetRule().getRightPart().Length)
-            //         Console.Write("*");
-            //     Console.WriteLine($", meta: {state.GetMeta()}, ind: {state.GetInd()}");
-            // }
+            Console.WriteLine($"D[{ind}]");
+            foreach (var state in D[ind])
+            {
+                Console.Write($"{state.GetRule().getLeftPart()} -> ");
+                for (int i = 0; i < state.GetRule().getRightPart().Length; i++)
+                {
+                    if (i == state.GetMeta())
+                        Console.Write("*");
+                    if (state.GetRule().getType() == ruleType.ns)
+                        Console.Write($"{Grammar.GetSigma()[state.GetRule().getRightPart()[i]]} ");
+                    else
+                    {
+                        if (Grammar.GetSigma().ContainsKey(state.GetRule().getRightPart()[i]))
+                            Console.Write($"{Grammar.GetSigma()[state.GetRule().getRightPart()[i]]}");
+                        else Console.Write($"{state.GetRule().getRightPart()[i]} ");
+                    }
+                }
+
+                if (state.GetMeta() == state.GetRule().getRightPart().Length)
+                    Console.Write("*");
+                Console.WriteLine($", meta: {state.GetMeta()}, ind: {state.GetInd()}");
+            }
         }
 
         string res = "";
