@@ -252,6 +252,21 @@ public class Parser
                         changed = true;
                     }
                 }
+                else if (tokens[j - 1].status == "RESERVED_NAME")
+                {
+                    if ((state.GetRule().getType() == ruleType.mix || state.GetRule().getType() == ruleType.ns) &&
+                        state.GetMeta() < state.GetRule().getRightPart().Length &&
+                        Grammar.GetTypes().Contains(tokens[j - 1].value))
+                    {
+                        D[j].Add(new state(
+                            new Rule(state.GetRule().getLeftPart(), state.GetRule().getRightPart(),
+                                state.GetRule().getType()),
+                            state.GetInd(),
+                            state.GetMeta() + 1
+                        ));
+                        changed = true;
+                    }
+                }
                 else
                 {
                     if ((state.GetRule().getType() == ruleType.mix || state.GetRule().getType() == ruleType.ns) &&

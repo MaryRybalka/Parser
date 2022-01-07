@@ -667,7 +667,8 @@ namespace parser
             "while",
             "if",
             "in",
-            "else"
+            "else",
+            "func",
         };
 
         private readonly SortedSet<string> _reservedNames = new SortedSet<string>

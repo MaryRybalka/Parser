@@ -21,3 +21,7 @@ else if n == "fgfgf"{
     k++ 
 }
 else {}
+
+fun(f){
+  k = 1
+}

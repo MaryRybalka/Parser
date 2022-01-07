@@ -41,6 +41,8 @@ public class Grammar
         NumberLiteral, //численный литерал
         StringLiteral,
         BoolLiteral,
+        Type,
+        FuncCodeBlock,
 
         SigmaOpenRound,
         SigmaCloseRound,
@@ -89,6 +91,10 @@ public class Grammar
         SigmaStarEqual,
         SigmaSlashEqual,
         SigmaPercentEqual,
+        SigmaFunc,
+        SigmaArrow,
+        SigmaReturn,
+        SigmaType,
     };
 
     private readonly SortedSet<string> _keywords = new SortedSet<string>
@@ -102,19 +108,14 @@ public class Grammar
         "else"
     };
 
-    private readonly SortedSet<string> _reservedNames = new SortedSet<string>
+    private readonly SortedSet<string> _types = new SortedSet<string>
     {
         "string",
-        "substring",
         "character",
         "bool",
-        "array",
         "int",
         "double",
-        "float",
-        "true",
-        "false",
-        "nil"
+        "float"
     };
 
     private readonly SortedSet<string> _symbols = new SortedSet<string>
@@ -215,15 +216,19 @@ public class Grammar
             {nu.SigmaLessEq, "<="},
             {nu.SigmaDot, "."},
             {nu.SigmaDoubleDot, ":"},
+            {nu.SigmaFunc, "func"},
+            {nu.SigmaArrow, "->"},
             {nu.SigmaComma, ","},
             {nu.SigmaTrue, "true"},
             {nu.SigmaFalse, "false"},
             {nu.SigmaLambda, "lambda"},
             {nu.SigmaBreak, "break"},
             {nu.SigmaContinue, "continue"},
+            {nu.SigmaReturn, "return"},
             {nu.SigmaString, "STRING_END"},
             {nu.SigmaNumber, "NUMBER"},
             {nu.SigmaIdent, "IDENT"},
+            {nu.SigmaType, "TYPE"},
         };
 
         Rules = new Rule[]
@@ -291,21 +296,30 @@ public class Grammar
             new Rule(nu.Identifier, new[] {nu.SigmaIdent}, ruleType.ns),
             new Rule(nu.NumberLiteral, new[] {nu.SigmaNumber}, ruleType.ns),
             new Rule(nu.StringLiteral, new[] {nu.SigmaString}, ruleType.ns),
+            new Rule(nu.Type, new[] {nu.SigmaType}, ruleType.ns),
             new Rule(nu.CodeBlock, new[] {nu.SigmaOpenCurl, nu.SigmaCloseCurl}, ruleType.ns),
 
             new Rule(nu.FunctionCall, new[] {nu.SigmaOpenRound, nu.ArgumentsList, nu.SigmaCloseRound}, ruleType.mix),
             new Rule(nu.ArgumentsList, new[] {nu.Argument, nu.SigmaComma, nu.ArgumentsList}, ruleType.mix),
-            new Rule(nu.Argument, new[] {nu.Identifier, nu.SigmaDoubleDot, nu.Expression}, ruleType.mix),
+            new Rule(nu.Argument, new[] {nu.Identifier, nu.TypeAnnotation}, ruleType.mix),
             new Rule(nu.Definition, new[] {nu.SigmaLet, nu.InitialisationListPattern}, ruleType.mix),
             new Rule(nu.Definition, new[] {nu.SigmaVar, nu.InitialisationListPattern}, ruleType.mix),
-            new Rule(nu.InitialisationListPattern,
-                new[] {nu.PatternInitialisator, nu.SigmaComma, nu.InitialisationListPattern},
+            new Rule(nu.Definition,
+                new[] {nu.SigmaFunc, nu.Identifier, nu.FunctionCall, nu.SigmaArrow, nu.Type, nu.FuncCodeBlock},
                 ruleType.mix),
-            new Rule(nu.TypeAnnotation, new[] {nu.SigmaDoubleDot, nu.Identifier}, ruleType.mix),
-            new Rule(nu.TypeAnnotation, new[] {nu.SigmaDoubleDot, nu.Identifier, nu.SigmaQuest}, ruleType.mix),
+            new Rule(nu.Definition,
+                new[] {nu.SigmaFunc, nu.Identifier, nu.FunctionCall, nu.SigmaArrow, nu.Type, nu.CodeBlock},
+                ruleType.mix),
+            new Rule(nu.Definition, new[] {nu.SigmaFunc, nu.Identifier, nu.FunctionCall, nu.CodeBlock}, ruleType.mix),
+            new Rule(nu.InitialisationListPattern,
+                new[] {nu.PatternInitialisator, nu.SigmaComma, nu.InitialisationListPattern}, ruleType.mix),
+            new Rule(nu.TypeAnnotation, new[] {nu.SigmaDoubleDot, nu.Type}, ruleType.mix),
+            new Rule(nu.TypeAnnotation, new[] {nu.SigmaDoubleDot, nu.Type, nu.SigmaQuest}, ruleType.mix),
             new Rule(nu.Initialisator, new[] {nu.SigmaEqual, nu.Expression}, ruleType.mix),
             new Rule(nu.Initialisator, new[] {nu.SigmaEqual, nu.Operand}, ruleType.mix),
             new Rule(nu.CodeBlock, new[] {nu.SigmaOpenCurl, nu.Sentences, nu.SigmaCloseCurl}, ruleType.mix),
+            new Rule(nu.FuncCodeBlock,
+                new[] {nu.SigmaOpenCurl, nu.Sentences, nu.SigmaReturn, nu.Identifier, nu.SigmaCloseCurl}, ruleType.mix),
             new Rule(nu.Cycle, new[] {nu.SigmaFor, nu.StringLiteral, nu.SigmaIn, nu.Operand, nu.CodeBlock},
                 ruleType.mix),
             new Rule(nu.Cycle, new[] {nu.SigmaWhile, nu.Condition, nu.CodeBlock}, ruleType.mix),
@@ -335,9 +349,9 @@ public class Grammar
         return _symbols;
     }
 
-    public SortedSet<string> GetReservedNames()
+    public SortedSet<string> GetTypes()
     {
-        return _reservedNames;
+        return _types;
     }
 
     public Rule[] GetRules()
