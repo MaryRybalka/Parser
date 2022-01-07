@@ -175,53 +175,53 @@ public class Parser
         }
 
         string res = "";
-        startState.SetMeta(1);
-        if (D[tokenList.Capacity].Contains(startState))
+        if (tokenList.Count > 0) startState.SetMeta(1);
+        if (D[tokenList.Count].Contains(startState))
         {
             res = "\nProgram is ok\n";
 
-            foreach (var d in D)
-            {
-                foreach (var state in d)
-                {
-                    res = res + "<" + ntDic[state.GetRule().getLeftPart()] + "> -> ";
-                    foreach (var rightPart in state.GetRule().getRightPart())
-                    {
-                        if (state.GetRule().getType() == ruleType.nn) res = res + "<" + ntDic[rightPart] + "> ";
-                        else if (state.GetRule().getType() == ruleType.ns) res = res + Grammar.GetSigma()[rightPart];
-                        else
-                        {
-                            if (Grammar.GetSigma().ContainsKey(rightPart)) res = res + Grammar.GetSigma()[rightPart];
-                            else res = res + "<" + ntDic[rightPart] + "> ";
-                        }
-                    }
-
-                    res += "\n";
-                }
-            }
+            // foreach (var d in D)
+            // {
+            //     foreach (var state in d)
+            //     {
+            //         res = res + "<" + ntDic[state.GetRule().getLeftPart()] + "> -> ";
+            //         foreach (var rightPart in state.GetRule().getRightPart())
+            //         {
+            //             if (state.GetRule().getType() == ruleType.nn) res = res + "<" + ntDic[rightPart] + "> ";
+            //             else if (state.GetRule().getType() == ruleType.ns) res = res + Grammar.GetSigma()[rightPart];
+            //             else
+            //             {
+            //                 if (Grammar.GetSigma().ContainsKey(rightPart)) res = res + Grammar.GetSigma()[rightPart];
+            //                 else res = res + "<" + ntDic[rightPart] + "> ";
+            //             }
+            //         }
+            //
+            //         res += "\n";
+            //     }
+            // }
         }
         else
         {
             res = "\nProgram contains mistakes\n";
-            foreach (var d in D)
-            {
-                foreach (var state in d)
-                {
-                    res = res + "<" + ntDic[state.GetRule().getLeftPart()] + "> -> ";
-                    foreach (var rightPart in state.GetRule().getRightPart())
-                    {
-                        if (state.GetRule().getType() == ruleType.nn) res = res + "<" + ntDic[rightPart] + "> ";
-                        else if (state.GetRule().getType() == ruleType.ns) res = res + Grammar.GetSigma()[rightPart];
-                        else
-                        {
-                            if (Grammar.GetSigma().ContainsKey(rightPart)) res = res + Grammar.GetSigma()[rightPart];
-                            else res = res + "<" + ntDic[rightPart] + "> ";
-                        }
-                    }
-
-                    res += "\n";
-                }
-            }
+            // foreach (var d in D)
+            // {
+            //     foreach (var state in d)
+            //     {
+            //         res = res + "<" + ntDic[state.GetRule().getLeftPart()] + "> -> ";
+            //         foreach (var rightPart in state.GetRule().getRightPart())
+            //         {
+            //             if (state.GetRule().getType() == ruleType.nn) res = res + "<" + ntDic[rightPart] + "> ";
+            //             else if (state.GetRule().getType() == ruleType.ns) res = res + Grammar.GetSigma()[rightPart];
+            //             else
+            //             {
+            //                 if (Grammar.GetSigma().ContainsKey(rightPart)) res = res + Grammar.GetSigma()[rightPart];
+            //                 else res = res + "<" + ntDic[rightPart] + "> ";
+            //             }
+            //         }
+            //
+            //         res += "\n";
+            //     }
+            // }
         }
 
         return res;

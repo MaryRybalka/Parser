@@ -18,7 +18,7 @@ namespace parser
 
             Parser parser = new Parser();
             var res = parser.Parse(tokens);
-            // Console.WriteLine(res);
+            Console.WriteLine(res);
 
             // Console.ReadKey();
         }

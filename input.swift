@@ -4,10 +4,20 @@ while n < 100 {
     n = n * 2
 }
 
-var k = 3
+let k = 3
 if k == 1 {
     k += 2
 }
 else {
     k++ 
 }
+
+let n = "true"
+
+if n == "fgfg" {
+    k += 2
+}
+else if n == "fgfgf"{
+    k++ 
+}
+else {}

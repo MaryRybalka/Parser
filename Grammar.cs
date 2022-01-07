@@ -259,6 +259,7 @@ public class Grammar
             new Rule(nu.Literal, new[] {nu.BoolLiteral}, ruleType.nn),
 
             // new Rule(nu.Program, new[] {nu.SigmaLambda}, ruleType.ns),
+            // new Rule(nu.Sentences, new[] {nu.SigmaLambda}, ruleType.ns),
             new Rule(nu.FunctionCall, new[] {nu.SigmaOpenRound, nu.SigmaCloseRound}, ruleType.ns),
             new Rule(nu.BinaryOperator, new[] {nu.SigmaSlash}, ruleType.ns),
             new Rule(nu.BinaryOperator, new[] {nu.SigmaEqual}, ruleType.ns),
@@ -290,6 +291,7 @@ public class Grammar
             new Rule(nu.Identifier, new[] {nu.SigmaIdent}, ruleType.ns),
             new Rule(nu.NumberLiteral, new[] {nu.SigmaNumber}, ruleType.ns),
             new Rule(nu.StringLiteral, new[] {nu.SigmaString}, ruleType.ns),
+            new Rule(nu.CodeBlock, new[] {nu.SigmaOpenCurl, nu.SigmaCloseCurl}, ruleType.ns),
 
             new Rule(nu.FunctionCall, new[] {nu.SigmaOpenRound, nu.ArgumentsList, nu.SigmaCloseRound}, ruleType.mix),
             new Rule(nu.ArgumentsList, new[] {nu.Argument, nu.SigmaComma, nu.ArgumentsList}, ruleType.mix),
