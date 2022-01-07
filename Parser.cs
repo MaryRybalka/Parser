@@ -136,17 +136,39 @@ public class Parser
 
         foreach (Token token in tokenList)
         {
+            Console.WriteLine($"token {tokenList.IndexOf(token)} {token.status} {token.value}\n");
             bool changed = false || tokenList.IndexOf(token) == 0;
 
-            if (Scan(ref D, tokenList.IndexOf(token), token, ref changed) < 0)
-            {
-                Console.WriteLine($"ERROR in {token.line} line: no such name {token.value}\n");
-            }
+            Scan(ref D, tokenList.IndexOf(token), tokenList, ref changed);
 
+            Console.WriteLine($"changed {changed}\n");
             while (changed)
             {
                 Complete(ref D, tokenList.IndexOf(token), ref changed);
                 Predict(ref D, tokenList.IndexOf(token), ref changed);
+            }
+
+            Console.WriteLine($"D[{tokenList.IndexOf(token)}]\n");
+            foreach (var state in D[tokenList.IndexOf(token)])
+            {
+                Console.Write($"{state.GetRule().getLeftPart()} -> ");
+                for (int i = 0; i < state.GetRule().getRightPart().Length; i++)
+                {
+                    if (i == state.GetMeta())
+                        Console.Write("*");
+                    if (state.GetRule().getType() == ruleType.ns)
+                        Console.Write($"{Grammar.GetSigma()[state.GetRule().getRightPart()[i]]} ");
+                    else
+                    {
+                        if (Grammar.GetSigma().ContainsKey(state.GetRule().getRightPart()[i]))
+                            Console.Write($"{Grammar.GetSigma()[state.GetRule().getRightPart()[i]]}");
+                        else Console.Write($"{state.GetRule().getRightPart()[i]} ");
+                    }
+                }
+
+                if (state.GetMeta() == state.GetRule().getRightPart().Length)
+                    Console.Write("*");
+                Console.WriteLine($", meta: {state.GetMeta()}, ind: {state.GetInd()}\n");
             }
         }
 
@@ -200,17 +222,18 @@ public class Parser
         return res;
     }
 
-    int Scan(ref List<state>[] D, int j, Token token, ref bool changed)
+    int Scan(ref List<state>[] D, int j, List<Token> tokens, ref bool changed)
     {
         if (j != 0)
         {
-            bool flag = false;
             foreach (var state in D[j - 1])
             {
+                bool includes = false;
+
                 if ((state.GetRule().getType() == ruleType.mix || state.GetRule().getType() == ruleType.ns) &&
                     state.GetMeta() < state.GetRule().getRightPart().Length &&
                     Grammar.GetSigma().ContainsKey(state.GetRule().getRightPart()[state.GetMeta()]) &&
-                    Grammar.GetSigma()[state.GetRule().getRightPart()[state.GetMeta()]] == token.value)
+                    (Grammar.GetSigma()[state.GetRule().getRightPart()[state.GetMeta()]] == tokens[j - 1].value))
                 {
                     D[j].Add(new state(
                         new Rule(state.GetRule().getLeftPart(), state.GetRule().getRightPart(),
@@ -220,13 +243,7 @@ public class Parser
                     ));
                     changed = true;
                 }
-
-                flag = flag ||
-                       ((state.GetRule().getType() == ruleType.mix || state.GetRule().getType() == ruleType.ns) &&
-                        !(Grammar.GetSigma().ContainsKey(state.GetRule().getRightPart()[state.GetMeta()])));
             }
-
-            return (flag) ? -1 : 0;
         }
 
         return 0;
@@ -241,18 +258,17 @@ public class Parser
             if (stateJ.GetMeta() == stateJ.GetRule().getRightPart().Length)
             {
                 int i = stateJ.GetInd();
-                foreach (var stateI in D[i])
+                foreach (var stateK in D[i])
                 {
-                    if ((stateI.GetRule().getType() == ruleType.mix || stateI.GetRule().getType() == ruleType.nn) &&
-                        stateI.GetMeta() < stateI.GetRule().getRightPart().Length &&
-                        stateI.GetRule().getRightPart()[stateI.GetMeta()] == stateJ.GetRule().getLeftPart() &&
-                        stateI.GetInd() == j)
+                    if ((stateK.GetRule().getType() == ruleType.mix || stateK.GetRule().getType() == ruleType.nn) &&
+                        stateK.GetMeta() < stateK.GetRule().getRightPart().Length &&
+                        stateK.GetRule().getRightPart()[stateK.GetMeta()] == stateJ.GetRule().getLeftPart())
                     {
                         D[j].Add(new state(
-                            new Rule(stateI.GetRule().getLeftPart(), stateI.GetRule().getRightPart(),
-                                stateI.GetRule().getType()),
-                            stateI.GetInd(),
-                            stateI.GetMeta() + 1
+                            new Rule(stateK.GetRule().getLeftPart(), stateK.GetRule().getRightPart(),
+                                stateK.GetRule().getType()),
+                            stateK.GetInd(),
+                            stateK.GetMeta() + 1
                         ));
                         localCh = true;
                     }
@@ -271,11 +287,13 @@ public class Parser
         {
             if ((state.GetRule().getType() == ruleType.mix || state.GetRule().getType() == ruleType.nn) &&
                 state.GetMeta() < state.GetRule().getRightPart().Length &&
-                !Grammar.GetSigma().ContainsKey(state.GetRule().getRightPart()[state.GetMeta()]))
+                (state.GetRule().getType() != ruleType.mix ||
+                 !Grammar.GetSigma().ContainsKey(state.GetRule().getRightPart()[state.GetMeta()])))
             {
                 foreach (var rule in Grammar.GetRules())
                 {
-                    if (rule.getLeftPart() == state.GetRule().getRightPart()[state.GetMeta()])
+                    if (rule.getLeftPart() == state.GetRule().getRightPart()[state.GetMeta()] &&
+                        !D[j].Contains(new state(rule, j)))
                     {
                         D[j].Add(new state(rule, j));
                         localCh = true;

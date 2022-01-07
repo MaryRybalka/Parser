@@ -402,3 +402,24 @@ string ParseToplevel(List<Token> tokens)
         SigmaContinue,
         SigmaTrue,
         SigmaFalse,
+        
+        while n < 100 {
+            n = n * 2
+        }
+        n
+        
+        var k = 3
+        if (k == 1)
+            k += 2
+        else 
+            k++
+        k
+        
+        var m = 2
+        do {
+            m = m * 2
+        } while m < 100
+        m
+        
+        let n = "true"
+        n

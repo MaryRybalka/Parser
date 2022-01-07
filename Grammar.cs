@@ -101,6 +101,29 @@ public class Grammar
         "nil"
     };
 
+    private readonly SortedSet<string> _symbols = new SortedSet<string>
+    {
+        "&",
+        "|",
+        "(",
+        ")",
+        "{",
+        "}",
+        "=",
+        "/",
+        "*",
+        "+",
+        "-",
+        "%",
+        "!",
+        "?",
+        ">",
+        "<",
+        ".",
+        ":",
+        ",",
+    };
+
     public struct Rule
     {
         nu leftPart;
@@ -195,8 +218,6 @@ public class Grammar
             new Rule(nu.Definitions, new[] {nu.Definition}, ruleType.nn),
             new Rule(nu.Definitions, new[] {nu.Definition, nu.Definitions}, ruleType.nn),
             new Rule(nu.InitialisationListPattern, new[] {nu.PatternInitialisator}, ruleType.nn),
-            new Rule(nu.InitialisationListPattern, new[] {nu.PatternInitialisator, nu.InitialisationListPattern},
-                ruleType.nn),
             new Rule(nu.PatternInitialisator, new[] {nu.Identifier, nu.Initialisator}, ruleType.nn),
             new Rule(nu.PatternInitialisator, new[] {nu.Identifier, nu.TypeAnnotation, nu.Initialisator}, ruleType.nn),
             new Rule(nu.Condition, new[] {nu.Expression}, ruleType.nn),
@@ -204,7 +225,7 @@ public class Grammar
             new Rule(nu.Literal, new[] {nu.StringLiteral}, ruleType.nn),
             new Rule(nu.Literal, new[] {nu.BoolLiteral}, ruleType.nn),
 
-            new Rule(nu.Program, new[] {nu.SigmaLambda}, ruleType.ns),
+            // new Rule(nu.Program, new[] {nu.SigmaLambda}, ruleType.ns),
             new Rule(nu.FunctionCall, new[] {nu.SigmaOpenRound, nu.SigmaCloseRound}, ruleType.ns),
             new Rule(nu.BinaryOperator, new[] {nu.SigmaSlash}, ruleType.ns),
             new Rule(nu.BinaryOperator, new[] {nu.SigmaEqual}, ruleType.ns),
@@ -234,14 +255,18 @@ public class Grammar
             new Rule(nu.Argument, new[] {nu.Identifier, nu.SigmaDoubleDot, nu.Expression}, ruleType.mix),
             new Rule(nu.Definition, new[] {nu.SigmaLet, nu.InitialisationListPattern}, ruleType.mix),
             new Rule(nu.Definition, new[] {nu.SigmaVar, nu.InitialisationListPattern}, ruleType.mix),
+            new Rule(nu.InitialisationListPattern,
+                new[] {nu.PatternInitialisator, nu.SigmaComma, nu.InitialisationListPattern},
+                ruleType.mix),
             new Rule(nu.TypeAnnotation, new[] {nu.SigmaDoubleDot, nu.Identifier}, ruleType.mix),
             new Rule(nu.TypeAnnotation, new[] {nu.SigmaDoubleDot, nu.Identifier, nu.SigmaQuest}, ruleType.mix),
             new Rule(nu.Initialisator, new[] {nu.SigmaEqual, nu.Expression}, ruleType.mix),
             new Rule(nu.Initialisator, new[] {nu.SigmaEqual, nu.Operand}, ruleType.mix),
-            new Rule(nu.Cycle, new[] {nu.SigmaFor, nu.Pattern, nu.SigmaIn, nu.Expression, nu.CodeBlock}, ruleType.mix),
+            new Rule(nu.Cycle, new[] {nu.SigmaFor, nu.StringLiteral, nu.SigmaIn, nu.Operand, nu.CodeBlock},
+                ruleType.mix),
             new Rule(nu.Cycle, new[] {nu.SigmaWhile, nu.Condition, nu.CodeBlock}, ruleType.mix),
-            new Rule(nu.Condition, new[] {nu.SigmaLet, nu.Pattern, nu.Initialisator}, ruleType.mix),
-            new Rule(nu.Condition, new[] {nu.SigmaVar, nu.Pattern, nu.Initialisator}, ruleType.mix),
+            new Rule(nu.Condition, new[] {nu.SigmaLet, nu.Identifier, nu.Initialisator}, ruleType.mix),
+            new Rule(nu.Condition, new[] {nu.SigmaVar, nu.Identifier, nu.Initialisator}, ruleType.mix),
             new Rule(nu.IfBranching, new[] {nu.SigmaIf, nu.Condition, nu.CodeBlock, nu.ElseBlock}, ruleType.mix),
             new Rule(nu.IfBranching, new[] {nu.SigmaIf, nu.Condition, nu.CodeBlock}, ruleType.mix),
             new Rule(nu.ElseBlock, new[] {nu.SigmaElse, nu.CodeBlock}, ruleType.mix),
@@ -252,6 +277,11 @@ public class Grammar
     public SortedSet<string> GetKeywords()
     {
         return _keywords;
+    }
+
+    public SortedSet<string> GetSymbols()
+    {
+        return _symbols;
     }
 
     public SortedSet<string> GetReservedNames()
