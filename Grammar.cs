@@ -210,7 +210,9 @@ public class Grammar
             new Rule(nu.Sentence, new[] {nu.Cycle}, ruleType.nn),
             new Rule(nu.Sentence, new[] {nu.IfBranching}, ruleType.nn),
             new Rule(nu.Expression, new[] {nu.Operand, nu.BinaryOperator, nu.Operand}, ruleType.nn),
+            new Rule(nu.Expression, new[] {nu.Operand, nu.BinaryOperator, nu.Expression}, ruleType.nn),
             new Rule(nu.Expression, new[] {nu.UnaryOperator, nu.Operand}, ruleType.nn),
+            new Rule(nu.Expression, new[] {nu.UnaryOperator, nu.Expression}, ruleType.nn),
             new Rule(nu.Expression, new[] {nu.Operand, nu.UnaryOperator}, ruleType.nn),
             new Rule(nu.Operand, new[] {nu.Identifier}, ruleType.nn),
             new Rule(nu.Operand, new[] {nu.Literal}, ruleType.nn),
@@ -280,6 +282,13 @@ public class Grammar
             new Rule(nu.IfBranching, new[] {nu.SigmaIf, nu.Condition, nu.CodeBlock}, ruleType.mix),
             new Rule(nu.ElseBlock, new[] {nu.SigmaElse, nu.CodeBlock}, ruleType.mix),
             new Rule(nu.ElseBlock, new[] {nu.SigmaElse, nu.IfBranching}, ruleType.mix),
+            new Rule(nu.Expression,
+                new[] {nu.Operand, nu.BinaryOperator, nu.SigmaOpenRound, nu.Expression, nu.SigmaCloseRound},
+                ruleType.mix),
+            new Rule(nu.Expression, new[] {nu.UnaryOperator, nu.SigmaOpenRound, nu.Expression, nu.SigmaCloseRound},
+                ruleType.mix),
+            new Rule(nu.Expression, new[] {nu.UnaryOperator, nu.SigmaOpenRound, nu.Operand, nu.SigmaCloseRound},
+                ruleType.mix),
         };
     }
 
