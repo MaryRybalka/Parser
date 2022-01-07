@@ -118,29 +118,6 @@ public class Grammar
         "float"
     };
 
-    private readonly SortedSet<string> _symbols = new SortedSet<string>
-    {
-        "&",
-        "|",
-        "(",
-        ")",
-        "{",
-        "}",
-        "=",
-        "/",
-        "*",
-        "+",
-        "-",
-        "%",
-        "!",
-        "?",
-        ">",
-        "<",
-        ".",
-        ":",
-        ",",
-    };
-
     public struct Rule
     {
         nu leftPart;
@@ -262,6 +239,7 @@ public class Grammar
             new Rule(nu.Literal, new[] {nu.NumberLiteral}, ruleType.nn),
             new Rule(nu.Literal, new[] {nu.StringLiteral}, ruleType.nn),
             new Rule(nu.Literal, new[] {nu.BoolLiteral}, ruleType.nn),
+            new Rule(nu.TypeAnnotation, new[] {nu.Type}, ruleType.nn),
 
             // new Rule(nu.Program, new[] {nu.SigmaLambda}, ruleType.ns),
             // new Rule(nu.Sentences, new[] {nu.SigmaLambda}, ruleType.ns),
@@ -342,11 +320,6 @@ public class Grammar
     public SortedSet<string> GetKeywords()
     {
         return _keywords;
-    }
-
-    public SortedSet<string> GetSymbols()
-    {
-        return _symbols;
     }
 
     public SortedSet<string> GetTypes()
