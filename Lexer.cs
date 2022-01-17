@@ -755,7 +755,7 @@ namespace parser
             if (index == -1)
             {
                 int size = position - _str.Length + 1;
-                Console.WriteLine($"[status: ERROR] [{line}:{size}] >> {s}\n");
+                Console.WriteLine($"Lexer - [status: ERROR] [{line}:{size}] >> {s}\n");
                 Environment.Exit(0);
             }
 
@@ -766,7 +766,7 @@ namespace parser
             if (_status == (int) Status.ERROR)
             {
                 int size = position - _str.Length + 1;
-                Console.WriteLine($"[status: ERROR] [{line}:{size}] >> {s}\n");
+                Console.WriteLine($"Lexer - [status: ERROR] [{line}:{size}] >> {s}\n");
                 Environment.Exit(0);
             }
 

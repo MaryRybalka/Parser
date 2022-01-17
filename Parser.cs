@@ -220,7 +220,7 @@ public class Parser
         }
         else
         {
-            Console.Write("\nProgram contains mistakes\n");
+            Console.Write("\nParser - Program contains mistakes\n");
             res = "";
             // foreach (var d in D)
             // {

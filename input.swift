@@ -1,4 +1,4 @@
-var n = 2
+var 2 = 2
 
 while n < 100 {
     n = n * 2
@@ -22,6 +22,6 @@ else if n == "fgfgf"{
 }
 else {}
 
-func f(f int){
+func f(f int) {
   k = 1
 }
