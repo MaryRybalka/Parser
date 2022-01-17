@@ -125,10 +125,6 @@ public class Parser
         }
     }
 
-    private struct Errors
-    {
-    }
-
     public string Parse(List<Token> tokenList)
     {
         List<state>[] D = new List<state>[tokenList.Capacity + 1];
@@ -164,28 +160,28 @@ public class Parser
             }
 
             // ---------------- D tables printing
-            Console.WriteLine($"D[{ind}]");
-            foreach (var state in D[ind])
-            {
-                Console.Write($"{state.GetRule().getLeftPart()} -> ");
-                for (int i = 0; i < state.GetRule().getRightPart().Length; i++)
-                {
-                    if (i == state.GetMeta())
-                        Console.Write("*");
-                    if (state.GetRule().getType() == ruleType.ns)
-                        Console.Write($"{Grammar.GetSigma()[state.GetRule().getRightPart()[i]]} ");
-                    else
-                    {
-                        if (Grammar.GetSigma().ContainsKey(state.GetRule().getRightPart()[i]))
-                            Console.Write($"{Grammar.GetSigma()[state.GetRule().getRightPart()[i]]}");
-                        else Console.Write($"{state.GetRule().getRightPart()[i]} ");
-                    }
-                }
-
-                if (state.GetMeta() == state.GetRule().getRightPart().Length)
-                    Console.Write("*");
-                Console.WriteLine($", meta: {state.GetMeta()}, ind: {state.GetInd()}");
-            }
+            // Console.WriteLine($"D[{ind}]");
+            // foreach (var state in D[ind])
+            // {
+            //     Console.Write($"{state.GetRule().getLeftPart()} -> ");
+            //     for (int i = 0; i < state.GetRule().getRightPart().Length; i++)
+            //     {
+            //         if (i == state.GetMeta())
+            //             Console.Write("*");
+            //         if (state.GetRule().getType() == ruleType.ns)
+            //             Console.Write($"{Grammar.GetSigma()[state.GetRule().getRightPart()[i]]} ");
+            //         else
+            //         {
+            //             if (Grammar.GetSigma().ContainsKey(state.GetRule().getRightPart()[i]))
+            //                 Console.Write($"{Grammar.GetSigma()[state.GetRule().getRightPart()[i]]}");
+            //             else Console.Write($"{state.GetRule().getRightPart()[i]} ");
+            //         }
+            //     }
+            //
+            //     if (state.GetMeta() == state.GetRule().getRightPart().Length)
+            //         Console.Write("*");
+            //     Console.WriteLine($", meta: {state.GetMeta()}, ind: {state.GetInd()}");
+            // }
         }
 
         string res = "";
@@ -216,10 +212,16 @@ public class Parser
                 Console.Write("\n");
             }
 
+            // int itr = 0;
             // foreach (var d in D)
             // {
+            //     res += "D[" +itr+ "]\n";
+            //     itr++;
+            //     var lessInd = tokenList.Count;
             //     foreach (var state in d)
             //     {
+            //         if (lessInd > state.GetInd()) lessInd = state.GetInd();
+            //         
             //         res = res + "<" + ntDic[state.GetRule().getLeftPart()] + "> -> ";
             //         foreach (var rightPart in state.GetRule().getRightPart())
             //         {
@@ -234,6 +236,7 @@ public class Parser
             //
             //         res += "\n";
             //     }
+            //     Console.WriteLine("<" + ntDic[d[lessInd].GetRule().getLeftPart()] + "> -> ");
             // }
         }
         else
@@ -463,17 +466,26 @@ public class Parser
                     if (k > 0 && situation.GetRule().getLeftPart() == state.GetRule().getRightPart()[k - 1] &&
                         situation.GetMeta() == situation.GetRule().getRightPart().Length)
                     {
-                        foreach (var innerSit in D[situation.GetInd()])
+                        var ind = 0;
+                        while (ind < D[situation.GetInd()].Count && k > 0)
                         {
+                            var innerSit = D[situation.GetInd()][ind];
                             if (innerSit.GetMeta() < innerSit.GetRule().getRightPart().Length &&
                                 innerSit.GetRule().getRightPart()[innerSit.GetMeta()] ==
-                                situation.GetRule().getLeftPart())
+                                situation.GetRule().getLeftPart() &&
+                                state.GetRule().getLeftPart() == innerSit.GetRule().getLeftPart())
                             {
                                 Right(D, situation, c, ref res);
                                 k--;
                                 c = situation.GetInd();
                             }
+
+                            ind++;
                         }
+                        // foreach (var innerSit in D[situation.GetInd()])
+                        // {
+                        //    
+                        // }
                     }
                 }
             }
