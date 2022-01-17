@@ -141,13 +141,18 @@ public class Parser
         D[0].Add(startState);
 
         var counterOfD = 0;
+        var lineNum = 0;
 
         for (int ind = 0; ind <= tokenList.Count; ind++)
         {
             bool changed = false || ind == 0;
             Scan(ref D, ind, tokenList, ref changed);
 
-            if (changed) counterOfD++;
+            if (changed)
+            {
+                counterOfD++;
+                if (ind < tokenList.Count) lineNum = tokenList[ind].line;
+            }
 
             while (changed)
             {
@@ -158,32 +163,33 @@ public class Parser
                 changed = comCh || predCh;
             }
 
-            // D tables printing
-            // Console.WriteLine($"D[{ind}]");
-            // foreach (var state in D[ind])
-            // {
-            //     Console.Write($"{state.GetRule().getLeftPart()} -> ");
-            //     for (int i = 0; i < state.GetRule().getRightPart().Length; i++)
-            //     {
-            //         if (i == state.GetMeta())
-            //             Console.Write("*");
-            //         if (state.GetRule().getType() == ruleType.ns)
-            //             Console.Write($"{Grammar.GetSigma()[state.GetRule().getRightPart()[i]]} ");
-            //         else
-            //         {
-            //             if (Grammar.GetSigma().ContainsKey(state.GetRule().getRightPart()[i]))
-            //                 Console.Write($"{Grammar.GetSigma()[state.GetRule().getRightPart()[i]]}");
-            //             else Console.Write($"{state.GetRule().getRightPart()[i]} ");
-            //         }
-            //     }
-            //
-            //     if (state.GetMeta() == state.GetRule().getRightPart().Length)
-            //         Console.Write("*");
-            //     Console.WriteLine($", meta: {state.GetMeta()}, ind: {state.GetInd()}");
-            // }
+            // ---------------- D tables printing
+            Console.WriteLine($"D[{ind}]");
+            foreach (var state in D[ind])
+            {
+                Console.Write($"{state.GetRule().getLeftPart()} -> ");
+                for (int i = 0; i < state.GetRule().getRightPart().Length; i++)
+                {
+                    if (i == state.GetMeta())
+                        Console.Write("*");
+                    if (state.GetRule().getType() == ruleType.ns)
+                        Console.Write($"{Grammar.GetSigma()[state.GetRule().getRightPart()[i]]} ");
+                    else
+                    {
+                        if (Grammar.GetSigma().ContainsKey(state.GetRule().getRightPart()[i]))
+                            Console.Write($"{Grammar.GetSigma()[state.GetRule().getRightPart()[i]]}");
+                        else Console.Write($"{state.GetRule().getRightPart()[i]} ");
+                    }
+                }
+
+                if (state.GetMeta() == state.GetRule().getRightPart().Length)
+                    Console.Write("*");
+                Console.WriteLine($", meta: {state.GetMeta()}, ind: {state.GetInd()}");
+            }
         }
 
         string res = "";
+
         if (tokenList.Count > 0) startState.SetMeta(1);
         if (D[tokenList.Count].Contains(startState))
         {
@@ -233,26 +239,73 @@ public class Parser
         else
         {
             Console.Write("\nParser - Program contains mistakes\n");
-            Console.WriteLine(counterOfD);
             res = "";
-            for (var i = 0; i < counterOfD; i++)
+            var lowestInd = tokenList.Capacity;
+            var lowestIndCounter = 0;
+            var stateInd = 0;
+            string vars = "[";
+
+            foreach (var state in D[counterOfD - 1])
             {
-                foreach (var state in D[i])
+                if (state.GetInd() <= lowestInd)
                 {
-                    res = res + "<" + ntDic[state.GetRule().getLeftPart()] + "> -> ";
-                    foreach (var rightPart in state.GetRule().getRightPart())
+                    lowestInd = state.GetInd();
+                    if (lowestInd == state.GetInd())
                     {
-                        if (state.GetRule().getType() == ruleType.nn) res = res + "<" + ntDic[rightPart] + "> ";
-                        else if (state.GetRule().getType() == ruleType.ns) res = res + Grammar.GetSigma()[rightPart];
-                        else
-                        {
-                            if (Grammar.GetSigma().ContainsKey(rightPart)) res = res + Grammar.GetSigma()[rightPart];
-                            else res = res + "<" + ntDic[rightPart] + "> ";
-                        }
+                        var ind = (state.GetMeta() == state.GetRule().getRightPart().Length)
+                            ? state.GetMeta() - 1
+                            : state.GetMeta();
+                        vars += Grammar.GetSigma().ContainsKey(state.GetRule().getRightPart()[ind])
+                            ? Grammar.GetSigma()[state.GetRule().getRightPart()[ind]]
+                            : ntDic[state.GetRule().getRightPart()[ind]];
+                        vars += "] OR [";
+
+                        lowestIndCounter++;
                     }
 
-                    res += "\n";
+                    stateInd = D[counterOfD - 1].IndexOf(state);
                 }
+            }
+
+
+            if (lowestIndCounter == 0)
+            {
+                if (D[counterOfD - 1][stateInd].GetMeta() < D[counterOfD - 1][stateInd].GetRule().getRightPart().Length)
+                {
+                    res = "ERROR after [";
+                    var metaInd = D[counterOfD - 1][stateInd].GetMeta();
+                    var rightPartAfterMeta = D[counterOfD - 1][stateInd].GetRule().getRightPart()[metaInd];
+                    var rightPartZero = D[counterOfD - 1][stateInd].GetRule().getRightPart()[0];
+
+                    if (D[counterOfD - 1][stateInd].GetRule().getType() == ruleType.ns)
+                        res = res + Grammar.GetSigma()[rightPartZero];
+                    else
+                    {
+                        if (Grammar.GetSigma().ContainsKey(rightPartZero))
+                            res = res + Grammar.GetSigma()[rightPartZero];
+                        else res = res + ntDic[rightPartZero];
+                    }
+
+                    if (Grammar.GetSigma().ContainsKey(rightPartAfterMeta))
+                    {
+                        res += "] in " + lineNum + " line, expected : " + Grammar.GetSigma()[rightPartAfterMeta];
+                    }
+                    else
+                    {
+                        var lastInd = D[counterOfD - 1].Count;
+                        var el = D[counterOfD - 1][lastInd - 1].GetRule().getRightPart()[0];
+                        res += "] in " + lineNum + " line, expected : " + Grammar.GetSigma()[el];
+                    }
+                }
+                else
+                {
+                    res = "ERROR is not define and in line " + lineNum;
+                }
+            }
+            else
+            {
+                vars = vars.Substring(0, vars.Length - 5);
+                res = "ERROR in line " + lineNum + " : expect " + vars;
             }
         }
 

@@ -1,1 +1,5 @@
-var 2 = 2
+var n = 2
+
+while n < 100 {
+    n = 
+}
