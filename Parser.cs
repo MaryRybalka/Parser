@@ -65,6 +65,8 @@ public class Parser
             {nu.NumberLiteral, "NumberLiteral"},
             {nu.StringLiteral, "StringLiteral"},
             {nu.BoolLiteral, "BoolLiteral"},
+            {nu.Type, "Type"},
+            {nu.FuncCodeBlock, "FuncCodeBlock"},
         };
 
         Grammar = new Grammar();
@@ -123,6 +125,10 @@ public class Parser
         }
     }
 
+    private struct Errors
+    {
+    }
+
     public string Parse(List<Token> tokenList)
     {
         List<state>[] D = new List<state>[tokenList.Capacity + 1];
@@ -134,10 +140,15 @@ public class Parser
         state startState = new state(new Rule(nu.Helper, new[] {Grammar.GetAxioma()}, ruleType.nn), 0);
         D[0].Add(startState);
 
+        var counterOfD = 0;
+
         for (int ind = 0; ind <= tokenList.Count; ind++)
         {
             bool changed = false || ind == 0;
             Scan(ref D, ind, tokenList, ref changed);
+
+            if (changed) counterOfD++;
+
             while (changed)
             {
                 bool comCh = false;
@@ -147,6 +158,7 @@ public class Parser
                 changed = comCh || predCh;
             }
 
+            // D tables printing
             // Console.WriteLine($"D[{ind}]");
             // foreach (var state in D[ind])
             // {
@@ -221,26 +233,27 @@ public class Parser
         else
         {
             Console.Write("\nParser - Program contains mistakes\n");
+            Console.WriteLine(counterOfD);
             res = "";
-            // foreach (var d in D)
-            // {
-            //     foreach (var state in d)
-            //     {
-            //         res = res + "<" + ntDic[state.GetRule().getLeftPart()] + "> -> ";
-            //         foreach (var rightPart in state.GetRule().getRightPart())
-            //         {
-            //             if (state.GetRule().getType() == ruleType.nn) res = res + "<" + ntDic[rightPart] + "> ";
-            //             else if (state.GetRule().getType() == ruleType.ns) res = res + Grammar.GetSigma()[rightPart];
-            //             else
-            //             {
-            //                 if (Grammar.GetSigma().ContainsKey(rightPart)) res = res + Grammar.GetSigma()[rightPart];
-            //                 else res = res + "<" + ntDic[rightPart] + "> ";
-            //             }
-            //         }
-            //
-            //         res += "\n";
-            //     }
-            // }
+            for (var i = 0; i < counterOfD; i++)
+            {
+                foreach (var state in D[i])
+                {
+                    res = res + "<" + ntDic[state.GetRule().getLeftPart()] + "> -> ";
+                    foreach (var rightPart in state.GetRule().getRightPart())
+                    {
+                        if (state.GetRule().getType() == ruleType.nn) res = res + "<" + ntDic[rightPart] + "> ";
+                        else if (state.GetRule().getType() == ruleType.ns) res = res + Grammar.GetSigma()[rightPart];
+                        else
+                        {
+                            if (Grammar.GetSigma().ContainsKey(rightPart)) res = res + Grammar.GetSigma()[rightPart];
+                            else res = res + "<" + ntDic[rightPart] + "> ";
+                        }
+                    }
+
+                    res += "\n";
+                }
+            }
         }
 
         return res;
