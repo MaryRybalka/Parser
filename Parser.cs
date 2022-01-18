@@ -192,7 +192,9 @@ public class Parser
             Console.Write("\nProgram is ok\n");
 
             string right = "";
-            Right(D, startState, tokenList.Count, ref res);
+            string tree = "";
+            Right(D, startState, tokenList.Count, ref res, ref tree);
+            Console.WriteLine(tree);
 
             for (var ind = 0; ind < Grammar.GetRules().Length; ind++)
             {
@@ -442,7 +444,7 @@ public class Parser
         changed = localCh;
     }
 
-    string Right(List<state>[] D, state state, int counter, ref string res)
+    string Right(List<state>[] D, state state, int counter, ref string res, ref string tree)
     {
         var rules = Grammar.GetRules();
         for (var i = 0; i < rules.Length; i++)
@@ -450,12 +452,36 @@ public class Parser
             if (rules[i].getLeftPart() == state.GetRule().getLeftPart() &&
                 rules[i].getRightPart() == state.GetRule().getRightPart() &&
                 rules[i].getType() == state.GetRule().getType())
+            {
                 res = res + ", " + i.ToString();
+
+                tree += "{\nnode: " + ntDic[rules[i].getLeftPart()] + ",\n";
+                if (rules[i].getType() == ruleType.nn)
+                    tree += "child:{\n" + "  node: " + ntDic[rules[i].getRightPart()[0]] + "\n  }\n";
+                else if (rules[i].getType() == ruleType.ns)
+                    tree += "child:{\n" + "  node: " + Grammar.GetSigma()[rules[i].getRightPart()[0]] + "\n  }\n";
+                else
+                {
+                    var spaces = "  ";
+                    foreach (var rigthPart in rules[i].getRightPart())
+                    {
+                        if (Grammar.GetSigma().ContainsKey(rigthPart))
+                            tree += "child:{\n" + spaces + "node: " + Grammar.GetSigma()[rigthPart] + ",\n";
+                        else tree += "child:{\n" + spaces + "node: " + ntDic[rigthPart] + ",\n";
+                        spaces += "  ";
+                    }
+
+                    tree += "  }\n";
+                }
+
+                tree += "}\n";
+            }
         }
 
         var k = state.GetRule().getRightPart().Length;
         var c = counter;
-        if (k > 0)
+        // if (k > 0)
+        while (k > 0)
         {
             if (Grammar.GetSigma().ContainsKey(state.GetRule().getRightPart()[k - 1]))
             {
@@ -464,33 +490,68 @@ public class Parser
             }
             else
             {
-                foreach (var situation in D[c])
+                bool situationIrNotFound = true;
+                int sitIrInd = 0;
+                while (situationIrNotFound && sitIrInd < D[c].Count)
                 {
-                    if (k > 0 && situation.GetRule().getLeftPart() == state.GetRule().getRightPart()[k - 1] &&
-                        situation.GetMeta() == situation.GetRule().getRightPart().Length)
+                    if (k > 0 && D[c][sitIrInd].GetRule().getLeftPart() == state.GetRule().getRightPart()[k - 1] &&
+                        D[c][sitIrInd].GetMeta() == D[c][sitIrInd].GetRule().getRightPart().Length)
                     {
+                        situationIrNotFound = false;
+
                         var ind = 0;
-                        while (ind < D[situation.GetInd()].Count && k > 0)
+                        while ((D[c].Count > sitIrInd) &&
+                               (ind < D[D[c][sitIrInd].GetInd()].Count) &&
+                               (k > 0))
                         {
-                            var innerSit = D[situation.GetInd()][ind];
+                            var innerSit = D[D[c][sitIrInd].GetInd()][ind];
                             if (innerSit.GetMeta() < innerSit.GetRule().getRightPart().Length &&
                                 innerSit.GetRule().getRightPart()[innerSit.GetMeta()] ==
-                                situation.GetRule().getLeftPart() &&
+                                D[c][sitIrInd].GetRule().getLeftPart() &&
                                 state.GetRule().getLeftPart() == innerSit.GetRule().getLeftPart())
                             {
-                                Right(D, situation, c, ref res);
+                                Right(D, D[c][sitIrInd], c, ref res, ref tree);
                                 k--;
-                                c = situation.GetInd();
+                                var test = D[c][sitIrInd].GetInd();
+                                ind = D[test].Count;
+                                c = D[c][sitIrInd].GetInd();
                             }
 
                             ind++;
                         }
-                        // foreach (var innerSit in D[situation.GetInd()])
-                        // {
-                        //    
-                        // }
                     }
+
+                    sitIrInd++;
                 }
+
+                // foreach (var situation in D[c])
+                // {
+                //     if (k > 0 && situation.GetRule().getLeftPart() == state.GetRule().getRightPart()[k - 1] &&
+                //         situation.GetMeta() == situation.GetRule().getRightPart().Length)
+                //     {
+                //         var ind = 0;
+                //         while (ind < D[situation.GetInd()].Count && k > 0)
+                //         {
+                //             var innerSit = D[situation.GetInd()][ind];
+                //             if (innerSit.GetMeta() < innerSit.GetRule().getRightPart().Length &&
+                //                 innerSit.GetRule().getRightPart()[innerSit.GetMeta()] ==
+                //                 situation.GetRule().getLeftPart() &&
+                //                 state.GetRule().getLeftPart() == innerSit.GetRule().getLeftPart())
+                //             {
+                //                 Right(D, situation, c, ref res, ref tree);
+                //                 k--;
+                //                 c = situation.GetInd();
+                //                 ind = D[situation.GetInd()].Count;
+                //             }
+                //
+                //             ind++;
+                //         }
+                //         // foreach (var innerSit in D[situation.GetInd()])
+                //         // {
+                //         //    
+                //         // }
+                //     }
+                // }
             }
         }
 
