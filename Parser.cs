@@ -258,10 +258,13 @@ public class Parser
                         var ind = (state.GetMeta() == state.GetRule().getRightPart().Length)
                             ? state.GetMeta() - 1
                             : state.GetMeta();
-                        vars += Grammar.GetSigma().ContainsKey(state.GetRule().getRightPart()[ind])
+                        string newWord = Grammar.GetSigma().ContainsKey(state.GetRule().getRightPart()[ind])
                             ? Grammar.GetSigma()[state.GetRule().getRightPart()[ind]]
                             : ntDic[state.GetRule().getRightPart()[ind]];
-                        vars += "] OR [";
+                        if (!vars.Contains(newWord))
+                        {
+                            vars += newWord + "] OR [";
+                        }
 
                         lowestIndCounter++;
                     }
