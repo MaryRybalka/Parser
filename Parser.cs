@@ -31,9 +31,12 @@ public class Parser
     private Dictionary<nu, string> ntDic;
     private Grammar Grammar;
     private Dictionary<string, nu> TokensDictionary;
+    public ParseTree ParseTree;
 
     public Parser()
     {
+        ParseTree = new ParseTree();
+
         ntDic = new Dictionary<nu, string>
         {
             {nu.Helper, "Helper"},
@@ -193,52 +196,26 @@ public class Parser
 
             string right = "";
             string tree = "";
-            Right(D, startState, tokenList.Count, ref res, ref tree);
-            Console.WriteLine(tree);
+            int level = 0;
+            Right(D, startState, tokenList.Count, ref res, ref tree, level);
 
-            for (var ind = 0; ind < Grammar.GetRules().Length; ind++)
-            {
-                Console.Write($"{ind}: {Grammar.GetRules()[ind].getLeftPart()} -> ");
-                for (int i = 0; i < Grammar.GetRules()[ind].getRightPart().Length; i++)
-                {
-                    if (Grammar.GetRules()[ind].getType() == ruleType.ns)
-                        Console.Write($"{Grammar.GetSigma()[Grammar.GetRules()[ind].getRightPart()[i]]} ");
-                    else
-                    {
-                        if (Grammar.GetSigma().ContainsKey(Grammar.GetRules()[ind].getRightPart()[i]))
-                            Console.Write($"{Grammar.GetSigma()[Grammar.GetRules()[ind].getRightPart()[i]]}");
-                        else Console.Write($"{Grammar.GetRules()[ind].getRightPart()[i]} ");
-                    }
-                }
-
-                Console.Write("\n");
-            }
-
-            // int itr = 0;
-            // foreach (var d in D)
+            // ---------------------- Write all rules with numbers
+            // for (var ind = 0; ind < Grammar.GetRules().Length; ind++)
             // {
-            //     res += "D[" +itr+ "]\n";
-            //     itr++;
-            //     var lessInd = tokenList.Count;
-            //     foreach (var state in d)
+            //     Console.Write($"{ind}: {Grammar.GetRules()[ind].getLeftPart()} -> ");
+            //     for (int i = 0; i < Grammar.GetRules()[ind].getRightPart().Length; i++)
             //     {
-            //         if (lessInd > state.GetInd()) lessInd = state.GetInd();
-            //         
-            //         res = res + "<" + ntDic[state.GetRule().getLeftPart()] + "> -> ";
-            //         foreach (var rightPart in state.GetRule().getRightPart())
+            //         if (Grammar.GetRules()[ind].getType() == ruleType.ns)
+            //             Console.Write($"{Grammar.GetSigma()[Grammar.GetRules()[ind].getRightPart()[i]]} ");
+            //         else
             //         {
-            //             if (state.GetRule().getType() == ruleType.nn) res = res + "<" + ntDic[rightPart] + "> ";
-            //             else if (state.GetRule().getType() == ruleType.ns) res = res + Grammar.GetSigma()[rightPart];
-            //             else
-            //             {
-            //                 if (Grammar.GetSigma().ContainsKey(rightPart)) res = res + Grammar.GetSigma()[rightPart];
-            //                 else res = res + "<" + ntDic[rightPart] + "> ";
-            //             }
+            //             if (Grammar.GetSigma().ContainsKey(Grammar.GetRules()[ind].getRightPart()[i]))
+            //                 Console.Write($"{Grammar.GetSigma()[Grammar.GetRules()[ind].getRightPart()[i]]}");
+            //             else Console.Write($"{Grammar.GetRules()[ind].getRightPart()[i]} ");
             //         }
-            //
-            //         res += "\n";
             //     }
-            //     Console.WriteLine("<" + ntDic[d[lessInd].GetRule().getLeftPart()] + "> -> ");
+            //
+            //     Console.Write("\n");
             // }
         }
         else
@@ -307,17 +284,17 @@ public class Parser
                 }
                 else
                 {
-                    res = "ERROR is not define and in line " + lineNum;
+                    res = "ERROR is not define in " + lineNum + " line";
                 }
             }
             else
             {
                 vars = vars.Substring(0, vars.Length - 5);
-                res = "ERROR in line " + lineNum + " : expect " + vars;
+                res = "ERROR in " + lineNum + " line." + " Expect: " + vars;
             }
         }
 
-        return res;
+        return res.Substring(2);
     }
 
     int Scan(ref List<state>[] D, int j, List<Token> tokens, ref bool changed)
@@ -444,7 +421,7 @@ public class Parser
         changed = localCh;
     }
 
-    string Right(List<state>[] D, state state, int counter, ref string res, ref string tree)
+    string Right(List<state>[] D, state state, int counter, ref string res, ref string tree, int level)
     {
         var rules = Grammar.GetRules();
         for (var i = 0; i < rules.Length; i++)
@@ -455,32 +432,38 @@ public class Parser
             {
                 res = res + ", " + i.ToString();
 
-                tree += "{\nnode: " + ntDic[rules[i].getLeftPart()] + ",\n";
-                if (rules[i].getType() == ruleType.nn)
-                    tree += "child:{\n" + "  node: " + ntDic[rules[i].getRightPart()[0]] + "\n  }\n";
-                else if (rules[i].getType() == ruleType.ns)
-                    tree += "child:{\n" + "  node: " + Grammar.GetSigma()[rules[i].getRightPart()[0]] + "\n  }\n";
-                else
+                ParseTree.Node newNode = new ParseTree.Node(level - 1, ntDic[rules[i].getLeftPart()]);
+                // tree += "{\n(ind = "+i+")\n  node: " + ntDic[rules[i].getLeftPart()] + ",\n";
+
+                foreach (var rigthPart in rules[i].getRightPart())
                 {
-                    var spaces = "  ";
-                    foreach (var rigthPart in rules[i].getRightPart())
-                    {
-                        if (Grammar.GetSigma().ContainsKey(rigthPart))
-                            tree += "child:{\n" + spaces + "node: " + Grammar.GetSigma()[rigthPart] + ",\n";
-                        else tree += "child:{\n" + spaces + "node: " + ntDic[rigthPart] + ",\n";
-                        spaces += "  ";
-                    }
+                    // -------------------- Print JSON view of tree
+                    // if (rules[i].getType() == ruleType.nn)
+                    // {
+                    //     tree += "  child:{\n" + "    level:" + level + ",\n    node: " + ntDic[rigthPart] + "\n  }\n";
+                    // }
+                    // else if (rules[i].getType() == ruleType.ns)
+                    //     tree += "  child:{\n" + "    level:" + level  + ",\n    node: " + Grammar.GetSigma()[rigthPart] + "\n  }\n";
+                    // else
+                    // {
+                    //     if (Grammar.GetSigma().ContainsKey(rigthPart))
+                    //         tree += "  child:{\n" +spaces+ "level:" + level  + ",\n" + spaces + "node: " + Grammar.GetSigma()[rigthPart] + "\n"+spaces+"}\n";
+                    //     else tree += "  child:{\n" +spaces+ "level:" + level  + ",\n" + spaces + "node: " + ntDic[rigthPart] + "\n"+spaces+"}\n";
+                    // }
 
-                    tree += "  }\n";
+                    if (Grammar.GetSigma().ContainsKey(rigthPart))
+                        newNode.child.Add(new ParseTree.Node(level, Grammar.GetSigma()[rigthPart]));
+                    else
+                        newNode.child.Add(new ParseTree.Node(level, ntDic[rigthPart]));
                 }
+                // tree += "}\n";
 
-                tree += "}\n";
+                ParseTree.Nodes.Add(newNode);
             }
         }
 
         var k = state.GetRule().getRightPart().Length;
         var c = counter;
-        // if (k > 0)
         while (k > 0)
         {
             if (Grammar.GetSigma().ContainsKey(state.GetRule().getRightPart()[k - 1]))
@@ -510,7 +493,8 @@ public class Parser
                                 D[c][sitIrInd].GetRule().getLeftPart() &&
                                 state.GetRule().getLeftPart() == innerSit.GetRule().getLeftPart())
                             {
-                                Right(D, D[c][sitIrInd], c, ref res, ref tree);
+                                level++;
+                                Right(D, D[c][sitIrInd], c, ref res, ref tree, level);
                                 k--;
                                 var test = D[c][sitIrInd].GetInd();
                                 ind = D[test].Count;
@@ -523,35 +507,6 @@ public class Parser
 
                     sitIrInd++;
                 }
-
-                // foreach (var situation in D[c])
-                // {
-                //     if (k > 0 && situation.GetRule().getLeftPart() == state.GetRule().getRightPart()[k - 1] &&
-                //         situation.GetMeta() == situation.GetRule().getRightPart().Length)
-                //     {
-                //         var ind = 0;
-                //         while (ind < D[situation.GetInd()].Count && k > 0)
-                //         {
-                //             var innerSit = D[situation.GetInd()][ind];
-                //             if (innerSit.GetMeta() < innerSit.GetRule().getRightPart().Length &&
-                //                 innerSit.GetRule().getRightPart()[innerSit.GetMeta()] ==
-                //                 situation.GetRule().getLeftPart() &&
-                //                 state.GetRule().getLeftPart() == innerSit.GetRule().getLeftPart())
-                //             {
-                //                 Right(D, situation, c, ref res, ref tree);
-                //                 k--;
-                //                 c = situation.GetInd();
-                //                 ind = D[situation.GetInd()].Count;
-                //             }
-                //
-                //             ind++;
-                //         }
-                //         // foreach (var innerSit in D[situation.GetInd()])
-                //         // {
-                //         //    
-                //         // }
-                //     }
-                // }
             }
         }
 

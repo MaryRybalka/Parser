@@ -11,14 +11,12 @@ namespace parser
             Lexer lexer = new Lexer();
             List<Token> tokens = lexer.Parse("input.swift");
             Console.WriteLine($"tokens.size() {tokens.Count}");
-            // foreach (Token token in tokens)
-            // {
-            //     Console.WriteLine($"[{token.status}][{token.line}:{token.position}] {token.value}");
-            // }
+            // foreach (Token token in tokens) Console.WriteLine($"[{token.status}][{token.line}:{token.position}] {token.value}");
 
             Parser parser = new Parser();
             var res = parser.Parse(tokens);
-            Console.WriteLine(res);
+            Console.WriteLine(res); // print praviy razbor
+            var tree = parser.ParseTree;
 
             // Console.ReadKey();
         }
