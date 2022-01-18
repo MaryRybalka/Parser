@@ -210,6 +210,7 @@ public class Grammar
 
         Rules = new Rule[]
         {
+            new Rule(nu.Helper, new[] {nu.Program}, ruleType.nn),
             new Rule(nu.Program, new[] {nu.Sentences}, ruleType.nn),
             new Rule(nu.Sentences, new[] {nu.Sentence}, ruleType.nn),
             new Rule(nu.Sentences, new[] {nu.Sentence, nu.Sentences}, ruleType.nn),

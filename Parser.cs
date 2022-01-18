@@ -32,6 +32,7 @@ public class Parser
     private Grammar Grammar;
     private Dictionary<string, nu> TokensDictionary;
     public ParseTree ParseTree;
+    private Rule[] rules;
 
     public Parser()
     {
@@ -73,6 +74,8 @@ public class Parser
         };
 
         Grammar = new Grammar();
+        rules = Grammar?.GetRules();
+
         TokensDictionary = new Dictionary<string, nu>()
         {
             {"IDENT", nu.Identifier},
@@ -130,7 +133,7 @@ public class Parser
 
     public string Parse(List<Token> tokenList)
     {
-        List<state>[] D = new List<state>[tokenList.Capacity + 1];
+        List<state>[] D = new List<state>[tokenList.Count + 1];
         for (int i = 0; i < D.Length; i++)
         {
             D[i] = new List<state>();
@@ -423,44 +426,75 @@ public class Parser
 
     string Right(List<state>[] D, state state, int counter, ref string res, ref string tree, int level)
     {
-        var rules = Grammar.GetRules();
-        for (var i = 0; i < rules.Length; i++)
+        bool found = false;
+        var i = 0;
+
+        while (!found && i < rules.Length)
         {
             if (rules[i].getLeftPart() == state.GetRule().getLeftPart() &&
-                rules[i].getRightPart() == state.GetRule().getRightPart() &&
                 rules[i].getType() == state.GetRule().getType())
             {
-                res = res + ", " + i.ToString();
-
-                ParseTree.Node newNode = new ParseTree.Node(level - 1, ntDic[rules[i].getLeftPart()]);
-                // tree += "{\n(ind = "+i+")\n  node: " + ntDic[rules[i].getLeftPart()] + ",\n";
-
-                foreach (var rigthPart in rules[i].getRightPart())
+                var flag = true;
+                foreach (var rule in rules[i].getRightPart())
+                    flag = flag && (rules[i].getRightPart() == state.GetRule().getRightPart());
+                if (flag)
                 {
-                    // -------------------- Print JSON view of tree
-                    // if (rules[i].getType() == ruleType.nn)
-                    // {
-                    //     tree += "  child:{\n" + "    level:" + level + ",\n    node: " + ntDic[rigthPart] + "\n  }\n";
-                    // }
-                    // else if (rules[i].getType() == ruleType.ns)
-                    //     tree += "  child:{\n" + "    level:" + level  + ",\n    node: " + Grammar.GetSigma()[rigthPart] + "\n  }\n";
-                    // else
-                    // {
-                    //     if (Grammar.GetSigma().ContainsKey(rigthPart))
-                    //         tree += "  child:{\n" +spaces+ "level:" + level  + ",\n" + spaces + "node: " + Grammar.GetSigma()[rigthPart] + "\n"+spaces+"}\n";
-                    //     else tree += "  child:{\n" +spaces+ "level:" + level  + ",\n" + spaces + "node: " + ntDic[rigthPart] + "\n"+spaces+"}\n";
-                    // }
+                    res = res + ", " + i.ToString();
 
-                    if (Grammar.GetSigma().ContainsKey(rigthPart))
-                        newNode.child.Add(new ParseTree.Node(level, Grammar.GetSigma()[rigthPart]));
-                    else
-                        newNode.child.Add(new ParseTree.Node(level, ntDic[rigthPart]));
+                    ParseTree.Node newNode = new ParseTree.Node(level - 1, ntDic[rules[i].getLeftPart()]);
+
+                    foreach (var rigthPart in rules[i].getRightPart())
+                    {
+                        if (Grammar.GetSigma().ContainsKey(rigthPart))
+                            newNode.child.Add(new ParseTree.Node(level, Grammar.GetSigma()[rigthPart]));
+                        else
+                            newNode.child.Add(new ParseTree.Node(level, ntDic[rigthPart]));
+                    }
+
+                    ParseTree.Nodes.Add(newNode);
+                    found = true;
                 }
-                // tree += "}\n";
-
-                ParseTree.Nodes.Add(newNode);
             }
+
+            i++;
         }
+        // for (var i = 0; i < rules.Length; i++)
+        // {
+        //     if (rules[i].getLeftPart() == state.GetRule().getLeftPart() &&
+        //         rules[i].getRightPart() == state.GetRule().getRightPart() &&
+        //         rules[i].getType() == state.GetRule().getType())
+        //     {
+        //         res = res + ", " + i.ToString();
+        //
+        //         ParseTree.Node newNode = new ParseTree.Node(level - 1, ntDic[rules[i].getLeftPart()]);
+        //         // tree += "{\n(ind = "+i+")\n  node: " + ntDic[rules[i].getLeftPart()] + ",\n";
+        //
+        //         foreach (var rigthPart in rules[i].getRightPart())
+        //         {
+        //             // -------------------- Print JSON view of tree
+        //             // if (rules[i].getType() == ruleType.nn)
+        //             // {
+        //             //     tree += "  child:{\n" + "    level:" + level + ",\n    node: " + ntDic[rigthPart] + "\n  }\n";
+        //             // }
+        //             // else if (rules[i].getType() == ruleType.ns)
+        //             //     tree += "  child:{\n" + "    level:" + level  + ",\n    node: " + Grammar.GetSigma()[rigthPart] + "\n  }\n";
+        //             // else
+        //             // {
+        //             //     if (Grammar.GetSigma().ContainsKey(rigthPart))
+        //             //         tree += "  child:{\n" +spaces+ "level:" + level  + ",\n" + spaces + "node: " + Grammar.GetSigma()[rigthPart] + "\n"+spaces+"}\n";
+        //             //     else tree += "  child:{\n" +spaces+ "level:" + level  + ",\n" + spaces + "node: " + ntDic[rigthPart] + "\n"+spaces+"}\n";
+        //             // }
+        //
+        //             if (Grammar.GetSigma().ContainsKey(rigthPart))
+        //                 newNode.child.Add(new ParseTree.Node(level, Grammar.GetSigma()[rigthPart]));
+        //             else
+        //                 newNode.child.Add(new ParseTree.Node(level, ntDic[rigthPart]));
+        //         }
+        //         // tree += "}\n";
+        //
+        //         ParseTree.Nodes.Add(newNode);
+        //     }
+        // }
 
         var k = state.GetRule().getRightPart().Length;
         var c = counter;
@@ -473,39 +507,37 @@ public class Parser
             }
             else
             {
-                bool situationIrNotFound = true;
-                int sitIrInd = 0;
-                while (situationIrNotFound && sitIrInd < D[c].Count)
+                bool situationIcNotFound = true;
+                int sitIcInd = 0;
+                while (situationIcNotFound && sitIcInd < D[c].Count)
                 {
-                    if (k > 0 && D[c][sitIrInd].GetRule().getLeftPart() == state.GetRule().getRightPart()[k - 1] &&
-                        D[c][sitIrInd].GetMeta() == D[c][sitIrInd].GetRule().getRightPart().Length)
+                    var IcSit = D[c][sitIcInd];
+                    if (k > 0 && IcSit.GetRule().getLeftPart() == state.GetRule().getRightPart()[k - 1] &&
+                        IcSit.GetMeta() == IcSit.GetRule().getRightPart().Length)
                     {
-                        situationIrNotFound = false;
-
                         var ind = 0;
-                        while ((D[c].Count > sitIrInd) &&
-                               (ind < D[D[c][sitIrInd].GetInd()].Count) &&
-                               (k > 0))
+                        while ((ind < D[IcSit.GetInd()].Count) && (k > 0))
                         {
-                            var innerSit = D[D[c][sitIrInd].GetInd()][ind];
+                            var innerSit = D[IcSit.GetInd()][ind];
                             if (innerSit.GetMeta() < innerSit.GetRule().getRightPart().Length &&
                                 innerSit.GetRule().getRightPart()[innerSit.GetMeta()] ==
-                                D[c][sitIrInd].GetRule().getLeftPart() &&
+                                IcSit.GetRule().getLeftPart() &&
                                 state.GetRule().getLeftPart() == innerSit.GetRule().getLeftPart())
                             {
+                                situationIcNotFound = false;
+
                                 level++;
-                                Right(D, D[c][sitIrInd], c, ref res, ref tree, level);
+                                Right(D, IcSit, c, ref res, ref tree, level);
                                 k--;
-                                var test = D[c][sitIrInd].GetInd();
-                                ind = D[test].Count;
-                                c = D[c][sitIrInd].GetInd();
+                                ind = D[IcSit.GetInd()].Count;
+                                c = IcSit.GetInd();
                             }
 
                             ind++;
                         }
                     }
 
-                    sitIrInd++;
+                    sitIcInd++;
                 }
             }
         }
