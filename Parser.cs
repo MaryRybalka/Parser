@@ -31,12 +31,12 @@ public class Parser
     private Dictionary<nu, string> ntDic;
     private Grammar Grammar;
     private Dictionary<string, nu> TokensDictionary;
-    public ParseTree ParseTree;
+    public ParseTree MainParseTree;
     private Rule[] rules;
 
     public Parser()
     {
-        ParseTree = new ParseTree();
+        MainParseTree = new ParseTree();
 
         ntDic = new Dictionary<nu, string>
         {
@@ -297,7 +297,7 @@ public class Parser
             }
         }
 
-        return res.Substring(2);
+        return (res.Length > 2) ? res.Substring(2) : res;
     }
 
     int Scan(ref List<state>[] D, int j, List<Token> tokens, ref bool changed)
@@ -424,122 +424,122 @@ public class Parser
         changed = localCh;
     }
 
-    string Right(List<state>[] D, state state, int counter, ref string res, ref string tree, int level)
+    string Right(List<state>[] D, state state, int counter, ref string res, ref string tree, int level,
+        int parentInd = -1)
     {
-        bool found = false;
-        var i = 0;
-
-        while (!found && i < rules.Length)
+        if (D.Length > 1)
         {
-            if (rules[i].getLeftPart() == state.GetRule().getLeftPart() &&
-                rules[i].getType() == state.GetRule().getType())
+            bool found = false;
+            var i = 0;
+
+            while (!found && i < rules.Length)
             {
-                var flag = true;
-                foreach (var rule in rules[i].getRightPart())
-                    flag = flag && (rules[i].getRightPart() == state.GetRule().getRightPart());
-                if (flag)
+                if (rules[i].getLeftPart() == state.GetRule().getLeftPart() &&
+                    rules[i].getType() == state.GetRule().getType())
                 {
-                    res = res + ", " + i.ToString();
-
-                    ParseTree.Node newNode = new ParseTree.Node(level - 1, ntDic[rules[i].getLeftPart()]);
-
-                    foreach (var rigthPart in rules[i].getRightPart())
+                    var flag = true;
+                    foreach (var rule in rules[i].getRightPart())
+                        flag = flag && (rules[i].getRightPart() == state.GetRule().getRightPart());
+                    if (flag)
                     {
-                        if (Grammar.GetSigma().ContainsKey(rigthPart))
-                            newNode.child.Add(new ParseTree.Node(level, Grammar.GetSigma()[rigthPart]));
-                        else
-                            newNode.child.Add(new ParseTree.Node(level, ntDic[rigthPart]));
-                    }
+                        res = res + ", " + i.ToString();
 
-                    ParseTree.Nodes.Add(newNode);
-                    found = true;
-                }
-            }
+                        ParseTree.Node newNode = new ParseTree.Node(level - 1, ntDic[rules[i].getLeftPart()]);
+                        if (MainParseTree.Nodes.Count > 0) newNode.parentName = MainParseTree.Nodes[parentInd].name;
 
-            i++;
-        }
-        // for (var i = 0; i < rules.Length; i++)
-        // {
-        //     if (rules[i].getLeftPart() == state.GetRule().getLeftPart() &&
-        //         rules[i].getRightPart() == state.GetRule().getRightPart() &&
-        //         rules[i].getType() == state.GetRule().getType())
-        //     {
-        //         res = res + ", " + i.ToString();
-        //
-        //         ParseTree.Node newNode = new ParseTree.Node(level - 1, ntDic[rules[i].getLeftPart()]);
-        //         // tree += "{\n(ind = "+i+")\n  node: " + ntDic[rules[i].getLeftPart()] + ",\n";
-        //
-        //         foreach (var rigthPart in rules[i].getRightPart())
-        //         {
-        //             // -------------------- Print JSON view of tree
-        //             // if (rules[i].getType() == ruleType.nn)
-        //             // {
-        //             //     tree += "  child:{\n" + "    level:" + level + ",\n    node: " + ntDic[rigthPart] + "\n  }\n";
-        //             // }
-        //             // else if (rules[i].getType() == ruleType.ns)
-        //             //     tree += "  child:{\n" + "    level:" + level  + ",\n    node: " + Grammar.GetSigma()[rigthPart] + "\n  }\n";
-        //             // else
-        //             // {
-        //             //     if (Grammar.GetSigma().ContainsKey(rigthPart))
-        //             //         tree += "  child:{\n" +spaces+ "level:" + level  + ",\n" + spaces + "node: " + Grammar.GetSigma()[rigthPart] + "\n"+spaces+"}\n";
-        //             //     else tree += "  child:{\n" +spaces+ "level:" + level  + ",\n" + spaces + "node: " + ntDic[rigthPart] + "\n"+spaces+"}\n";
-        //             // }
-        //
-        //             if (Grammar.GetSigma().ContainsKey(rigthPart))
-        //                 newNode.child.Add(new ParseTree.Node(level, Grammar.GetSigma()[rigthPart]));
-        //             else
-        //                 newNode.child.Add(new ParseTree.Node(level, ntDic[rigthPart]));
-        //         }
-        //         // tree += "}\n";
-        //
-        //         ParseTree.Nodes.Add(newNode);
-        //     }
-        // }
+                        // tree += "{\n(ind = "+i +")\n  parent: ";
+                        // tree += (MainParseTree.Nodes.Count > 0)
+                        //     ? MainParseTree.Nodes[parentInd].name
+                        //     : "Helper";
+                        // tree += ",\n  node: " + ntDic[rules[i].getLeftPart()] + ",\n";
 
-        var k = state.GetRule().getRightPart().Length;
-        var c = counter;
-        while (k > 0)
-        {
-            if (Grammar.GetSigma().ContainsKey(state.GetRule().getRightPart()[k - 1]))
-            {
-                k--;
-                c--;
-            }
-            else
-            {
-                bool situationIcNotFound = true;
-                int sitIcInd = 0;
-                while (situationIcNotFound && sitIcInd < D[c].Count)
-                {
-                    var IcSit = D[c][sitIcInd];
-                    if (k > 0 && IcSit.GetRule().getLeftPart() == state.GetRule().getRightPart()[k - 1] &&
-                        IcSit.GetMeta() == IcSit.GetRule().getRightPart().Length)
-                    {
-                        var ind = 0;
-                        while ((ind < D[IcSit.GetInd()].Count) && (k > 0))
+                        parentInd++;
+
+                        foreach (var rigthPart in rules[i].getRightPart())
                         {
-                            var innerSit = D[IcSit.GetInd()][ind];
-                            if (innerSit.GetMeta() < innerSit.GetRule().getRightPart().Length &&
-                                innerSit.GetRule().getRightPart()[innerSit.GetMeta()] ==
-                                IcSit.GetRule().getLeftPart() &&
-                                state.GetRule().getLeftPart() == innerSit.GetRule().getLeftPart())
-                            {
-                                situationIcNotFound = false;
+                            // -------------------- Print JSON view of tree
+                            // if (rules[i].getType() == ruleType.nn)
+                            // {
+                            //     tree += "  child:{\n" + "    level:" + level + ",\n    node: " + ntDic[rigthPart] + "\n    }\n";
+                            // }
+                            // else if (rules[i].getType() == ruleType.ns)
+                            //     tree += "  child:{\n" + "    level:" + level  + ",\n    node: " + Grammar.GetSigma()[rigthPart] + "\n    }\n";
+                            // else
+                            // {
+                            //     if (Grammar.GetSigma().ContainsKey(rigthPart))
+                            //         tree += "  child:{\n" + "      level:" + level  + ",\n" + "      node: " + Grammar.GetSigma()[rigthPart] + "\n"+"    }\n";
+                            //     else tree += "  child:{\n" + "      level:" + level  + ",\n" + "      node: " + ntDic[rigthPart] + "\n"+"    }\n";
+                            // }
 
-                                level++;
-                                Right(D, IcSit, c, ref res, ref tree, level);
-                                k--;
-                                ind = D[IcSit.GetInd()].Count;
-                                c = IcSit.GetInd();
-                            }
-
-                            ind++;
+                            if (Grammar.GetSigma().ContainsKey(rigthPart))
+                                newNode.child.Add(new ParseTree.Node(level, Grammar.GetSigma()[rigthPart],
+                                    ntDic[rules[i].getLeftPart()]));
+                            else
+                                newNode.child.Add(new ParseTree.Node(level, ntDic[rigthPart],
+                                    ntDic[rules[i].getLeftPart()]));
                         }
-                    }
 
-                    sitIcInd++;
+                        // tree += "}\n";
+                        MainParseTree.Nodes.Add(newNode);
+                        found = true;
+                    }
+                }
+
+                i++;
+            }
+
+            var k = state.GetRule().getRightPart().Length;
+            var c = counter;
+            while (k > 0)
+            {
+                if (Grammar.GetSigma().ContainsKey(state.GetRule().getRightPart()[k - 1]))
+                {
+                    k--;
+                    c--;
+                }
+                else
+                {
+                    bool situationIcNotFound = true;
+                    int sitIcInd = 0;
+                    while (situationIcNotFound && sitIcInd < D[c].Count)
+                    {
+                        var IcSit = D[c][sitIcInd];
+                        if (k > 0 && IcSit.GetRule().getLeftPart() == state.GetRule().getRightPart()[k - 1] &&
+                            IcSit.GetMeta() == IcSit.GetRule().getRightPart().Length)
+                        {
+                            var ind = 0;
+                            while ((ind < D[IcSit.GetInd()].Count) && (k > 0))
+                            {
+                                var innerSit = D[IcSit.GetInd()][ind];
+                                if (innerSit.GetMeta() < innerSit.GetRule().getRightPart().Length &&
+                                    innerSit.GetRule().getRightPart()[innerSit.GetMeta()] ==
+                                    IcSit.GetRule().getLeftPart() &&
+                                    state.GetRule().getLeftPart() == innerSit.GetRule().getLeftPart())
+                                {
+                                    situationIcNotFound = false;
+
+                                    level++;
+                                    Right(D, IcSit, c, ref res, ref tree, level, parentInd);
+                                    k--;
+                                    ind = D[IcSit.GetInd()].Count;
+                                    c = IcSit.GetInd();
+                                }
+
+                                ind++;
+                            }
+                        }
+
+                        sitIcInd++;
+                    }
                 }
             }
+
+            MainParseTree.numOfLevels = level + 1;
+        }
+        else
+        {
+            MainParseTree.Nodes.Add(new ParseTree.Node());
+            MainParseTree.numOfLevels = 1;
         }
 
         // Console.Write(tree);
