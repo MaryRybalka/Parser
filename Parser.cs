@@ -230,29 +230,37 @@ public class Parser
             var stateInd = 0;
             string vars = "[";
 
-            foreach (var state in D[counterOfD - 1])
+            if (!Grammar.GetSigma().ContainsKey(D[counterOfD - 1][0].GetRule().getRightPart()[0]))
             {
-                if (state.GetInd() <= lowestInd)
+                foreach (var state in D[counterOfD - 1])
                 {
-                    lowestInd = state.GetInd();
-                    if (lowestInd == state.GetInd())
+                    if (state.GetInd() <= lowestInd)
                     {
-                        var ind = (state.GetMeta() == state.GetRule().getRightPart().Length)
-                            ? state.GetMeta() - 1
-                            : state.GetMeta();
-                        string newWord = Grammar.GetSigma().ContainsKey(state.GetRule().getRightPart()[ind])
-                            ? Grammar.GetSigma()[state.GetRule().getRightPart()[ind]]
-                            : ntDic[state.GetRule().getRightPart()[ind]];
-                        if (!vars.Contains(newWord))
+                        lowestInd = state.GetInd();
+                        if (lowestInd == state.GetInd())
                         {
-                            vars += newWord + "] OR [";
+                            var ind = (state.GetMeta() == state.GetRule().getRightPart().Length)
+                                ? state.GetMeta() - 1
+                                : state.GetMeta();
+                            string newWord = Grammar.GetSigma().ContainsKey(state.GetRule().getRightPart()[ind])
+                                ? Grammar.GetSigma()[state.GetRule().getRightPart()[ind]]
+                                : ntDic[state.GetRule().getRightPart()[ind]];
+                            if (!vars.Contains(newWord))
+                            {
+                                vars += newWord + "] OR [";
+                            }
+
+                            lowestIndCounter++;
                         }
 
-                        lowestIndCounter++;
+                        stateInd = D[counterOfD - 1].IndexOf(state);
                     }
-
-                    stateInd = D[counterOfD - 1].IndexOf(state);
                 }
+            }
+            else
+            {
+                lowestIndCounter = 1;
+                vars = Grammar.GetSigma()[D[counterOfD - 1][0].GetRule().getRightPart()[0]];
             }
 
 
@@ -292,7 +300,7 @@ public class Parser
             }
             else
             {
-                vars = vars.Substring(0, vars.Length - 5);
+                if (vars[0] == '[') vars = vars.Substring(0, vars.Length - 5);
                 res = "ERROR in " + lineNum + " line." + " Expect: " + vars;
             }
         }
