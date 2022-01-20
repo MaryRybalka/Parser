@@ -284,10 +284,16 @@ public class Grammar
             new Rule(nu.Definition, new[] {nu.SigmaLet, nu.InitialisationListPattern}, ruleType.mix),
             new Rule(nu.Definition, new[] {nu.SigmaVar, nu.InitialisationListPattern}, ruleType.mix),
             new Rule(nu.Definition,
-                new[] {nu.SigmaFunc, nu.Identifier, nu.FunctionCall, nu.SigmaArrow, nu.Type, nu.FuncCodeBlock},
+                new[]
+                {
+                    nu.SigmaFunc, nu.Identifier, nu.FunctionCall, nu.SigmaMinus, nu.SigmaMore, nu.Type, nu.FuncCodeBlock
+                },
                 ruleType.mix),
             new Rule(nu.Definition,
-                new[] {nu.SigmaFunc, nu.Identifier, nu.FunctionCall, nu.SigmaArrow, nu.Type, nu.CodeBlock},
+                new[]
+                {
+                    nu.SigmaFunc, nu.Identifier, nu.FunctionCall, nu.SigmaMinus, nu.SigmaMore, nu.Type, nu.CodeBlock
+                },
                 ruleType.mix),
             new Rule(nu.Definition, new[] {nu.SigmaFunc, nu.Identifier, nu.FunctionCall, nu.CodeBlock}, ruleType.mix),
             new Rule(nu.InitialisationListPattern,

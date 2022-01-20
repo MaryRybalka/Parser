@@ -297,7 +297,7 @@ public class Parser
             }
         }
 
-        return (res.Length > 2) ? res.Substring(2) : res;
+        return (res.Length > 2 && D[tokenList.Count].Contains(startState)) ? res.Substring(2) : res;
     }
 
     int Scan(ref List<state>[] D, int j, List<Token> tokens, ref bool changed)

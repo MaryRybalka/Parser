@@ -22,6 +22,6 @@ else if n == "fgfgf"{
 }
 else {}
 
-func f(f int) {
+func f(f int) -> int{
   k = 1
 }
