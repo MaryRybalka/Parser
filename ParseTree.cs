@@ -8,13 +8,15 @@ public class ParseTree
         public string name { get; set; }
         public string parentName { get; set; }
         public List<Node> child { get; set; }
+        public bool isIdent { get; set; }
 
-        public Node(int level = 0, string name = "lambda", string parentName = "Helper")
+        public Node(int level = 0, string name = "lambda", string parentName = "Helper", bool ident = false)
         {
             this.level = level;
             this.name = name;
             this.parentName = parentName;
             child = new List<Node>();
+            isIdent = false;
         }
     }
 

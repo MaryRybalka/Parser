@@ -95,6 +95,8 @@ public class Grammar
         SigmaArrow,
         SigmaReturn,
         SigmaType,
+
+        IdentIdent,
     };
 
     private readonly SortedSet<string> _keywords = new SortedSet<string>
