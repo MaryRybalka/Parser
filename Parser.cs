@@ -478,6 +478,7 @@ public class Parser
 
                         ParseTree.Node newNode = new ParseTree.Node(level - 1, ntDic[rules[i].GetRule().getLeftPart()]);
                         if (MainParseTree.Nodes.Count > 0) newNode.parentName = MainParseTree.Nodes[parentInd].name;
+                        newNode.index = i;
 
                         tree += "{\n(ind = " + i + ")\n  parent: ";
                         tree += (MainParseTree.Nodes.Count > 0)
@@ -531,19 +532,19 @@ public class Parser
                                 {
                                     if (TokInd < tokens.Count)
                                         newNode.child.Add(new ParseTree.Node(level, tokens[TokInd].value,
-                                            ntDic[rules[i].GetRule().getLeftPart()], true));
+                                            ntDic[rules[i].GetRule().getLeftPart()], i + 1, true));
                                 }
                                 else
                                 {
                                     newNode.child.Add(new ParseTree.Node(level, Grammar.GetSigma()[rigthPart],
-                                        ntDic[rules[i].GetRule().getLeftPart()]));
+                                        ntDic[rules[i].GetRule().getLeftPart()], i + 1));
                                 }
 
                                 TokInd++;
                             }
                             else
                                 newNode.child.Add(new ParseTree.Node(level, ntDic[rigthPart],
-                                    ntDic[rules[i].GetRule().getLeftPart()]));
+                                    ntDic[rules[i].GetRule().getLeftPart()], i + 1));
                         }
 
                         tree += "}\n";
@@ -610,7 +611,7 @@ public class Parser
             MainParseTree.numOfLevels = 1;
         }
 
-        // Console.Write(tree);
+        Console.Write(tree);
         return res;
     }
 }
