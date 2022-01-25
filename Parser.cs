@@ -532,19 +532,19 @@ public class Parser
                                 {
                                     if (TokInd < tokens.Count)
                                         newNode.child.Add(new ParseTree.Node(level, tokens[TokInd].value,
-                                            ntDic[rules[i].GetRule().getLeftPart()], TokInd, true));
+                                            ntDic[rules[i].GetRule().getLeftPart()], -1, true));
                                 }
                                 else
                                 {
                                     newNode.child.Add(new ParseTree.Node(level, Grammar.GetSigma()[rigthPart],
-                                        ntDic[rules[i].GetRule().getLeftPart()], TokInd));
+                                        ntDic[rules[i].GetRule().getLeftPart()], -1));
                                 }
 
                                 TokInd++;
                             }
                             else
                                 newNode.child.Add(new ParseTree.Node(level, ntDic[rigthPart],
-                                    ntDic[rules[i].GetRule().getLeftPart()], TokInd));
+                                    ntDic[rules[i].GetRule().getLeftPart()], -1));
                         }
 
                         tree += "}\n";
