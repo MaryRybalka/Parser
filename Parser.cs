@@ -478,7 +478,7 @@ public class Parser
 
                         ParseTree.Node newNode = new ParseTree.Node(level - 1, ntDic[rules[i].GetRule().getLeftPart()]);
                         if (MainParseTree.Nodes.Count > 0) newNode.parentName = MainParseTree.Nodes[parentInd].name;
-                        newNode.index = i;
+                        newNode.index = TokInd;
 
                         tree += "{\n(ind = " + i + ")\n  parent: ";
                         tree += (MainParseTree.Nodes.Count > 0)
@@ -532,19 +532,19 @@ public class Parser
                                 {
                                     if (TokInd < tokens.Count)
                                         newNode.child.Add(new ParseTree.Node(level, tokens[TokInd].value,
-                                            ntDic[rules[i].GetRule().getLeftPart()], i + 1, true));
+                                            ntDic[rules[i].GetRule().getLeftPart()], TokInd, true));
                                 }
                                 else
                                 {
                                     newNode.child.Add(new ParseTree.Node(level, Grammar.GetSigma()[rigthPart],
-                                        ntDic[rules[i].GetRule().getLeftPart()], i + 1));
+                                        ntDic[rules[i].GetRule().getLeftPart()], TokInd));
                                 }
 
                                 TokInd++;
                             }
                             else
                                 newNode.child.Add(new ParseTree.Node(level, ntDic[rigthPart],
-                                    ntDic[rules[i].GetRule().getLeftPart()], i + 1));
+                                    ntDic[rules[i].GetRule().getLeftPart()], TokInd));
                         }
 
                         tree += "}\n";
