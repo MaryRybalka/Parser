@@ -95,8 +95,6 @@ public class Grammar
         SigmaArrow,
         SigmaReturn,
         SigmaType,
-
-        IdentIdent,
     };
 
     private readonly SortedSet<string> _keywords = new SortedSet<string>
@@ -225,10 +223,9 @@ public class Grammar
             new Rule(nu.Expression, new[] {nu.UnaryOperator, nu.Operand}, ruleType.nn),
             new Rule(nu.Expression, new[] {nu.UnaryOperator, nu.Expression}, ruleType.nn),
             new Rule(nu.Expression, new[] {nu.Operand, nu.UnaryOperator}, ruleType.nn),
+            new Rule(nu.Expression, new[] {nu.Operand, nu.FunctionCall}, ruleType.nn),
             new Rule(nu.Operand, new[] {nu.Identifier}, ruleType.nn),
             new Rule(nu.Operand, new[] {nu.Literal}, ruleType.nn),
-            new Rule(nu.Operand, new[] {nu.Identifier, nu.FunctionCall}, ruleType.nn),
-            new Rule(nu.Operand, new[] {nu.Literal, nu.FunctionCall}, ruleType.nn),
             new Rule(nu.ArgumentsList, new[] {nu.Argument}, ruleType.nn),
             new Rule(nu.Argument, new[] {nu.Expression}, ruleType.nn),
             new Rule(nu.Expressions, new[] {nu.Expression}, ruleType.nn),
@@ -283,6 +280,7 @@ public class Grammar
             new Rule(nu.FunctionCall, new[] {nu.SigmaOpenRound, nu.ArgumentsList, nu.SigmaCloseRound}, ruleType.mix),
             new Rule(nu.ArgumentsList, new[] {nu.Argument, nu.SigmaComma, nu.ArgumentsList}, ruleType.mix),
             new Rule(nu.Argument, new[] {nu.Identifier, nu.TypeAnnotation}, ruleType.mix),
+            new Rule(nu.Argument, new[] {nu.Identifier}, ruleType.mix),
             new Rule(nu.Definition, new[] {nu.SigmaLet, nu.InitialisationListPattern}, ruleType.mix),
             new Rule(nu.Definition, new[] {nu.SigmaVar, nu.InitialisationListPattern}, ruleType.mix),
             new Rule(nu.Definition,

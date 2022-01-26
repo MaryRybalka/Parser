@@ -4,22 +4,13 @@ public class ParseTree
 {
     public struct Node
     {
-        public int index { get; set; }
-        public int level { get; set; }
         public string name { get; set; }
-        public string parentName { get; set; }
         public List<Node> child { get; set; }
-        public bool isIdent { get; set; }
 
-        public Node(int level = 0, string name = "lambda", string parentName = "Helper", int index = 0,
-            bool ident = false)
+        public Node(string name = "lambda")
         {
-            this.level = level;
             this.name = name;
-            this.parentName = parentName;
             child = new List<Node>();
-            isIdent = false;
-            this.index = index;
         }
     }
 
@@ -36,12 +27,6 @@ public class ParseTree
     {
         Console.WriteLine("node - " + node.name);
         bool bolRes = false;
-        if (lvl == node.level && name == node.name)
-        {
-            res = node;
-            // res.child = node.child;
-            return true;
-        }
 
         // if (node.child.Count == 0) return false;
         foreach (var child in node.child)
@@ -61,12 +46,6 @@ public class ParseTree
     public void FindChildNode(int lvl, string name, List<Node> childs, ref Node node)
     {
         Console.WriteLine("node - " + node.name);
-
-        if (lvl == node.level && name == node.name)
-        {
-            node.child = childs;
-            return;
-        }
 
         for (var i = 0; i < node.child.Count; i++)
         {

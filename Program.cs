@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using static parser.LexerTypes;
+using static parser.Grammar;
 
 namespace parser
 {
@@ -14,8 +16,13 @@ namespace parser
             // foreach (Token token in tokens) Console.WriteLine($"[{token.status}][{token.line}:{token.position}] {token.value}");
 
             Parser parser = new Parser();
-            var res = parser.Parse(tokens);
-            Console.WriteLine(res); // print praviy razbor
+            List<int> res = parser.Parse(tokens);
+            if (res.Count > 0)
+                foreach (var it in res)
+                {
+                    Console.Write(it + ", "); // print praviy razbor
+                }
+
             var tree = parser.MainParseTree;
         }
     }
