@@ -17,11 +17,6 @@ namespace parser
 
             Parser parser = new Parser();
             List<int> res = parser.Parse(tokens);
-            if (res.Count > 0)
-                foreach (var it in res)
-                {
-                    Console.Write(it + ", "); // print praviy razbor
-                }
 
             var tree = parser.MainParseTree;
         }
