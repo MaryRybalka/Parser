@@ -16,7 +16,7 @@ namespace parser
             // foreach (Token token in tokens) Console.WriteLine($"[{token.status}][{token.line}:{token.position}] {token.value}");
 
             Parser parser = new Parser();
-            List<int> res = parser.Parse(tokens);
+            parser.Parse(tokens);
 
             var tree = parser.MainParseTree;
         }

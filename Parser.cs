@@ -30,17 +30,14 @@ public class Parser
 {
     private Dictionary<nu, string> ntDic;
     private Grammar Grammar;
-    private Dictionary<string, nu> TokensDictionary;
 
     public ParseTree MainParseTree;
 
     private Rule[] rules;
-    // private List<state> rules;
 
     public Parser()
     {
         MainParseTree = new ParseTree();
-
         ntDic = new Dictionary<nu, string>
         {
             {nu.Helper, "Helper"},
@@ -78,27 +75,6 @@ public class Parser
 
         Grammar = new Grammar();
         rules = Grammar?.GetRules();
-        // rules = new List<state>();
-        // foreach (var rule in Grammar.GetRules())
-        // {
-        //     Rule newRule = new Rule(rule.getLeftPart(), rule.getRightPart(), rule.getType());
-        //     rules.Add(new state(newRule, 0));
-        // }
-
-        TokensDictionary = new Dictionary<string, nu>()
-        {
-            {"IDENT", nu.Identifier},
-            {"NUMBER", nu.NumberLiteral},
-            {"STRING", nu.StringLiteral},
-
-            // {"EQUAL", nu.SigmaEqual},
-            // {"SLASH", nu.SigmaSlash},
-            // {"STAR", nu.SigmaStar},
-            // {"PLUS", nu.SigmaPlus},
-            // {"MINUS", nu.SigmaMinus},
-            // {"PERCENT", nu.SigmaPercent},
-            // {"NOT", nu.SigmaNot},
-        };
     }
 
     private struct state
@@ -145,7 +121,7 @@ public class Parser
         }
     }
 
-    public List<int> Parse(List<Token> tokenList)
+    public void Parse(List<Token> tokenList)
     {
         List<state>[] D = new List<state>[tokenList.Count + 1];
         for (int i = 0; i < D.Length; i++)
@@ -180,34 +156,34 @@ public class Parser
             }
 
             // ---------------- D tables printing
-            Console.WriteLine($"D[{ind}]");
-            foreach (var state in D[ind])
-            {
-                if ((state.GetInd() != ind || ind == 0) && state.GetMeta() == state.GetRule().getRightPart().Length)
-                {
-                    Console.Write($"{state.GetRule().getLeftPart()} -> ");
-                    for (int i = 0; i < state.GetRule().getRightPart().Length; i++)
-                    {
-                        if (i == state.GetMeta())
-                            Console.Write("*");
-
-                        if (state.GetRule().getType() == ruleType.ns)
-                        {
-                            Console.Write($"{Grammar.GetSigma()[state.GetRule().getRightPart()[i]]} ");
-                        }
-                        else
-                        {
-                            Console.Write(Grammar.GetSigma().ContainsKey(state.GetRule().getRightPart()[i])
-                                ? $"{Grammar.GetSigma()[state.GetRule().getRightPart()[i]]}"
-                                : $"{state.GetRule().getRightPart()[i]} ");
-                        }
-                    }
-
-                    if (state.GetMeta() == state.GetRule().getRightPart().Length)
-                        Console.Write("*");
-                    Console.WriteLine($", meta: {state.GetMeta()}, ind: {state.GetInd()}");
-                }
-            }
+            // Console.WriteLine($"D[{ind}]");
+            // foreach (var state in D[ind])
+            // {
+            //     if ((state.GetInd() != ind || ind == 0) && state.GetMeta() == state.GetRule().getRightPart().Length)
+            //     {
+            //         Console.Write($"{state.GetRule().getLeftPart()} -> ");
+            //         for (int i = 0; i < state.GetRule().getRightPart().Length; i++)
+            //         {
+            //             if (i == state.GetMeta())
+            //                 Console.Write("*");
+            //
+            //             if (state.GetRule().getType() == ruleType.ns)
+            //             {
+            //                 Console.Write($"{Grammar.GetSigma()[state.GetRule().getRightPart()[i]]} ");
+            //             }
+            //             else
+            //             {
+            //                 Console.Write(Grammar.GetSigma().ContainsKey(state.GetRule().getRightPart()[i])
+            //                     ? $"{Grammar.GetSigma()[state.GetRule().getRightPart()[i]]}"
+            //                     : $"{state.GetRule().getRightPart()[i]} ");
+            //             }
+            //         }
+            //
+            //         if (state.GetMeta() == state.GetRule().getRightPart().Length)
+            //             Console.Write("*");
+            //         Console.WriteLine($", meta: {state.GetMeta()}, ind: {state.GetInd()}");
+            //     }
+            // }
         }
 
         List<int> res = new List<int>();
@@ -217,10 +193,6 @@ public class Parser
         {
             Console.Write("\nProgram is ok\n");
 
-            string right = "";
-            string tree = "";
-            int level = 0;
-            int indTok = 0;
             Razb(D, tokenList, res);
 
             // Right(D, startState, tokenList.Count, tokenList, ref indTok, ref res, ref tree, level);
@@ -330,7 +302,7 @@ public class Parser
             Console.WriteLine(error);
         }
 
-        return (res);
+        return;
     }
 
     int Scan(ref List<state>[] D, int j, List<Token> tokens, ref bool changed)
@@ -464,12 +436,6 @@ public class Parser
 
         for (var ind = D.Length - 1; ind >= 0; ind--)
         {
-            // foreach (var state in D[ind])
-            // {
-            //     if ((state.GetInd() != ind || ind == 0) && state.GetMeta() == state.GetRule().getRightPart().Length && !valuable.Contains(state))
-            //         valuable.Insert(0, state);
-            // }
-
             for (var j = D[ind].Count - 1; j >= 0; j--)
             {
                 if ((D[ind][j].GetInd() != ind || ind == 0) &&

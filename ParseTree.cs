@@ -14,13 +14,11 @@ public class ParseTree
         }
     }
 
-    public int numOfLevels { get; set; }
     public List<Node> Nodes { get; set; }
 
     public ParseTree()
     {
         Nodes = new List<Node>();
-        numOfLevels = 0;
     }
 
     public bool FindNode(int lvl, string name, Node node, ref Node res)
@@ -53,11 +51,6 @@ public class ParseTree
             FindChildNode(lvl, name, childs, ref child);
         }
 
-        // if (res.name == null)
-        // {
-        //     res = new Node();
-        //     res.child = new List<Node>();
-        // }
         return;
     }
 }
