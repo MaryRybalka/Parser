@@ -436,54 +436,80 @@ public class Parser
     {
         List<int> pi = new List<int>();
         List<state> valuable = new List<state>();
+        List<bool> watched = new List<bool>();
 
         for (var ind = D.Length - 1; ind >= 0; ind--)
         {
             for (var j = D[ind].Count - 1; j >= 0; j--)
             {
                 if ((D[ind][j].GetInd() != ind || ind == 0) &&
-                    D[ind][j].GetMeta() == D[ind][j].GetRule().getRightPart().Length && !valuable.Contains(D[ind][j]))
-                    valuable.Insert(0, D[ind][j]);
+                    D[ind][j].GetMeta() == D[ind][j].GetRule().getRightPart().Length &&
+                    (!valuable.Contains(D[ind][j]) || D[ind][j].GetRule().getLeftPart() != nu.Helper) &&
+                    (!valuable.Contains(D[ind][j]) || D[ind][j].GetRule().getLeftPart() != nu.Program)
+                   ) //!valuable.Contains(D[ind][j])
+                {
+                    valuable.Add(D[ind][j]);
+                    // valuable.Insert(0, D[ind][j]);
+                    watched.Add(false);
+                }
             }
         }
-
 
         ParseTree newTree = new ParseTree();
 
         int counter = 0;
         if (valuable.Count > 0)
-            newTree.Nodes.Add(R(valuable[valuable.Count - 1], valuable, ref counter, tokens));
+            newTree.Nodes.Add(R(valuable[0], valuable, ref watched, ref counter, tokens));
+        // newTree.Nodes.Add(R(valuable[valuable.Count - 1], valuable, ref watched, ref counter, tokens));
 
         MainParseTree = newTree;
         return pi;
     }
 
-    ParseTree.Node R(state state, List<state> states, ref int counter, List<Token> tokens)
+    ParseTree.Node R(state state, List<state> states, ref List<bool> watched, ref int counter, List<Token> tokens)
     {
         ParseTree.Node newNode = new ParseTree.Node(ntDic[state.GetRule().getLeftPart()]);
-        int tail = 0;
+        int tail = state.GetRule().getRightPart().Length - 1;
 
-        while (tail < state.GetRule().getRightPart().Length)
+        while (tail >= 0)
         {
             state foundState = new state();
-            int iter = states.IndexOf(state) - 1;
-            while (iter >= 0 && foundState.GetRule().getRightPart() == null)
+
+            int iter = 0;
+
+            while (foundState.GetRule().getRightPart() == null && iter < states.Count)
             {
                 if (!Grammar.GetSigma().ContainsKey(state.GetRule().getRightPart()[tail]) &&
-                    states[iter].GetRule().getLeftPart() == state.GetRule().getRightPart()[tail])
+                    state.GetRule().getRightPart()[tail] == states[iter].GetRule().getLeftPart() &&
+                    !watched[iter])
+                {
                     foundState = states[iter];
-                iter--;
+                    watched[iter] = true;
+                }
+
+                iter++;
+
+                // iter = states.GetRange(iter + 1, states.Count - iter - 1).IndexOf(state) + iter + 1;
             }
 
+            // int iter = states.IndexOf(state)-1;
+            // while (iter < states.Count && foundState.GetRule().getRightPart() == null)
+            // {
+            //     if (!Grammar.GetSigma().ContainsKey(state.GetRule().getRightPart()[tail]) &&
+            //         states[iter].GetRule().getLeftPart() == state.GetRule().getRightPart()[tail])
+            //         foundState = states[iter];
+            //     iter++;
+            // }
+
             if (foundState.GetRule().getRightPart() != null)
-                newNode.child.Add(R(foundState, states, ref counter, tokens));
+                newNode.child.Add(R(foundState, states, ref watched, ref counter, tokens));
             else
             {
-                newNode.child.Add(new ParseTree.Node(tokens[counter].value));
+                newNode.child.Add(new ParseTree.Node(tokens[tokens.Count - counter - 1].value));
                 counter++;
             }
 
-            tail++;
+            tail--;
 
             if (counter >= tokens.Count) return newNode;
         }
