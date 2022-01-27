@@ -1,7 +1,3 @@
-if a==2{
-  a=2
-}
-if a==4{
-let a=4
-}
-let r = 9
+
+let a = 9
+var r = 9
