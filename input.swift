@@ -1,3 +1,3 @@
 
-let a = 9
+let = 9
 var r = 9

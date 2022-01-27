@@ -53,6 +53,7 @@ public class Semantic
         {
             if (cur.child[i].name == "var")
             {
+                vars.Add(cur.child[i + 1].name);
             }
             else if (cur.child[i].name == "let")
             {
