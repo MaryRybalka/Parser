@@ -673,16 +673,16 @@ namespace parser
 
         private readonly SortedSet<string> _reservedNames = new SortedSet<string>
         {
-            "string",
+            "String",
             "substring",
-            "character",
-            "bool",
-            "array",
-            "int",
-            "double",
-            "float",
-            "true",
-            "false",
+            "Character",
+            "Bool",
+            "Array",
+            "Int",
+            "Double",
+            "Float",
+            "True",
+            "False",
             "nil"
         };
 

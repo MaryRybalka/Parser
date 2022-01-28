@@ -231,7 +231,7 @@ public class Grammar
             new Rule(nu.Expressions, new[] {nu.Expression}, ruleType.nn),
             new Rule(nu.Expressions, new[] {nu.Expression, nu.Expressions}, ruleType.nn),
             new Rule(nu.Definitions, new[] {nu.Definition}, ruleType.nn),
-            new Rule(nu.Definitions, new[] {nu.Definition, nu.Definitions}, ruleType.nn),
+            // new Rule(nu.Definitions, new[] {nu.Definition, nu.Definitions}, ruleType.nn),
             new Rule(nu.InitialisationListPattern, new[] {nu.PatternInitialisator}, ruleType.nn),
             new Rule(nu.PatternInitialisator, new[] {nu.Identifier, nu.Initialisator}, ruleType.nn),
             new Rule(nu.PatternInitialisator, new[] {nu.Identifier, nu.TypeAnnotation, nu.Initialisator}, ruleType.nn),
@@ -240,6 +240,8 @@ public class Grammar
             new Rule(nu.Literal, new[] {nu.StringLiteral}, ruleType.nn),
             new Rule(nu.Literal, new[] {nu.BoolLiteral}, ruleType.nn),
             new Rule(nu.TypeAnnotation, new[] {nu.Type}, ruleType.nn),
+            new Rule(nu.Argument, new[] {nu.Identifier, nu.TypeAnnotation}, ruleType.nn),
+            new Rule(nu.Argument, new[] {nu.Identifier}, ruleType.nn),
 
             // new Rule(nu.Program, new[] {nu.SigmaLambda}, ruleType.ns),
             // new Rule(nu.Sentences, new[] {nu.SigmaLambda}, ruleType.ns),
@@ -279,22 +281,18 @@ public class Grammar
 
             new Rule(nu.FunctionCall, new[] {nu.SigmaOpenRound, nu.ArgumentsList, nu.SigmaCloseRound}, ruleType.mix),
             new Rule(nu.ArgumentsList, new[] {nu.Argument, nu.SigmaComma, nu.ArgumentsList}, ruleType.mix),
-            new Rule(nu.Argument, new[] {nu.Identifier, nu.TypeAnnotation}, ruleType.mix),
-            new Rule(nu.Argument, new[] {nu.Identifier}, ruleType.mix),
             new Rule(nu.Definition, new[] {nu.SigmaLet, nu.InitialisationListPattern}, ruleType.mix),
             new Rule(nu.Definition, new[] {nu.SigmaVar, nu.InitialisationListPattern}, ruleType.mix),
             new Rule(nu.Definition,
                 new[]
                 {
                     nu.SigmaFunc, nu.Identifier, nu.FunctionCall, nu.SigmaMinus, nu.SigmaMore, nu.Type, nu.FuncCodeBlock
-                },
-                ruleType.mix),
+                }, ruleType.mix),
             new Rule(nu.Definition,
                 new[]
                 {
                     nu.SigmaFunc, nu.Identifier, nu.FunctionCall, nu.SigmaMinus, nu.SigmaMore, nu.Type, nu.CodeBlock
-                },
-                ruleType.mix),
+                }, ruleType.mix),
             new Rule(nu.Definition, new[] {nu.SigmaFunc, nu.Identifier, nu.FunctionCall, nu.CodeBlock}, ruleType.mix),
             new Rule(nu.InitialisationListPattern,
                 new[] {nu.PatternInitialisator, nu.SigmaComma, nu.InitialisationListPattern}, ruleType.mix),
