@@ -1,2 +1,6 @@
-let Variable = 9
-var a = 9
+let c = 9
+if c == 7 {
+    c = 0
+}
+
+let c = 9

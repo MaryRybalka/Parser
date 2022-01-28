@@ -63,7 +63,10 @@ public class Semantic
                 if (sit != 2)
                     vars.Add(ident);
                 else
+                {
                     Console.WriteLine("Name repeating is not acceptable");
+                    return false;
+                }
 
                 i = -1;
             }
@@ -74,7 +77,11 @@ public class Semantic
                 if (sit != 1)
                     lets.Add(new Let(id, ident));
                 else
+                {
                     Console.WriteLine("Name repeating is not acceptable");
+                    return false;
+                }
+
                 i = -1;
             }
             else
@@ -82,7 +89,7 @@ public class Semantic
                 if (cur.child[i].name == "Identifier")
                 {
                     int sit = searchInEnv(cur.child[i].child[0].name, id);
-                    if (sit == 1 && cur.name != "Operand")
+                    if (sit == 1 && cur.name == "Operand" && i == cur.child.Count - 1)
                     {
                         Console.WriteLine("Reassign of const [" + cur.child[i].child[0].name + "] is not acceptable");
                         return false;
