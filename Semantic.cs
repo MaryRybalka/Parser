@@ -30,10 +30,10 @@ public class Semantic
     public bool checkLogic()
     {
         // return searchIdent() && blockVar();
-        return searchIdent();
+        return runThrough();
     }
 
-    bool searchIdent()
+    bool runThrough()
     {
         bool res = false;
         if (tree.Nodes.Count > 0)
