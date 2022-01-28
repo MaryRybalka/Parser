@@ -1,13 +1,7 @@
 let c = 9
+var k = 9
 
 if c == 7 {
    let p = 0
-   var k = "asd"
+   k = "asd"
 }
-
-if g == 7 {
-   let p = 0
-   var k = "asd"
-}
-
-let c = 9
