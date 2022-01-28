@@ -191,7 +191,7 @@ public class Parser
         if (tokenList.Count > 0) startState.SetMeta(1);
         if (D[tokenList.Count].Contains(startState))
         {
-            Console.Write("\nProgram is ok\n");
+            Console.WriteLine("\nProgram is ok\n");
 
             Razb(D, tokenList, res);
 

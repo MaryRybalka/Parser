@@ -19,6 +19,9 @@ namespace parser
             parser.Parse(tokens);
 
             var tree = parser.MainParseTree;
+
+            Semantic semantic = new Semantic(tree);
+            semantic.checkLogic();
         }
     }
 }
