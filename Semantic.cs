@@ -60,7 +60,7 @@ public class Semantic
             {
                 string ident = findIdn(cur.child[i - 1]);
                 int sit = searchInEnv(ident, id);
-                if (sit != 2)
+                if (sit != 1 && sit != 2)
                     vars.Add(ident);
                 else
                 {
@@ -74,7 +74,7 @@ public class Semantic
             {
                 string ident = findIdn(cur.child[i - 1]);
                 int sit = searchInEnv(ident, id);
-                if (sit != 1)
+                if (sit != 1 && sit != 2)
                     lets.Add(new Let(id, ident));
                 else
                 {
