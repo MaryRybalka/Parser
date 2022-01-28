@@ -444,6 +444,7 @@ public class Parser
 
         for (var ind = D.Length - 1; ind >= 0; ind--)
         {
+            bool containHelper = false;
             for (var j = D[ind].Count - 1; j >= 0; j--)
             {
                 if ((D[ind][j].GetInd() != ind || ind == 0) &&
@@ -457,13 +458,18 @@ public class Parser
                         (exm.GetRule().getLeftPart() != nu.Helper &&
                          exm.GetRule().getLeftPart() != nu.Program))
                     {
-                        if (ind == D.Length - 1 || exm.GetRule().getRightPart().Length != 2 ||
+                        if (!containHelper || ind == D.Length - 1 || exm.GetRule().getRightPart().Length != 2 ||
                             exm.GetRule().getRightPart()[0] != nu.Sentence ||
                             exm.GetRule().getRightPart()[1] != nu.Sentences)
                         {
                             valuable.Add(exm);
                             watched.Add(false);
                         }
+                    }
+                    else if (exm.GetRule().getLeftPart() == nu.Helper ||
+                             exm.GetRule().getLeftPart() == nu.Program)
+                    {
+                        containHelper = true;
                     }
                 }
             }
