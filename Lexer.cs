@@ -815,11 +815,7 @@ namespace parser
 
             _oldStatus = _status;
             _action = Table[_status][index].GetAction();
-            Console.Write("_status = " + _status + " ");
-            Console.WriteLine("index = " + index);
             _status = (int) Table[_status][index].GetStatus();
-            Console.Write("_status = " + _status + " ");
-            Console.WriteLine("index = " + index);
 
             if (_status == (int) Status.ERROR)
             {
