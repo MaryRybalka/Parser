@@ -17,6 +17,8 @@ public class Semantic
     private ParseTree tree;
     private Grammar grammar;
     private List<string> vars;
+    private List<string> funcs;
+    private List<string> fors;
     private List<Let> lets;
 
     public Semantic(ParseTree _tree)
@@ -24,6 +26,8 @@ public class Semantic
         grammar = new Grammar();
         tree = _tree;
         vars = new List<string>();
+        funcs = new List<string>();
+        fors = new List<string>();
         lets = new List<Let>();
     }
 
@@ -60,7 +64,7 @@ public class Semantic
             {
                 string ident = findIdn(cur.child[i - 1]);
                 int sit = searchInEnv(ident, id);
-                if (sit != 1 && sit != 2)
+                if (sit != 1 && sit != 2 && sit != 3 && sit != 4)
                     vars.Add(ident);
                 else
                 {
@@ -74,8 +78,36 @@ public class Semantic
             {
                 string ident = findIdn(cur.child[i - 1]);
                 int sit = searchInEnv(ident, id);
-                if (sit != 1 && sit != 2)
+                if (sit != 1 && sit != 2 && sit != 3 && sit != 4)
                     lets.Add(new Let(id, ident));
+                else
+                {
+                    Console.WriteLine("Name repeating is not acceptable");
+                    return false;
+                }
+
+                i = -1;
+            }
+            else if (cur.child[i].name == "func")
+            {
+                string ident = findIdn(cur.child[i - 1]);
+                int sit = searchInEnv(ident, id);
+                if (sit != 1 && sit != 2 && sit != 3 && sit != 4)
+                    funcs.Add(ident);
+                else
+                {
+                    Console.WriteLine("Name repeating is not acceptable");
+                    return false;
+                }
+
+                i = -1;
+            }
+            else if (cur.child[i].name == "for")
+            {
+                string ident = findIdn(cur.child[i - 1]);
+                int sit = searchInEnv(ident, id);
+                if (sit != 1 && sit != 2 && sit != 3 && sit != 4)
+                    fors.Add(ident);
                 else
                 {
                     Console.WriteLine("Name repeating is not acceptable");
@@ -148,6 +180,18 @@ public class Semantic
         {
             if (varEl == name)
                 res = 1;
+        }
+
+        foreach (var funcEl in funcs)
+        {
+            if (funcEl == name)
+                res = 3;
+        }
+
+        foreach (var forEl in fors)
+        {
+            if (forEl == name)
+                res = 4;
         }
 
         if (res < 0)

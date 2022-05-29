@@ -46,6 +46,7 @@ namespace parser
             "CLOSE_CURLY_BRACKET",
             "COMMA",
             "SEMICOLON",
+            "COLON",
             "AND",
             "ANDEQUAL",
             "ANDAND",
@@ -97,6 +98,7 @@ namespace parser
                 new State(Status.NOT, 1), new State(Status.EQUAL, 1), new State(Status.OPEN_ROUND_BRACKET, 1),
                 new State(Status.CLOSE_ROUND_BRACKET, 1), new State(Status.OPEN_CURLY_BRACKET, 1),
                 new State(Status.CLOSE_CURLY_BRACKET, 1), new State(Status.COMMA, 1), new State(Status.SEMICOLON, 1),
+                new State(Status.COLON, 1),
                 new State(Status.AND, 1), new State(Status.OR, 1), new State(Status.MORE, 1), new State(Status.LESS, 1),
                 new State(Status.ERROR, 0)
             },
@@ -109,6 +111,7 @@ namespace parser
                 new State(Status.NOT, 1), new State(Status.EQUAL, 1), new State(Status.OPEN_ROUND_BRACKET, 1),
                 new State(Status.CLOSE_ROUND_BRACKET, 1), new State(Status.OPEN_CURLY_BRACKET, 1),
                 new State(Status.CLOSE_CURLY_BRACKET, 1), new State(Status.COMMA, 1), new State(Status.SEMICOLON, 1),
+                new State(Status.COLON, 1),
                 new State(Status.AND, 1), new State(Status.OR, 1), new State(Status.MORE, 1), new State(Status.LESS, 1),
                 new State(Status.ERROR, 0)
             },
@@ -121,6 +124,20 @@ namespace parser
                 new State(Status.NOT, 1), new State(Status.EQUAL, 1), new State(Status.OPEN_ROUND_BRACKET, 1),
                 new State(Status.CLOSE_ROUND_BRACKET, 1), new State(Status.OPEN_CURLY_BRACKET, 1),
                 new State(Status.CLOSE_CURLY_BRACKET, 1), new State(Status.COMMA, 1), new State(Status.SEMICOLON, 1),
+                new State(Status.COLON, 1),
+                new State(Status.AND, 1), new State(Status.OR, 1), new State(Status.MORE, 1), new State(Status.LESS, 1),
+                new State(Status.ERROR, 0)
+            },
+            new[]
+            {
+                new State(Status.START, 1), new State(Status.START, 1), new State(Status.IDENT, 1),
+                new State(Status.REALNUMBER_ONE, 0), new State(Status.STRING, 1), new State(Status.ERROR, 0),
+                new State(Status.REALNUMBER_DOT, 0), new State(Status.SLASH, 1), new State(Status.STAR, 1),
+                new State(Status.PLUS, 1), new State(Status.MINUS, 1), new State(Status.PERCENT, 1),
+                new State(Status.NOT, 1), new State(Status.EQUAL, 1), new State(Status.OPEN_ROUND_BRACKET, 1),
+                new State(Status.CLOSE_ROUND_BRACKET, 1), new State(Status.OPEN_CURLY_BRACKET, 1),
+                new State(Status.CLOSE_CURLY_BRACKET, 1), new State(Status.COMMA, 1), new State(Status.SEMICOLON, 1),
+                new State(Status.COLON, 1),
                 new State(Status.AND, 1), new State(Status.OR, 1), new State(Status.MORE, 1), new State(Status.LESS, 1),
                 new State(Status.ERROR, 0)
             },
@@ -157,6 +174,7 @@ namespace parser
                 new State(Status.NOT, 1), new State(Status.EQUAL, 1), new State(Status.OPEN_ROUND_BRACKET, 1),
                 new State(Status.CLOSE_ROUND_BRACKET, 1), new State(Status.OPEN_CURLY_BRACKET, 1),
                 new State(Status.CLOSE_CURLY_BRACKET, 1), new State(Status.COMMA, 1), new State(Status.SEMICOLON, 1),
+                new State(Status.COLON, 1),
                 new State(Status.AND, 1), new State(Status.OR, 1), new State(Status.MORE, 1), new State(Status.LESS, 1),
                 new State(Status.ERROR, 0)
             },
@@ -181,6 +199,7 @@ namespace parser
                 new State(Status.NOT, 1), new State(Status.SLASHEQUAL, 0), new State(Status.OPEN_ROUND_BRACKET, 1),
                 new State(Status.CLOSE_ROUND_BRACKET, 1), new State(Status.OPEN_CURLY_BRACKET, 1),
                 new State(Status.CLOSE_CURLY_BRACKET, 1), new State(Status.COMMA, 1), new State(Status.SEMICOLON, 1),
+                new State(Status.COLON, 1),
                 new State(Status.AND, 1), new State(Status.OR, 1), new State(Status.MORE, 1), new State(Status.LESS, 1),
                 new State(Status.ERROR, 0)
             },
@@ -229,6 +248,7 @@ namespace parser
                 new State(Status.NOT, 1), new State(Status.EQUAL, 1), new State(Status.OPEN_ROUND_BRACKET, 1),
                 new State(Status.CLOSE_ROUND_BRACKET, 1), new State(Status.OPEN_CURLY_BRACKET, 1),
                 new State(Status.CLOSE_CURLY_BRACKET, 1), new State(Status.COMMA, 1), new State(Status.SEMICOLON, 1),
+                new State(Status.COLON, 1),
                 new State(Status.AND, 1), new State(Status.OR, 1), new State(Status.MORE, 1), new State(Status.LESS, 1),
                 new State(Status.ERROR, 0)
             },
@@ -241,6 +261,7 @@ namespace parser
                 new State(Status.NOT, 1), new State(Status.STAREQUAL, 0), new State(Status.OPEN_ROUND_BRACKET, 1),
                 new State(Status.CLOSE_ROUND_BRACKET, 1), new State(Status.OPEN_CURLY_BRACKET, 1),
                 new State(Status.CLOSE_CURLY_BRACKET, 1), new State(Status.COMMA, 1), new State(Status.SEMICOLON, 1),
+                new State(Status.COLON, 1),
                 new State(Status.AND, 1), new State(Status.OR, 1), new State(Status.MORE, 1), new State(Status.LESS, 1),
                 new State(Status.ERROR, 0)
             },
@@ -253,6 +274,7 @@ namespace parser
                 new State(Status.NOT, 1), new State(Status.PLUSEQUAL, 0), new State(Status.OPEN_ROUND_BRACKET, 1),
                 new State(Status.CLOSE_ROUND_BRACKET, 1), new State(Status.OPEN_CURLY_BRACKET, 1),
                 new State(Status.CLOSE_CURLY_BRACKET, 1), new State(Status.COMMA, 1), new State(Status.SEMICOLON, 1),
+                new State(Status.COLON, 1),
                 new State(Status.AND, 1), new State(Status.OR, 1), new State(Status.MORE, 1), new State(Status.LESS, 1),
                 new State(Status.ERROR, 0)
             },
@@ -265,6 +287,7 @@ namespace parser
                 new State(Status.NOT, 1), new State(Status.EQUAL, 1), new State(Status.OPEN_ROUND_BRACKET, 1),
                 new State(Status.CLOSE_ROUND_BRACKET, 1), new State(Status.OPEN_CURLY_BRACKET, 1),
                 new State(Status.CLOSE_CURLY_BRACKET, 1), new State(Status.COMMA, 1), new State(Status.SEMICOLON, 1),
+                new State(Status.COLON, 1),
                 new State(Status.AND, 1), new State(Status.OR, 1), new State(Status.MORE, 1), new State(Status.LESS, 1),
                 new State(Status.ERROR, 0)
             },
@@ -277,6 +300,7 @@ namespace parser
                 new State(Status.NOT, 1), new State(Status.MINUSEQUAL, 0), new State(Status.OPEN_ROUND_BRACKET, 1),
                 new State(Status.CLOSE_ROUND_BRACKET, 1), new State(Status.OPEN_CURLY_BRACKET, 1),
                 new State(Status.CLOSE_CURLY_BRACKET, 1), new State(Status.COMMA, 1), new State(Status.SEMICOLON, 1),
+                new State(Status.COLON, 1),
                 new State(Status.AND, 1), new State(Status.OR, 1), new State(Status.MORE, 1), new State(Status.LESS, 1),
                 new State(Status.ERROR, 0)
             },
@@ -289,6 +313,7 @@ namespace parser
                 new State(Status.NOT, 1), new State(Status.EQUAL, 1), new State(Status.OPEN_ROUND_BRACKET, 1),
                 new State(Status.CLOSE_ROUND_BRACKET, 1), new State(Status.OPEN_CURLY_BRACKET, 1),
                 new State(Status.CLOSE_CURLY_BRACKET, 1), new State(Status.COMMA, 1), new State(Status.SEMICOLON, 1),
+                new State(Status.COLON, 1),
                 new State(Status.AND, 1), new State(Status.OR, 1), new State(Status.MORE, 1), new State(Status.LESS, 1),
                 new State(Status.ERROR, 0)
             },
@@ -301,6 +326,7 @@ namespace parser
                 new State(Status.NOT, 1), new State(Status.PERCENTEQUAL, 0), new State(Status.OPEN_ROUND_BRACKET, 1),
                 new State(Status.CLOSE_ROUND_BRACKET, 1), new State(Status.OPEN_CURLY_BRACKET, 1),
                 new State(Status.CLOSE_CURLY_BRACKET, 1), new State(Status.COMMA, 1), new State(Status.SEMICOLON, 1),
+                new State(Status.COLON, 1),
                 new State(Status.AND, 1), new State(Status.OR, 1), new State(Status.MORE, 1), new State(Status.LESS, 1),
                 new State(Status.ERROR, 0)
             },
@@ -313,6 +339,7 @@ namespace parser
                 new State(Status.NOT, 1), new State(Status.NOTEQUAL, 0), new State(Status.OPEN_ROUND_BRACKET, 1),
                 new State(Status.CLOSE_ROUND_BRACKET, 1), new State(Status.OPEN_CURLY_BRACKET, 1),
                 new State(Status.CLOSE_CURLY_BRACKET, 1), new State(Status.COMMA, 1), new State(Status.SEMICOLON, 1),
+                new State(Status.COLON, 1),
                 new State(Status.AND, 1), new State(Status.OR, 1), new State(Status.MORE, 1), new State(Status.LESS, 1),
                 new State(Status.ERROR, 0)
             },
@@ -325,6 +352,7 @@ namespace parser
                 new State(Status.NOT, 1), new State(Status.TWO_EQUAL, 0), new State(Status.OPEN_ROUND_BRACKET, 1),
                 new State(Status.CLOSE_ROUND_BRACKET, 1), new State(Status.OPEN_CURLY_BRACKET, 1),
                 new State(Status.CLOSE_CURLY_BRACKET, 1), new State(Status.COMMA, 1), new State(Status.SEMICOLON, 1),
+                new State(Status.COLON, 1),
                 new State(Status.AND, 1), new State(Status.OR, 1), new State(Status.MORE, 1), new State(Status.LESS, 1),
                 new State(Status.ERROR, 0)
             },
@@ -337,6 +365,7 @@ namespace parser
                 new State(Status.NOT, 1), new State(Status.THREE_EQUAL, 0), new State(Status.OPEN_ROUND_BRACKET, 1),
                 new State(Status.CLOSE_ROUND_BRACKET, 1), new State(Status.OPEN_CURLY_BRACKET, 1),
                 new State(Status.CLOSE_CURLY_BRACKET, 1), new State(Status.COMMA, 1), new State(Status.SEMICOLON, 1),
+                new State(Status.COLON, 1),
                 new State(Status.AND, 1), new State(Status.OR, 1), new State(Status.MORE, 1), new State(Status.LESS, 1),
                 new State(Status.ERROR, 0)
             },
@@ -349,6 +378,7 @@ namespace parser
                 new State(Status.NOT, 1), new State(Status.EQUAL, 1), new State(Status.OPEN_ROUND_BRACKET, 1),
                 new State(Status.CLOSE_ROUND_BRACKET, 1), new State(Status.OPEN_CURLY_BRACKET, 1),
                 new State(Status.CLOSE_CURLY_BRACKET, 1), new State(Status.COMMA, 1), new State(Status.SEMICOLON, 1),
+                new State(Status.COLON, 1),
                 new State(Status.AND, 1), new State(Status.OR, 1), new State(Status.MORE, 1), new State(Status.LESS, 1),
                 new State(Status.ERROR, 0)
             },
@@ -361,6 +391,7 @@ namespace parser
                 new State(Status.NOT, 1), new State(Status.EQUAL, 1), new State(Status.OPEN_ROUND_BRACKET, 1),
                 new State(Status.CLOSE_ROUND_BRACKET, 1), new State(Status.OPEN_CURLY_BRACKET, 1),
                 new State(Status.CLOSE_CURLY_BRACKET, 1), new State(Status.COMMA, 1), new State(Status.SEMICOLON, 1),
+                new State(Status.COLON, 1),
                 new State(Status.AND, 1), new State(Status.OR, 1), new State(Status.MORE, 1), new State(Status.LESS, 1),
                 new State(Status.ERROR, 0)
             },
@@ -373,6 +404,7 @@ namespace parser
                 new State(Status.NOT, 1), new State(Status.EQUAL, 1), new State(Status.OPEN_ROUND_BRACKET, 1),
                 new State(Status.CLOSE_ROUND_BRACKET, 1), new State(Status.OPEN_CURLY_BRACKET, 1),
                 new State(Status.CLOSE_CURLY_BRACKET, 1), new State(Status.COMMA, 1), new State(Status.SEMICOLON, 1),
+                new State(Status.COLON, 1),
                 new State(Status.AND, 1), new State(Status.OR, 1), new State(Status.MORE, 1), new State(Status.LESS, 1),
                 new State(Status.ERROR, 0)
             },
@@ -385,6 +417,7 @@ namespace parser
                 new State(Status.NOT, 1), new State(Status.EQUAL, 1), new State(Status.OPEN_ROUND_BRACKET, 1),
                 new State(Status.CLOSE_ROUND_BRACKET, 1), new State(Status.OPEN_CURLY_BRACKET, 1),
                 new State(Status.CLOSE_CURLY_BRACKET, 1), new State(Status.COMMA, 1), new State(Status.SEMICOLON, 1),
+                new State(Status.COLON, 1),
                 new State(Status.AND, 1), new State(Status.OR, 1), new State(Status.MORE, 1), new State(Status.LESS, 1),
                 new State(Status.ERROR, 0)
             },
@@ -397,6 +430,7 @@ namespace parser
                 new State(Status.NOT, 1), new State(Status.EQUAL, 1), new State(Status.OPEN_ROUND_BRACKET, 1),
                 new State(Status.CLOSE_ROUND_BRACKET, 1), new State(Status.OPEN_CURLY_BRACKET, 1),
                 new State(Status.CLOSE_CURLY_BRACKET, 1), new State(Status.COMMA, 1), new State(Status.SEMICOLON, 1),
+                new State(Status.COLON, 1),
                 new State(Status.AND, 1), new State(Status.OR, 1), new State(Status.MORE, 1), new State(Status.LESS, 1),
                 new State(Status.ERROR, 0)
             },
@@ -409,6 +443,7 @@ namespace parser
                 new State(Status.NOT, 1), new State(Status.EQUAL, 1), new State(Status.OPEN_ROUND_BRACKET, 1),
                 new State(Status.CLOSE_ROUND_BRACKET, 1), new State(Status.OPEN_CURLY_BRACKET, 1),
                 new State(Status.CLOSE_CURLY_BRACKET, 1), new State(Status.COMMA, 1), new State(Status.SEMICOLON, 1),
+                new State(Status.COLON, 1),
                 new State(Status.AND, 1), new State(Status.OR, 1), new State(Status.MORE, 1), new State(Status.LESS, 1),
                 new State(Status.ERROR, 0)
             },
@@ -421,6 +456,7 @@ namespace parser
                 new State(Status.NOT, 1), new State(Status.NOT_TWO_EQUAL, 0), new State(Status.OPEN_ROUND_BRACKET, 1),
                 new State(Status.CLOSE_ROUND_BRACKET, 1), new State(Status.OPEN_CURLY_BRACKET, 1),
                 new State(Status.CLOSE_CURLY_BRACKET, 1), new State(Status.COMMA, 1), new State(Status.SEMICOLON, 1),
+                new State(Status.COLON, 1),
                 new State(Status.AND, 1), new State(Status.OR, 1), new State(Status.MORE, 1), new State(Status.LESS, 1),
                 new State(Status.ERROR, 0)
             },
@@ -433,6 +469,7 @@ namespace parser
                 new State(Status.NOT, 1), new State(Status.EQUAL, 1), new State(Status.OPEN_ROUND_BRACKET, 1),
                 new State(Status.CLOSE_ROUND_BRACKET, 1), new State(Status.OPEN_CURLY_BRACKET, 1),
                 new State(Status.CLOSE_CURLY_BRACKET, 1), new State(Status.COMMA, 1), new State(Status.SEMICOLON, 1),
+                new State(Status.COLON, 1),
                 new State(Status.AND, 1), new State(Status.OR, 1), new State(Status.MORE, 1), new State(Status.LESS, 1),
                 new State(Status.ERROR, 0)
             },
@@ -445,6 +482,7 @@ namespace parser
                 new State(Status.NOT, 1), new State(Status.EQUAL, 1), new State(Status.OPEN_ROUND_BRACKET, 1),
                 new State(Status.CLOSE_ROUND_BRACKET, 1), new State(Status.OPEN_CURLY_BRACKET, 1),
                 new State(Status.CLOSE_CURLY_BRACKET, 1), new State(Status.COMMA, 1), new State(Status.SEMICOLON, 1),
+                new State(Status.COLON, 1),
                 new State(Status.AND, 1), new State(Status.OR, 1), new State(Status.MORE, 1), new State(Status.LESS, 1),
                 new State(Status.ERROR, 0)
             },
@@ -457,6 +495,7 @@ namespace parser
                 new State(Status.NOT, 1), new State(Status.EQUAL, 1), new State(Status.OPEN_ROUND_BRACKET, 1),
                 new State(Status.CLOSE_ROUND_BRACKET, 1), new State(Status.OPEN_CURLY_BRACKET, 1),
                 new State(Status.CLOSE_CURLY_BRACKET, 1), new State(Status.COMMA, 1), new State(Status.SEMICOLON, 1),
+                new State(Status.COLON, 1),
                 new State(Status.AND, 1), new State(Status.OR, 1), new State(Status.MORE, 1), new State(Status.LESS, 1),
                 new State(Status.ERROR, 0)
             },
@@ -469,6 +508,7 @@ namespace parser
                 new State(Status.NOT, 1), new State(Status.EQUAL, 1), new State(Status.OPEN_ROUND_BRACKET, 1),
                 new State(Status.CLOSE_ROUND_BRACKET, 1), new State(Status.OPEN_CURLY_BRACKET, 1),
                 new State(Status.CLOSE_CURLY_BRACKET, 1), new State(Status.COMMA, 1), new State(Status.SEMICOLON, 1),
+                new State(Status.COLON, 1),
                 new State(Status.AND, 1), new State(Status.OR, 1), new State(Status.MORE, 1), new State(Status.LESS, 1),
                 new State(Status.ERROR, 0)
             },
@@ -481,6 +521,7 @@ namespace parser
                 new State(Status.NOT, 1), new State(Status.EQUAL, 1), new State(Status.OPEN_ROUND_BRACKET, 1),
                 new State(Status.CLOSE_ROUND_BRACKET, 1), new State(Status.OPEN_CURLY_BRACKET, 1),
                 new State(Status.CLOSE_CURLY_BRACKET, 1), new State(Status.COMMA, 1), new State(Status.SEMICOLON, 1),
+                new State(Status.COLON, 1),
                 new State(Status.AND, 1), new State(Status.OR, 1), new State(Status.MORE, 1), new State(Status.LESS, 1),
                 new State(Status.ERROR, 0)
             },
@@ -493,6 +534,7 @@ namespace parser
                 new State(Status.NOT, 1), new State(Status.EQUAL, 1), new State(Status.OPEN_ROUND_BRACKET, 1),
                 new State(Status.CLOSE_ROUND_BRACKET, 1), new State(Status.OPEN_CURLY_BRACKET, 1),
                 new State(Status.CLOSE_CURLY_BRACKET, 1), new State(Status.COMMA, 1), new State(Status.SEMICOLON, 1),
+                new State(Status.COLON, 1),
                 new State(Status.AND, 1), new State(Status.OR, 1), new State(Status.MORE, 1), new State(Status.LESS, 1),
                 new State(Status.ERROR, 0)
             },
@@ -505,6 +547,7 @@ namespace parser
                 new State(Status.NOT, 1), new State(Status.EQUAL, 1), new State(Status.OPEN_ROUND_BRACKET, 1),
                 new State(Status.CLOSE_ROUND_BRACKET, 1), new State(Status.OPEN_CURLY_BRACKET, 1),
                 new State(Status.CLOSE_CURLY_BRACKET, 1), new State(Status.COMMA, 1), new State(Status.SEMICOLON, 1),
+                new State(Status.COLON, 1),
                 new State(Status.AND, 1), new State(Status.OR, 1), new State(Status.MORE, 1), new State(Status.LESS, 1),
                 new State(Status.ERROR, 0)
             },
@@ -517,6 +560,7 @@ namespace parser
                 new State(Status.NOT, 1), new State(Status.ANDEQUAL, 0), new State(Status.OPEN_ROUND_BRACKET, 1),
                 new State(Status.CLOSE_ROUND_BRACKET, 1), new State(Status.OPEN_CURLY_BRACKET, 1),
                 new State(Status.CLOSE_CURLY_BRACKET, 1), new State(Status.COMMA, 1), new State(Status.SEMICOLON, 1),
+                new State(Status.COLON, 1),
                 new State(Status.ANDAND, 0), new State(Status.OR, 1), new State(Status.MORE, 1),
                 new State(Status.LESS, 1), new State(Status.ERROR, 0)
             },
@@ -529,6 +573,7 @@ namespace parser
                 new State(Status.NOT, 1), new State(Status.EQUAL, 1), new State(Status.OPEN_ROUND_BRACKET, 1),
                 new State(Status.CLOSE_ROUND_BRACKET, 1), new State(Status.OPEN_CURLY_BRACKET, 1),
                 new State(Status.CLOSE_CURLY_BRACKET, 1), new State(Status.COMMA, 1), new State(Status.SEMICOLON, 1),
+                new State(Status.COLON, 1),
                 new State(Status.AND, 1), new State(Status.OR, 1), new State(Status.MORE, 1), new State(Status.LESS, 1),
                 new State(Status.ERROR, 0)
             },
@@ -541,6 +586,7 @@ namespace parser
                 new State(Status.NOT, 1), new State(Status.EQUAL, 1), new State(Status.OPEN_ROUND_BRACKET, 1),
                 new State(Status.CLOSE_ROUND_BRACKET, 1), new State(Status.OPEN_CURLY_BRACKET, 1),
                 new State(Status.CLOSE_CURLY_BRACKET, 1), new State(Status.COMMA, 1), new State(Status.SEMICOLON, 1),
+                new State(Status.COLON, 1),
                 new State(Status.AND, 1), new State(Status.OR, 1), new State(Status.MORE, 1), new State(Status.LESS, 1),
                 new State(Status.ERROR, 0)
             },
@@ -553,6 +599,7 @@ namespace parser
                 new State(Status.NOT, 1), new State(Status.OREQUAL, 0), new State(Status.OPEN_ROUND_BRACKET, 1),
                 new State(Status.CLOSE_ROUND_BRACKET, 1), new State(Status.OPEN_CURLY_BRACKET, 1),
                 new State(Status.CLOSE_CURLY_BRACKET, 1), new State(Status.COMMA, 1), new State(Status.SEMICOLON, 1),
+                new State(Status.COLON, 1),
                 new State(Status.AND, 1), new State(Status.OROR, 0), new State(Status.MORE, 1),
                 new State(Status.LESS, 1), new State(Status.ERROR, 0)
             },
@@ -565,6 +612,7 @@ namespace parser
                 new State(Status.NOT, 1), new State(Status.EQUAL, 1), new State(Status.OPEN_ROUND_BRACKET, 1),
                 new State(Status.CLOSE_ROUND_BRACKET, 1), new State(Status.OPEN_CURLY_BRACKET, 1),
                 new State(Status.CLOSE_CURLY_BRACKET, 1), new State(Status.COMMA, 1), new State(Status.SEMICOLON, 1),
+                new State(Status.COLON, 1),
                 new State(Status.AND, 1), new State(Status.OR, 1), new State(Status.MORE, 1), new State(Status.LESS, 1),
                 new State(Status.ERROR, 0)
             },
@@ -577,6 +625,7 @@ namespace parser
                 new State(Status.NOT, 1), new State(Status.EQUAL, 1), new State(Status.OPEN_ROUND_BRACKET, 1),
                 new State(Status.CLOSE_ROUND_BRACKET, 1), new State(Status.OPEN_CURLY_BRACKET, 1),
                 new State(Status.CLOSE_CURLY_BRACKET, 1), new State(Status.COMMA, 1), new State(Status.SEMICOLON, 1),
+                new State(Status.COLON, 1),
                 new State(Status.AND, 1), new State(Status.OR, 1), new State(Status.MORE, 1), new State(Status.LESS, 1),
                 new State(Status.ERROR, 0)
             },
@@ -589,6 +638,7 @@ namespace parser
                 new State(Status.NOT, 1), new State(Status.MOREOREQUAL, 0), new State(Status.OPEN_ROUND_BRACKET, 1),
                 new State(Status.CLOSE_ROUND_BRACKET, 1), new State(Status.OPEN_CURLY_BRACKET, 1),
                 new State(Status.CLOSE_CURLY_BRACKET, 1), new State(Status.COMMA, 1), new State(Status.SEMICOLON, 1),
+                new State(Status.COLON, 1),
                 new State(Status.AND, 1), new State(Status.OR, 1), new State(Status.MORE, 1), new State(Status.LESS, 1),
                 new State(Status.ERROR, 0)
             },
@@ -601,6 +651,7 @@ namespace parser
                 new State(Status.NOT, 1), new State(Status.EQUAL, 1), new State(Status.OPEN_ROUND_BRACKET, 1),
                 new State(Status.CLOSE_ROUND_BRACKET, 1), new State(Status.OPEN_CURLY_BRACKET, 1),
                 new State(Status.CLOSE_CURLY_BRACKET, 1), new State(Status.COMMA, 1), new State(Status.SEMICOLON, 1),
+                new State(Status.COLON, 1),
                 new State(Status.AND, 1), new State(Status.OR, 1), new State(Status.MORE, 1), new State(Status.LESS, 1),
                 new State(Status.ERROR, 0)
             },
@@ -613,6 +664,7 @@ namespace parser
                 new State(Status.NOT, 1), new State(Status.LESSOREQUAL, 0), new State(Status.OPEN_ROUND_BRACKET, 1),
                 new State(Status.CLOSE_ROUND_BRACKET, 1), new State(Status.OPEN_CURLY_BRACKET, 1),
                 new State(Status.CLOSE_CURLY_BRACKET, 1), new State(Status.COMMA, 1), new State(Status.SEMICOLON, 1),
+                new State(Status.COLON, 1),
                 new State(Status.AND, 1), new State(Status.OR, 1), new State(Status.MORE, 1), new State(Status.LESS, 1),
                 new State(Status.ERROR, 0)
             },
@@ -625,6 +677,7 @@ namespace parser
                 new State(Status.NOT, 1), new State(Status.EQUAL, 1), new State(Status.OPEN_ROUND_BRACKET, 1),
                 new State(Status.CLOSE_ROUND_BRACKET, 1), new State(Status.OPEN_CURLY_BRACKET, 1),
                 new State(Status.CLOSE_CURLY_BRACKET, 1), new State(Status.COMMA, 1), new State(Status.SEMICOLON, 1),
+                new State(Status.COLON, 1),
                 new State(Status.AND, 1), new State(Status.OR, 1), new State(Status.MORE, 1), new State(Status.LESS, 1),
                 new State(Status.ERROR, 0)
             }
@@ -652,6 +705,7 @@ namespace parser
             "\\}",
             "\\,",
             "\\;",
+            "\\:",
             "\\&",
             "\\|",
             "\\>",
@@ -761,7 +815,11 @@ namespace parser
 
             _oldStatus = _status;
             _action = Table[_status][index].GetAction();
+            Console.Write("_status = " + _status + " ");
+            Console.WriteLine("index = " + index);
             _status = (int) Table[_status][index].GetStatus();
+            Console.Write("_status = " + _status + " ");
+            Console.WriteLine("index = " + index);
 
             if (_status == (int) Status.ERROR)
             {

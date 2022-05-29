@@ -1,6 +1,21 @@
-let c = 9
-let p = 0
-if c == 7 {
-   let p = 0
+let a = 0
+func a (a: String) -> Int{
+return 0
 }
-let p = 0
+
+for s in a {
+}
+
+for s in a...a {
+}
+
+while a<4 {
+}
+
+
+let b = 0
+if b<6 {
+}
+
+if a<=6 {
+} 

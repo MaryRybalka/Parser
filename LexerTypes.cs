@@ -3,8 +3,8 @@
     public class LexerTypes
     {
         public const int a = 46;
-        public const int b = 25;
-        
+        public const int b = 26;
+
         public struct Token
         {
             public string status;
@@ -12,7 +12,7 @@
             public int line;
             public int position;
         };
-        
+
         public enum Status
         {
             START = 0,
@@ -51,6 +51,7 @@
             CLOSE_CURLY_BRACKET,
             COMMA,
             SEMICOLON,
+            COLON,
             AND,
             ANDEQUAL,
             ANDAND,
@@ -63,7 +64,7 @@
             LESSOREQUAL,
             ERROR
         };
-        
+
         public struct State
         {
             private Status status;
@@ -74,11 +75,12 @@
                 status = stat;
                 action = act;
             }
-            
+
             public Status GetStatus()
             {
                 return status;
             }
+
             public int GetAction()
             {
                 return action;
