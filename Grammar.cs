@@ -289,12 +289,12 @@ public class Grammar
                     nu.SigmaFunc, nu.Identifier, nu.FunctionCall, nu.SigmaMinus, nu.SigmaMore, nu.TypeAnnotation,
                     nu.FuncCodeBlock
                 }, ruleType.mix),
-            new Rule(nu.Definition,
-                new[]
-                {
-                    nu.SigmaFunc, nu.Identifier, nu.FunctionCall, nu.SigmaMinus, nu.SigmaMore, nu.TypeAnnotation,
-                    nu.CodeBlock
-                }, ruleType.mix),
+            // new Rule(nu.Definition,
+            //     new[]
+            //     {
+            //         nu.SigmaFunc, nu.Identifier, nu.FunctionCall, nu.SigmaMinus, nu.SigmaMore, nu.TypeAnnotation,
+            //         nu.CodeBlock
+            //     }, ruleType.mix),
             new Rule(nu.Definition, new[] {nu.SigmaFunc, nu.Identifier, nu.FunctionCall, nu.CodeBlock}, ruleType.mix),
             new Rule(nu.InitialisationListPattern,
                 new[] {nu.PatternInitialisator, nu.SigmaComma, nu.InitialisationListPattern}, ruleType.mix),
@@ -305,6 +305,12 @@ public class Grammar
             new Rule(nu.CodeBlock, new[] {nu.SigmaOpenCurl, nu.Sentences, nu.SigmaCloseCurl}, ruleType.mix),
             new Rule(nu.FuncCodeBlock,
                 new[] {nu.SigmaOpenCurl, nu.Sentences, nu.SigmaReturn, nu.Identifier, nu.SigmaCloseCurl}, ruleType.mix),
+            new Rule(nu.FuncCodeBlock,
+                new[] {nu.SigmaOpenCurl, nu.Sentences, nu.SigmaReturn, nu.Operand, nu.SigmaCloseCurl}, ruleType.mix),
+            new Rule(nu.FuncCodeBlock,
+                new[] {nu.SigmaOpenCurl, nu.SigmaReturn, nu.Identifier, nu.SigmaCloseCurl}, ruleType.mix),
+            new Rule(nu.FuncCodeBlock,
+                new[] {nu.SigmaOpenCurl, nu.SigmaReturn, nu.Operand, nu.SigmaCloseCurl}, ruleType.mix),
             new Rule(nu.Cycle, new[] {nu.SigmaFor, nu.Identifier, nu.SigmaIn, nu.Operand, nu.CodeBlock},
                 ruleType.mix),
             new Rule(nu.Cycle, new[] {nu.SigmaWhile, nu.Condition, nu.CodeBlock}, ruleType.mix),

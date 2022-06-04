@@ -1,27 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text.RegularExpressions;
-using static parser.LexerTypes;
-using static parser.Grammar;
-
-namespace parser
+﻿namespace parser
 {
     internal class Program
     {
-        static void Main(string[] args)
+        static void Main()
         {
-            Lexer lexer = new Lexer();
-            List<Token> tokens = lexer.Parse("input.swift");
+            var lexer = new Lexer();
+            var tokens = lexer.Parse("input.swift");
             Console.WriteLine($"tokens.size() {tokens.Count}");
             // foreach (Token token in tokens) Console.WriteLine($"[{token.status}][{token.line}:{token.position}] {token.value}");
 
-            Parser parser = new Parser();
+            var parser = new Parser();
             parser.Parse(tokens);
 
             var tree = parser.MainParseTree;
 
-            Semantic semantic = new Semantic(tree);
-            semantic.checkLogic();
+            var semantic = new Semantic(tree);
+            semantic.CheckLogic();
         }
     }
 }

@@ -1,15 +1,13 @@
 let a = 0
-func a (a: String) -> Int{
-return 0
+func h (a: String){ 
 }
 
 for s in a {
 }
 
-for s in a...a {
-}
 
-while a<4 {
+let f = 0
+while f<4 {
 }
 
 

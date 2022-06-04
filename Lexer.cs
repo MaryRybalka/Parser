@@ -1,7 +1,4 @@
-﻿using System;
-using System.IO;
-using System.Collections.Generic;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 using static parser.LexerTypes;
 
 namespace parser
@@ -756,7 +753,7 @@ namespace parser
             string dirName = AppDomain.CurrentDomain.BaseDirectory; // Starting Dir
             FileInfo fileInfo = new FileInfo(dirName);
             DirectoryInfo parentDir = fileInfo.Directory.Parent;
-            string parentDirName = parentDir.FullName;
+            string parentDirName = parentDir!.FullName;
             parentDirName = parentDirName.Remove(parentDirName.Length - 9, 9);
             parentDirName = parentDirName + filename;
 

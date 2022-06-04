@@ -1,30 +1,7 @@
-using System.Dynamic;
-using System.Security.Cryptography;
-using System.Xml.Xsl;
-using Microsoft.VisualBasic;
-
 namespace parser;
 
-using static parser.LexerTypes;
-using static parser.Grammar;
-
-enum Precedence : byte
-{
-    EQUAL = 1,
-    OROR = 2,
-    ANDAND = 3,
-    LESS = 7,
-    MORE = 7,
-    LESSOREQUAL = 7,
-    MOREOREQUAL = 7,
-    TWO_EQUAL = 7,
-    NOTEQUAL = 7,
-    PLUS = 10,
-    MINUS = 10,
-    STAR = 20,
-    SLASH = 20,
-    PERCENT = 20,
-}
+using static LexerTypes;
+using static Grammar;
 
 public class Parser
 {
@@ -32,8 +9,6 @@ public class Parser
     private Grammar Grammar;
 
     public ParseTree MainParseTree;
-
-    private Rule[] rules;
 
     public Parser()
     {
@@ -74,62 +49,51 @@ public class Parser
         };
 
         Grammar = new Grammar();
-        rules = Grammar?.GetRules();
     }
 
-    private struct state
+    private struct State
     {
-        private Rule rule;
-        private int ind;
-        private int meta;
+        private Rule _rule;
+        private int _ind;
+        private int _meta;
 
-        public state(Rule _rule, int _ind, int _meta = 0)
+        public State(Rule rule, int ind, int meta = 0)
         {
-            rule = _rule;
-            ind = _ind;
-            meta = _meta;
+            _rule = rule;
+            _ind = ind;
+            _meta = meta;
         }
 
-        public void SetInd(int _ind)
+        public void SetMeta(int meta)
         {
-            ind = _ind;
-        }
-
-        public void SetMeta(int _meta)
-        {
-            meta = _meta;
+            _meta = meta;
         }
 
         public int GetMeta()
         {
-            return meta;
+            return _meta;
         }
 
         public int GetInd()
         {
-            return ind;
+            return _ind;
         }
 
         public Rule GetRule()
         {
-            return rule;
-        }
-
-        public void SetRule(Rule _rule)
-        {
-            rule = _rule;
+            return _rule;
         }
     }
 
     public void Parse(List<Token> tokenList)
     {
-        List<state>[] D = new List<state>[tokenList.Count + 1];
+        List<State>[] D = new List<State>[tokenList.Count + 1];
         for (int i = 0; i < D.Length; i++)
         {
-            D[i] = new List<state>();
+            D[i] = new List<State>();
         }
 
-        state startState = new state(new Rule(nu.Helper, new[] {Grammar.GetAxioma()}, ruleType.nn), 0);
+        State startState = new State(new Rule(nu.Helper, new[] {Grammar.GetAxioma()}, ruleType.nn), 0);
         D[0].Add(startState);
 
         var counterOfD = 0;
@@ -137,7 +101,7 @@ public class Parser
 
         for (int ind = 0; ind <= tokenList.Count; ind++)
         {
-            bool changed = false || ind == 0;
+            bool changed = ind == 0;
             Scan(ref D, ind, tokenList, ref changed);
 
             if (changed)
@@ -262,6 +226,8 @@ public class Parser
                         D[counterOfD - 1][0].GetRule().getRightPart()[D[counterOfD - 1][0].GetMeta()]];
                 else
                     vars = "something else";
+                Console.Write(D[counterOfD - 1][stateInd].GetRule().getLeftPart() + " ");
+                Console.WriteLine(D[counterOfD - 1][stateInd].GetRule().getRightPart()[0]);
             }
 
 
@@ -312,14 +278,12 @@ public class Parser
         return;
     }
 
-    int Scan(ref List<state>[] D, int j, List<Token> tokens, ref bool changed)
+    int Scan(ref List<State>[] D, int j, List<Token> tokens, ref bool changed)
     {
         if (j != 0)
         {
             foreach (var state in D[j - 1])
             {
-                bool includes = false;
-
                 if (tokens[j - 1].status == "IDENT" || tokens[j - 1].status == "NUMBER" ||
                     tokens[j - 1].status == "STRING_END")
                 {
@@ -328,7 +292,7 @@ public class Parser
                         Grammar.GetSigma().ContainsKey(state.GetRule().getRightPart()[state.GetMeta()]) &&
                         (Grammar.GetSigma()[state.GetRule().getRightPart()[state.GetMeta()]] == tokens[j - 1].status))
                     {
-                        D[j].Add(new state(
+                        D[j].Add(new State(
                             new Rule(state.GetRule().getLeftPart(), state.GetRule().getRightPart(),
                                 state.GetRule().getType()),
                             state.GetInd(),
@@ -343,7 +307,7 @@ public class Parser
                         state.GetMeta() < state.GetRule().getRightPart().Length &&
                         Grammar.GetTypes().Contains(tokens[j - 1].value))
                     {
-                        D[j].Add(new state(
+                        D[j].Add(new State(
                             new Rule(state.GetRule().getLeftPart(), state.GetRule().getRightPart(),
                                 state.GetRule().getType()),
                             state.GetInd(),
@@ -359,7 +323,7 @@ public class Parser
                         Grammar.GetSigma().ContainsKey(state.GetRule().getRightPart()[state.GetMeta()]) &&
                         (Grammar.GetSigma()[state.GetRule().getRightPart()[state.GetMeta()]] == tokens[j - 1].value))
                     {
-                        D[j].Add(new state(
+                        D[j].Add(new State(
                             new Rule(state.GetRule().getLeftPart(), state.GetRule().getRightPart(),
                                 state.GetRule().getType()),
                             state.GetInd(),
@@ -374,11 +338,11 @@ public class Parser
         return 0;
     }
 
-    void Complete(ref List<state>[] D, int j, ref bool changed)
+    void Complete(ref List<State>[] D, int j, ref bool changed)
     {
         bool localCh = false;
-        List<state> DJCopy = new List<state>(D[j]);
-        foreach (var stateJ in DJCopy)
+        List<State> djCopy = new List<State>(D[j]);
+        foreach (var stateJ in djCopy)
         {
             if (stateJ.GetMeta() == stateJ.GetRule().getRightPart().Length)
             {
@@ -388,14 +352,14 @@ public class Parser
                     if ((stateK.GetRule().getType() == ruleType.mix || stateK.GetRule().getType() == ruleType.nn) &&
                         stateK.GetMeta() < stateK.GetRule().getRightPart().Length &&
                         stateK.GetRule().getRightPart()[stateK.GetMeta()] == stateJ.GetRule().getLeftPart() &&
-                        !D[j].Contains(new state(
+                        !D[j].Contains(new State(
                             new Rule(stateK.GetRule().getLeftPart(), stateK.GetRule().getRightPart(),
                                 stateK.GetRule().getType()),
                             stateK.GetInd(),
                             stateK.GetMeta() + 1
                         )))
                     {
-                        D[j].Add(new state(
+                        D[j].Add(new State(
                             new Rule(stateK.GetRule().getLeftPart(), stateK.GetRule().getRightPart(),
                                 stateK.GetRule().getType()),
                             stateK.GetInd(),
@@ -410,11 +374,11 @@ public class Parser
         changed = localCh;
     }
 
-    void Predict(ref List<state>[] D, int j, ref bool changed)
+    void Predict(ref List<State>[] D, int j, ref bool changed)
     {
         bool localCh = false;
-        List<state> DJCopy = new List<state>(D[j]);
-        foreach (var state in DJCopy)
+        List<State> djCopy = new List<State>(D[j]);
+        foreach (var state in djCopy)
         {
             if ((state.GetRule().getType() == ruleType.mix || state.GetRule().getType() == ruleType.nn) &&
                 state.GetMeta() < state.GetRule().getRightPart().Length &&
@@ -424,9 +388,9 @@ public class Parser
                 foreach (var rule in Grammar.GetRules())
                 {
                     if (rule.getLeftPart() == state.GetRule().getRightPart()[state.GetMeta()] &&
-                        !D[j].Contains(new state(rule, j)))
+                        !D[j].Contains(new State(rule, j)))
                     {
-                        D[j].Add(new state(rule, j));
+                        D[j].Add(new State(rule, j));
                         localCh = true;
                     }
                 }
@@ -436,10 +400,10 @@ public class Parser
         changed = localCh;
     }
 
-    List<int> Razb(List<state>[] D, List<Token> tokens, List<int> res)
+    List<int> Razb(List<State>[] D, List<Token> tokens, List<int> res)
     {
         List<int> pi = new List<int>();
-        List<state> valuable = new List<state>();
+        List<State> valuable = new List<State>();
         List<bool> watched = new List<bool>();
 
         for (var ind = D.Length - 1; ind >= 0; ind--)
@@ -451,7 +415,7 @@ public class Parser
                     D[ind][j].GetMeta() == D[ind][j].GetRule().getRightPart().Length
                    ) //!valuable.Contains(D[ind][j])
                 {
-                    state exm = new state();
+                    State exm;
                     exm = D[ind][j];
 
                     if (ind == D.Length - 1 ||
@@ -511,14 +475,14 @@ public class Parser
         return pi;
     }
 
-    ParseTree.Node R(state state, List<state> states, ref List<bool> watched, ref int counter, List<Token> tokens)
+    ParseTree.Node R(State state, List<State> states, ref List<bool> watched, ref int counter, List<Token> tokens)
     {
         ParseTree.Node newNode = new ParseTree.Node(ntDic[state.GetRule().getLeftPart()]);
         int tail = state.GetRule().getRightPart().Length - 1;
 
         while (tail >= 0)
         {
-            state foundState = new state();
+            State foundState = new State();
 
             int iter = 0;
 
@@ -547,10 +511,10 @@ public class Parser
             // }
 
             if (foundState.GetRule().getRightPart() != null)
-                newNode.child.Add(R(foundState, states, ref watched, ref counter, tokens));
+                newNode.Child.Add(R(foundState, states, ref watched, ref counter, tokens));
             else
             {
-                newNode.child.Add(new ParseTree.Node(tokens[tokens.Count - counter - 1].value));
+                newNode.Child.Add(new ParseTree.Node(tokens[tokens.Count - counter - 1].value));
                 counter++;
             }
 
