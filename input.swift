@@ -3,6 +3,7 @@ func h (a: String){
 }
 
 for s in a {
+let g = 9
 }
 
 
@@ -11,9 +12,7 @@ while f<4 {
 }
 
 
-let b = 0
-if b<6 {
-}
+var b = 0
 
 if a<=6 {
 } 

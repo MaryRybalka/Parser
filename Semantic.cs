@@ -18,6 +18,8 @@ public class Semantic
     private List<string> _vars;
     private List<string> _funcs;
     private List<string> _fors;
+    private List<string> _whiles;
+    private List<string> _ifs;
     private List<Let> _lets;
 
     public Semantic(ParseTree tree)
@@ -26,7 +28,14 @@ public class Semantic
         _vars = new List<string>();
         _funcs = new List<string>();
         _fors = new List<string>();
+        _whiles = new List<string>();
+        _ifs = new List<string>();
         _lets = new List<Let>();
+    }
+
+    public bool notFound(int sit)
+    {
+        return sit != 1 && sit != 2 && sit != 3 && sit != 4 && sit != 5 && sit != 6;
     }
 
     public bool CheckLogic()
@@ -59,9 +68,9 @@ public class Semantic
         {
             if (cur.Child[i].Name == "var")
             {
-                string ident = findIdn(cur.Child[i - 1]);
+                string ident = findIdn(cur.Child[i - 1].Child[0].Child[1]);
                 int sit = SearchInEnv(ident, id);
-                if (sit != 1 && sit != 2 && sit != 3 && sit != 4)
+                if (notFound(sit))
                     _vars.Add(ident);
                 else
                 {
@@ -73,9 +82,9 @@ public class Semantic
             }
             else if (cur.Child[i].Name == "let")
             {
-                string ident = findIdn(cur.Child[i - 1]);
+                string ident = findIdn(cur.Child[i - 1].Child[0].Child[1]);
                 int sit = SearchInEnv(ident, id);
-                if (sit != 1 && sit != 2 && sit != 3 && sit != 4)
+                if (notFound(sit))
                     _lets.Add(new Let(id, ident));
                 else
                 {
@@ -89,7 +98,7 @@ public class Semantic
             {
                 string ident = findIdn(cur.Child[i - 1]);
                 int sit = SearchInEnv(ident, id);
-                if (sit != 1 && sit != 2 && sit != 3 && sit != 4)
+                if (notFound(sit))
                     _funcs.Add(ident);
                 else
                 {
@@ -103,7 +112,7 @@ public class Semantic
             {
                 string ident = findIdn(cur.Child[i - 1]);
                 int sit = SearchInEnv(ident, id);
-                if (sit != 1 && sit != 2 && sit != 3 && sit != 4)
+                if (notFound(sit))
                     _fors.Add(ident);
                 else
                 {
@@ -113,17 +122,47 @@ public class Semantic
 
                 i = -1;
             }
+            // else if (cur.Child[i].Name == "if")
+            // {
+            //     string ident = findIdn(cur.Child[i - 1]);
+            //     int sit = SearchInEnv(ident, id);
+            //     if (notFound(sit))
+            //         _ifs.Add(ident);
+            //     else
+            //     {
+            //         Console.WriteLine("Name repeating is not acceptable");
+            //         return false;
+            //     }
+            //
+            //     i = -1;
+            // }
+            // else if (cur.Child[i].Name == "while")
+            // {
+            //     string ident = findIdn(cur.Child[i - 1]);
+            //     int sit = SearchInEnv(ident, id);
+            //     if (notFound(sit))
+            //         _whiles.Add(ident);
+            //     else
+            //     {
+            //         Console.WriteLine("Name repeating is not acceptable");
+            //         return false;
+            //     }
+            //
+            //     i = -1;
+            // }
             else
             {
                 if (cur.Child[i].Name == "Identifier")
                 {
                     int sit = SearchInEnv(cur.Child[i].Child[0].Name, id);
+
                     if (sit == 1 && cur.Name == "Operand" && i == cur.Child.Count - 1)
                     {
                         Console.WriteLine("Reassign of const [" + cur.Child[i].Child[0].Name + "] is not acceptable");
                         return false;
                     }
-                    else if (sit < 0)
+
+                    if (sit < 0)
                     {
                         Console.WriteLine(
                             "[" + id + "]" + "Variable [" + cur.Child[i].Child[0].Name + "] is not define");
@@ -160,6 +199,10 @@ public class Semantic
         {
             return cur.Child[0].Name;
         }
+        else
+        {
+            return cur.Name;
+        }
 
         int i = cur.Child.Count - 1;
         while (i >= 0)
@@ -190,6 +233,18 @@ public class Semantic
         {
             if (forEl == name)
                 res = 4;
+        }
+
+        foreach (var whileEl in _whiles)
+        {
+            if (whileEl == name)
+                res = 5;
+        }
+
+        foreach (var ifEl in _ifs)
+        {
+            if (ifEl == name)
+                res = 6;
         }
 
         if (res < 0)
