@@ -1,6 +1,5 @@
 int main() {
   auto a = 0 ;
-  a = 9 ;
 
   for ( auto s: a ) { 
     auto g = 102 ;

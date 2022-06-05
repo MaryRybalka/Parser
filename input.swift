@@ -1,5 +1,4 @@
 let a = 0
-a = 9
 
 for s in a {
 let g = 9 + 93
