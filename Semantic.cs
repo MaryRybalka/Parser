@@ -82,7 +82,7 @@ public class Semantic
             }
             else if (cur.Child[i].Name == "let")
             {
-                string ident = findIdn(cur.Child[i - 1].Child[0].Child[1]);
+                string ident = findIdn(cur.Child[i]);
                 int sit = SearchInEnv(ident, id);
                 if (notFound(sit))
                     _lets.Add(new Let(id, ident));
@@ -122,34 +122,6 @@ public class Semantic
 
                 i = -1;
             }
-            // else if (cur.Child[i].Name == "if")
-            // {
-            //     string ident = findIdn(cur.Child[i - 1]);
-            //     int sit = SearchInEnv(ident, id);
-            //     if (notFound(sit))
-            //         _ifs.Add(ident);
-            //     else
-            //     {
-            //         Console.WriteLine("Name repeating is not acceptable");
-            //         return false;
-            //     }
-            //
-            //     i = -1;
-            // }
-            // else if (cur.Child[i].Name == "while")
-            // {
-            //     string ident = findIdn(cur.Child[i - 1]);
-            //     int sit = SearchInEnv(ident, id);
-            //     if (notFound(sit))
-            //         _whiles.Add(ident);
-            //     else
-            //     {
-            //         Console.WriteLine("Name repeating is not acceptable");
-            //         return false;
-            //     }
-            //
-            //     i = -1;
-            // }
             else
             {
                 if (cur.Child[i].Name == "Identifier")

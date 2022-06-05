@@ -16,6 +16,9 @@
 
             var semantic = new Semantic(tree);
             semantic.CheckLogic();
+
+            var generator = new Generator();
+            generator.Generate();
         }
     }
 }

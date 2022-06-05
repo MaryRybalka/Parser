@@ -458,7 +458,7 @@ public class Parser
         //             : $"{state.GetRule().getRightPart()[i]} ");
         //     }
         // }
-
+        //
         //     if (state.GetMeta() == state.GetRule().getRightPart().Length)
         //         Console.Write("*");
         //     Console.WriteLine($", meta: {state.GetMeta()}, ind: {state.GetInd()}");
@@ -511,7 +511,9 @@ public class Parser
             // }
 
             if (foundState.GetRule().getRightPart() != null)
+            {
                 newNode.Child.Add(R(foundState, states, ref watched, ref counter, tokens));
+            }
             else
             {
                 newNode.Child.Add(new ParseTree.Node(tokens[tokens.Count - counter - 1].value));
