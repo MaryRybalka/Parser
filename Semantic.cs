@@ -88,8 +88,8 @@ public class Semantic
                     _lets.Add(new Let(id, ident));
                 else
                 {
-                    Console.WriteLine("Name repeating is not acceptable");
-                    return false;
+                    // Console.WriteLine("Name repeating is not acceptable");
+                    return true;
                 }
 
                 i = -1;
@@ -102,8 +102,8 @@ public class Semantic
                     _funcs.Add(ident);
                 else
                 {
-                    Console.WriteLine("Name repeating is not acceptable");
-                    return false;
+                    // Console.WriteLine("Name repeating is not acceptable");
+                    return true;
                 }
 
                 i = -1;
@@ -136,9 +136,9 @@ public class Semantic
 
                     if (sit < 0)
                     {
-                        Console.WriteLine(
-                            "[" + id + "]" + "Variable [" + cur.Child[i].Child[0].Name + "] is not define");
-                        return false;
+                        // Console.WriteLine(
+                        // "[" + id + "]" + "Variable [" + cur.Child[i].Child[0].Name + "] is not define");
+                        return true;
                     }
                 }
                 else if (cur.Child[i].Name == "Program" || cur.Child[i].Name == "CodeBlock")

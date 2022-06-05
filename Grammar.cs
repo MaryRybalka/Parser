@@ -19,6 +19,7 @@ public class Grammar
         Cycle, //цикл
         Sentences, //предложения
         CodeBlock, //код-блок
+        Diapazon,
         BinaryOperator, //бинарный оператор
         UnaryOperator,
         Operand, //опреанд
@@ -61,6 +62,7 @@ public class Grammar
         SigmaLess,
         SigmaDot,
         SigmaDoubleDot,
+        SigmaTripleDot,
         SigmaComma,
         SigmaLambda,
         SigmaAnd,
@@ -75,6 +77,7 @@ public class Grammar
         SigmaBreak,
         SigmaContinue,
         SigmaTrue,
+        SigmaDiapazon,
         SigmaFalse,
         SigmaString,
         SigmaNumber,
@@ -196,6 +199,8 @@ public class Grammar
             {nu.SigmaFunc, "func"},
             {nu.SigmaArrow, "->"},
             {nu.SigmaComma, ","},
+            {nu.SigmaTripleDot, "..."},
+            {nu.SigmaDiapazon, "REALNUMBER_ONE"},
             {nu.SigmaTrue, "true"},
             {nu.SigmaFalse, "false"},
             {nu.SigmaLambda, "lambda"},
@@ -277,6 +282,7 @@ public class Grammar
             new Rule(nu.NumberLiteral, new[] {nu.SigmaNumber}, ruleType.ns),
             new Rule(nu.StringLiteral, new[] {nu.SigmaString}, ruleType.ns),
             new Rule(nu.Type, new[] {nu.SigmaType}, ruleType.ns),
+            new Rule(nu.Diapazon, new[] {nu.SigmaDiapazon}, ruleType.ns),
             new Rule(nu.CodeBlock, new[] {nu.SigmaOpenCurl, nu.SigmaCloseCurl}, ruleType.ns),
 
             new Rule(nu.FunctionCall, new[] {nu.SigmaOpenRound, nu.ArgumentsList, nu.SigmaCloseRound}, ruleType.mix),
@@ -313,6 +319,8 @@ public class Grammar
                 new[] {nu.SigmaOpenCurl, nu.SigmaReturn, nu.Operand, nu.SigmaCloseCurl}, ruleType.mix),
             new Rule(nu.Cycle, new[] {nu.SigmaFor, nu.Identifier, nu.SigmaIn, nu.Operand, nu.CodeBlock},
                 ruleType.mix),
+            new Rule(nu.Cycle,
+                new[] {nu.SigmaFor, nu.Identifier, nu.SigmaIn, nu.Diapazon, nu.CodeBlock}, ruleType.mix),
             new Rule(nu.Cycle, new[] {nu.SigmaWhile, nu.Condition, nu.CodeBlock}, ruleType.mix),
             new Rule(nu.Condition, new[] {nu.SigmaLet, nu.Identifier, nu.Initialisator}, ruleType.mix),
             new Rule(nu.Condition, new[] {nu.SigmaVar, nu.Identifier, nu.Initialisator}, ruleType.mix),

@@ -23,6 +23,7 @@ public class Parser
             {nu.Cycle, "Cycle"},
             {nu.Sentences, "Sentences"},
             {nu.CodeBlock, "CodeBlock"},
+            {nu.Diapazon, "Diapazon"},
             {nu.BinaryOperator, "BinaryOperator"},
             {nu.UnaryOperator, "UnaryOperator"},
             {nu.Operand, "Operand"},
@@ -285,7 +286,7 @@ public class Parser
             foreach (var state in D[j - 1])
             {
                 if (tokens[j - 1].status == "IDENT" || tokens[j - 1].status == "NUMBER" ||
-                    tokens[j - 1].status == "STRING_END")
+                    tokens[j - 1].status == "STRING_END" || tokens[j - 1].status == "REALNUMBER_ONE")
                 {
                     if ((state.GetRule().getType() == ruleType.mix || state.GetRule().getType() == ruleType.ns) &&
                         state.GetMeta() < state.GetRule().getRightPart().Length &&

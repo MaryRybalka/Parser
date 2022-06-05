@@ -6,8 +6,9 @@
         {
             var lexer = new Lexer();
             var tokens = lexer.Parse("input.swift");
-            Console.WriteLine($"tokens.size() {tokens.Count}");
-            // foreach (Token token in tokens) Console.WriteLine($"[{token.status}][{token.line}:{token.position}] {token.value}");
+            // Console.WriteLine($"tokens.size() {tokens.Count}");
+            // foreach (LexerTypes.Token token in tokens)
+            //     Console.WriteLine($"[{token.status}][{token.line}:{token.position}] {token.value}");
 
             var parser = new Parser();
             parser.Parse(tokens);
@@ -17,7 +18,7 @@
             var semantic = new Semantic(tree);
             semantic.CheckLogic();
 
-            var generator = new Generator();
+            var generator = new Generator(tokens);
             generator.Generate();
         }
     }
