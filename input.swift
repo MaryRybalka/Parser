@@ -24,5 +24,5 @@ var b = 0
 func h (a){ 
 }
 
-func h (j: String){ 
+func creativnenko (chto: String){ 
 }

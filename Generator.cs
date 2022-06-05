@@ -56,30 +56,6 @@ public class Generator
         _tokens.Add(tmpTokensList);
     }
 
-    bool GenerateBodyBak(ParseTree.Node curNode)
-    {
-        if (curNode.Child != null && curNode.Child.Count > 0)
-        {
-            foreach (var child in curNode.Child)
-            {
-                GenerateBodyBak(child);
-            }
-
-            return false;
-        }
-        else
-        {
-            var withSpace = curNode.Name + ' ';
-            if (_keywordsInSwift.Contains(curNode.Name))
-                _bodyText = '\n' + withSpace + _bodyText;
-            else
-                _bodyText = (curNode.Name == "}" || curNode.Name == "{")
-                    ? '\n' + curNode.Name + '\n' + _bodyText
-                    : withSpace + _bodyText;
-            return true;
-        }
-    }
-
     bool GenerateBody(StreamReader stream)
     {
         string prevLine = "";
@@ -171,17 +147,39 @@ public class Generator
                                 _bodyText += _tokens[lineCounter][0].value + ' ';
                         }
 
-                        for (var i = 1; i < _tokens[lineCounter].Count; i++)
+                        if (_tokens[lineCounter][0].value == "func" && _tokens[lineCounter].Count > 6)
                         {
-                            if (_tokens[lineCounter][i].value == "{")
+                            var i = 1;
+                            while (i < _tokens[lineCounter].Count)
                             {
-                                needSemicolon = false;
-                                numberOfTabs++;
-                                _bodyText += _tokens[lineCounter][i].value;
+                                if (_tokens[lineCounter][i].value == "(")
+                                {
+                                    _bodyText += " ( " + _tokens[lineCounter][i + 3].value + " " +
+                                                 _tokens[lineCounter][i + 1].value + " ) {";
+                                    needSemicolon = false;
+                                    numberOfTabs++;
+                                    i = _tokens[lineCounter].Count;
+                                }
+                                else
+                                {
+                                    _bodyText += _tokens[lineCounter][i].value;
+                                }
+
+                                i++;
                             }
-                            else
-                                _bodyText += _tokens[lineCounter][i].value + ' ';
                         }
+                        else
+                            for (var i = 1; i < _tokens[lineCounter].Count; i++)
+                            {
+                                if (_tokens[lineCounter][i].value == "{")
+                                {
+                                    needSemicolon = false;
+                                    numberOfTabs++;
+                                    _bodyText += _tokens[lineCounter][i].value;
+                                }
+                                else
+                                    _bodyText += _tokens[lineCounter][i].value + ' ';
+                            }
                     }
 
                     _bodyText += needSemicolon ? ";\n" : '\n';

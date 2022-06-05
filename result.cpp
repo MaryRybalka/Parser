@@ -19,7 +19,7 @@ int main() {
   function h ( a ) {
   }
 
-  function h ( j : String ) {
+  function creativnenko ( String chto ) {
   }
 
 return 0;
