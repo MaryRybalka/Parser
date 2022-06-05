@@ -3,11 +3,11 @@ int main() {
   a = 9 ;
 
   for ( auto s: a ) { 
-    auto g = 9 + 9 ;
+    auto g = 102 ;
   }
 
   for ( auto bom=0; bom<=2; bom++ ) {
-    auto l = 9 + 9 ;
+    auto l = 16 ;
   }
 
   auto f = 0 ;

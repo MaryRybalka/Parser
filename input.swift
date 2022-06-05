@@ -2,12 +2,12 @@ let a = 0
 a = 9
 
 for s in a {
-let g = 9 + 9
+let g = 9 + 93
 }
 
 
 for bom in 0...2 {
-let l = 9 + 9
+let l = 13 + 3
 }
 
 

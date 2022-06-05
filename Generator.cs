@@ -1,5 +1,3 @@
-using System.Linq.Expressions;
-
 namespace parser;
 
 public class Generator
@@ -8,7 +6,6 @@ public class Generator
     private string _srcname;
     private string _bodyText;
     private List<List<LexerTypes.Token>> _tokens;
-    private Optimizator _optimizator;
 
     private readonly List<string> _keywordsInSwift = new()
     {
@@ -36,7 +33,6 @@ public class Generator
         _dstname = "result.cpp";
         _srcname = "input.swift";
         _bodyText = "";
-        _optimizator = new Optimizator();
 
         _tokens = new List<List<LexerTypes.Token>>();
         int curLine = 0;
@@ -144,7 +140,9 @@ public class Generator
                                 _bodyText += _tokens[lineCounter][0].value;
                             }
                             else
+                            {
                                 _bodyText += _tokens[lineCounter][0].value + ' ';
+                            }
                         }
 
                         if (_tokens[lineCounter][0].value == "func" && _tokens[lineCounter].Count > 6)
@@ -169,7 +167,9 @@ public class Generator
                             }
                         }
                         else
-                            for (var i = 1; i < _tokens[lineCounter].Count; i++)
+                        {
+                            bool flag = false;
+                            for (var i = 1; i < _tokens[lineCounter].Count && !flag; i++)
                             {
                                 if (_tokens[lineCounter][i].value == "{")
                                 {
@@ -177,9 +177,24 @@ public class Generator
                                     numberOfTabs++;
                                     _bodyText += _tokens[lineCounter][i].value;
                                 }
+                                else if (_tokens[lineCounter][i].value == "=" &&
+                                         _tokens[lineCounter].Count - i - 1 == 3 &&
+                                         (
+                                             _tokens[lineCounter][i + 2].status == "PLUS" ||
+                                             _tokens[lineCounter][i + 2].status == "MINUS"
+                                         ) &&
+                                         _tokens[lineCounter][i + 1].status == "NUMBER" &&
+                                         _tokens[lineCounter][i + 3].status == "NUMBER")
+                                {
+                                    int firstSumEl = int.Parse(_tokens[lineCounter][i + 1].value);
+                                    int secSumEl = int.Parse(_tokens[lineCounter][i + 3].value);
+                                    _bodyText += "= " + (firstSumEl + secSumEl).ToString() + ' ';
+                                    flag = true;
+                                }
                                 else
                                     _bodyText += _tokens[lineCounter][i].value + ' ';
                             }
+                        }
                     }
 
                     _bodyText += needSemicolon ? ";\n" : '\n';
@@ -205,13 +220,17 @@ public class Generator
         s.WriteLine("}");
     }
 
+    public void Optimize()
+    {
+    }
+
     public void Generate()
     {
         string dirName = AppDomain.CurrentDomain.BaseDirectory;
         FileInfo fileInfo = new FileInfo(dirName);
-        DirectoryInfo parentDir = fileInfo.Directory.Parent;
+        DirectoryInfo parentDir = fileInfo.Directory!.Parent!;
         string parentDstDirName = parentDir!.FullName.Remove(parentDir!.FullName.Length - 9, 9) + _dstname;
-        string parentSrcDirName = parentDir!.FullName.Remove(parentDir!.FullName.Length - 9, 9) + _srcname;
+        string parentSrcDirName = parentDir.FullName.Remove(parentDir!.FullName.Length - 9, 9) + _srcname;
 
         StreamWriter sw = new StreamWriter(parentDstDirName);
         StreamReader sr = new StreamReader(parentSrcDirName);
@@ -223,5 +242,7 @@ public class Generator
 
         sw.Close();
         sr.Close();
+
+        Console.WriteLine("\nGenerated");
     }
 }
